@@ -270,3 +270,53 @@ body {
     font-size: 25px;
   }
 }
+
+
+/* SAVED RECIPE CARDS */
+
+.kitchen-entry {
+  background: #202020;
+  border: 1px solid var(--border);
+  padding: 22px;
+  margin-top: 18px;
+  border-radius: 5px;
+}
+
+.kitchen-entry h3 {
+  color: var(--accent);
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.kitchen-entry p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+
+.kitchen-entry small {
+  display: block;
+  color: #777;
+  margin-top: 15px;
+}
+
+.delete-entry {
+  margin-top: 18px;
+  padding: 10px 16px;
+  background: transparent;
+  color: #e58b82;
+  border: 1px solid #a94f48;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.delete-entry:hover {
+  background: #a94f48;
+  color: white;
+}
+
