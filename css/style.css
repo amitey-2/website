@@ -346,3 +346,53 @@ footer span {
     animation-duration: 0.01ms !important;
   }
 }
+
+
+/* RANDOM THOUGHTS */
+
+.quote-box {
+  margin-top: 30px;
+  padding: 35px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+}
+
+.quote-mark {
+  font-family: Georgia, serif;
+  font-size: 65px;
+  line-height: 1;
+  color: var(--accent);
+}
+
+#quoteText {
+  font-family: Georgia, serif;
+  font-size: clamp(21px, 4vw, 32px);
+  line-height: 1.5;
+  margin: 15px 0 25px;
+}
+
+#quoteAuthor {
+  color: var(--accent);
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+
+.quote-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.quote-buttons button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+#copyStatus {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 15px;
+}
+
