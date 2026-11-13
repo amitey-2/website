@@ -1,21 +1,31 @@
 
-const quotes = [
-  "Somewhere between figuring it out and making a mess of it.",
-  "I need a vacation from my own thoughts.",
-  "Not lazy. Just running on low battery.",
-  "A little chaos never hurt anybody. Probably.",
-  "Life is a journey. I forgot the instructions.",
-  "Too many interests. Not enough hours.",
-  "Professional overthinker. Amateur everything else."
-];
+// Automatically update copyright year
+const yearElement = document.getElementById("year");
 
-function newQuote() {
-  const random = Math.floor(Math.random() * quotes.length);
-
-  document.getElementById("quote").innerHTML =
-    '"' + quotes[random] + '"' +
-    '<small>A LITTLE REMINDER TO MYSELF</small>';
+if (yearElement) {
+  yearElement.textContent = new Date().getFullYear();
 }
 
-document.getElementById("year").textContent =
-  new Date().getFullYear();
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", function (event) {
+    const targetId = this.getAttribute("href");
+
+    if (targetId === "#") return;
+
+    const target = document.querySelector(targetId);
+
+    if (target) {
+      event.preventDefault();
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  });
+});
+
+// Console message for future development
+console.log("Welcome to Amit's digital universe.");
+console.log("Still becoming. Always learning.");
