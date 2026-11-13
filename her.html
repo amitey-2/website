@@ -7,11 +7,12 @@
 
   <title>A Little World For You ❤️</title>
 
-  <link rel="stylesheet" href="css/her.css">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/her.css">
   <script src="js/her.js" defer></script>
 </head>
 
@@ -21,7 +22,6 @@
 
   <!-- PASSWORD SCREEN -->
   <main id="lockScreen" class="lock-screen">
-
     <div class="lock-card">
 
       <div class="heart-icon">♡</div>
@@ -56,11 +56,10 @@
       <p class="lock-footer">Made with love, just for you.</p>
 
     </div>
-
   </main>
 
 
-  <!-- PRIVATE PAGE CONTENT -->
+  <!-- PRIVATE PAGE -->
   <main id="lovePage" class="love-page hidden">
 
     <nav class="top-nav">
@@ -68,20 +67,31 @@
       <span>FOREVER & ALWAYS</span>
     </nav>
 
+
     <!-- HERO -->
     <section class="hero">
 
-      <div class="moon">☾</div>
+      <div class="hero-content">
 
-      <p class="eyebrow">TO MY FAVOURITE PERSON</p>
+        <p class="eyebrow">TO MY FAVOURITE PERSON</p>
 
-      <h1>Just You <br><i>& Me.</i></h1>
+        <h1>Just You<br><i>& Me.</i></h1>
 
-      <p id="introText" class="hero-description"></p>
+        <p id="introText" class="hero-description"></p>
 
-      <a href="#story" class="discover-button">
-        Discover our little world ↓
-      </a>
+        <a href="#story" class="discover-button">
+          Discover our little world ↓
+        </a>
+
+      </div>
+
+      <div class="hero-photo">
+        <img
+          src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=1200&q=85"
+          alt="A romantic couple embracing"
+        >
+        <span class="photo-caption">my favourite place is beside you ♡</span>
+      </div>
 
       <div class="floating-heart">♡</div>
 
@@ -111,13 +121,17 @@
 
       <h2>Little things I love.</h2>
 
+      <p class="section-description">
+        A thousand little reasons, and still not enough.
+      </p>
+
       <div id="reasonsList" class="reasons-grid"></div>
 
     </section>
 
 
     <!-- MEMORIES -->
-    <section class="content-section">
+    <section class="content-section memories-section">
 
       <p class="eyebrow">CHAPTER THREE</p>
 
@@ -129,22 +143,44 @@
 
       <div class="memory-grid">
 
-        <div class="memory-card memory-one">
-          <span>01</span>
-          <p>One of my favourite days</p>
-        </div>
+        <article class="memory-card">
+          <img
+            src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=900&q=85"
+            alt="Romantic couple holding hands"
+          >
+          <div class="memory-caption">
+            <span>01 — A LITTLE MEMORY</span>
+            <p>One of my favourite days.</p>
+          </div>
+        </article>
 
-        <div class="memory-card memory-two">
-          <span>02</span>
-          <p>A moment I'll never forget</p>
-        </div>
+        <article class="memory-card">
+          <img
+            src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=85"
+            alt="Couple sharing a special moment"
+          >
+          <div class="memory-caption">
+            <span>02 — A LITTLE MOMENT</span>
+            <p>A moment I'll never forget.</p>
+          </div>
+        </article>
 
-        <div class="memory-card memory-three">
-          <span>03</span>
-          <p>Just another reason to smile</p>
-        </div>
+        <article class="memory-card">
+          <img
+            src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=900&q=85"
+            alt="Couple embracing"
+          >
+          <div class="memory-caption">
+            <span>03 — FOREVER</span>
+            <p>Just another reason to smile.</p>
+          </div>
+        </article>
 
       </div>
+
+      <p class="memory-note">
+        One day, these spaces will hold our own photographs. ♡
+      </p>
 
     </section>
 
@@ -157,8 +193,13 @@
       <h2>A few words for you.</h2>
 
       <div class="letter-card">
+
+        <div class="letter-decoration">♡</div>
+
         <p id="loveLetter"></p>
+
         <p class="signature">Yours, always. ♡</p>
+
       </div>
 
     </section>
@@ -172,6 +213,10 @@
       <p class="eyebrow">ONE LAST THING</p>
 
       <h2>There's something<br><i>I want you to know.</i></h2>
+
+      <p class="final-description">
+        Because some feelings deserve more than ordinary words.
+      </p>
 
       <button id="surpriseButton" class="surprise-button">
         Open your surprise ♡
