@@ -161,6 +161,10 @@ function initializeNotebook(session) {
 
       const title = document.createElement("h3");
       title.textContent = entry.title;
+      
+      const category = document.createElement("small");
+      category.textContent = "Category: " + entry.category.toUpperCase();
+      category.className = "entry-category";
 
       const ingredients = document.createElement("p");
       ingredients.textContent = "Ingredients: " + (entry.ingredients || "Not added");
@@ -243,7 +247,7 @@ function initializeNotebook(session) {
         await loadEntries();
       });
 
-      card.append(title, ingredients, method, notes, date, editButton, deleteButton);
+      card.append(title, category, ingredients, method, notes, date, editButton, deleteButton);
       container.appendChild(card);
     }
   }
