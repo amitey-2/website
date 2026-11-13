@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>A Little World For You ❤️</title>
+
+  <link rel="stylesheet" href="css/her.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+  <script src="js/her.js" defer></script>
+</head>
+
+<body>
+
+  <div class="stars"></div>
+
+  <!-- PASSWORD SCREEN -->
+  <main id="lockScreen" class="lock-screen">
+
+    <div class="lock-card">
+
+      <div class="heart-icon">♡</div>
+
+      <p class="eyebrow">A LITTLE SECRET</p>
+
+      <h1>Just for you.</h1>
+
+      <p class="lock-description">
+        Some doors are meant for only one person.
+        Enter the little secret to open yours.
+      </p>
+
+      <form id="passwordForm">
+
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Your secret password..."
+          required
+          autocomplete="off"
+        >
+
+        <button type="submit" id="unlockButton">
+          Open my little world ♡
+        </button>
+
+        <p id="errorMessage" class="error-message"></p>
+
+      </form>
+
+      <p class="lock-footer">Made with love, just for you.</p>
+
+    </div>
+
+  </main>
+
+
+  <!-- PRIVATE PAGE CONTENT -->
+  <main id="lovePage" class="love-page hidden">
+
+    <nav class="top-nav">
+      <span>♡ OUR LITTLE WORLD</span>
+      <span>FOREVER & ALWAYS</span>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+
+      <div class="moon">☾</div>
+
+      <p class="eyebrow">TO MY FAVOURITE PERSON</p>
+
+      <h1>Just You <br><i>& Me.</i></h1>
+
+      <p id="introText" class="hero-description"></p>
+
+      <a href="#story" class="discover-button">
+        Discover our little world ↓
+      </a>
+
+      <div class="floating-heart">♡</div>
+
+    </section>
+
+
+    <!-- STORY -->
+    <section id="story" class="content-section">
+
+      <p class="eyebrow">CHAPTER ONE</p>
+
+      <h2>Our little story.</h2>
+
+      <p class="section-description">
+        Every beautiful story has its own beginning.
+      </p>
+
+      <div id="storyList" class="story-list"></div>
+
+    </section>
+
+
+    <!-- REASONS -->
+    <section class="content-section reasons-section">
+
+      <p class="eyebrow">CHAPTER TWO</p>
+
+      <h2>Little things I love.</h2>
+
+      <div id="reasonsList" class="reasons-grid"></div>
+
+    </section>
+
+
+    <!-- MEMORIES -->
+    <section class="content-section">
+
+      <p class="eyebrow">CHAPTER THREE</p>
+
+      <h2>Moments worth keeping.</h2>
+
+      <p class="section-description">
+        A few moments I'd choose to live again.
+      </p>
+
+      <div class="memory-grid">
+
+        <div class="memory-card memory-one">
+          <span>01</span>
+          <p>One of my favourite days</p>
+        </div>
+
+        <div class="memory-card memory-two">
+          <span>02</span>
+          <p>A moment I'll never forget</p>
+        </div>
+
+        <div class="memory-card memory-three">
+          <span>03</span>
+          <p>Just another reason to smile</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- LETTER -->
+    <section class="letter-section">
+
+      <p class="eyebrow">A LETTER FROM MY HEART</p>
+
+      <h2>A few words for you.</h2>
+
+      <div class="letter-card">
+        <p id="loveLetter"></p>
+        <p class="signature">Yours, always. ♡</p>
+      </div>
+
+    </section>
+
+
+    <!-- FINAL SURPRISE -->
+    <section class="final-section">
+
+      <div class="final-heart">♡</div>
+
+      <p class="eyebrow">ONE LAST THING</p>
+
+      <h2>There's something<br><i>I want you to know.</i></h2>
+
+      <button id="surpriseButton" class="surprise-button">
+        Open your surprise ♡
+      </button>
+
+      <p id="surpriseMessage" class="surprise-message hidden"></p>
+
+    </section>
+
+
+    <footer>
+      <p>Made with all my heart ♡</p>
+      <span>OUR LITTLE UNIVERSE</span>
+    </footer>
+
+  </main>
+
+</body>
+</html>
