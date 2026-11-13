@@ -39,3 +39,32 @@ roomCards.forEach((card) => {
     alert(roomName + " is coming soon! 🚧");
   });
 });
+
+
+
+// 4. LIVE CLOCK
+
+const clockElement = document.createElement("p");
+
+clockElement.id = "liveClock";
+clockElement.className = "live-clock";
+
+const welcomeSection = document.querySelector(".welcome");
+
+if (welcomeSection) {
+  welcomeSection.appendChild(clockElement);
+}
+
+function updateClock() {
+  const now = new Date();
+
+  clockElement.textContent = now.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
