@@ -1,4 +1,5 @@
 
+
 const quotes = [
   "Somewhere between figuring it out and making a mess of it.",
   "I need a vacation from my own thoughts.",
