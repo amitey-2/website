@@ -7,6 +7,11 @@
   <title>My Digital Space</title>
 
   <link rel="stylesheet" href="css/dashboard.css">
+
+  <!-- Supabase connection -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
+  <!-- Dashboard JavaScript -->
   <script src="js/dashboard.js" defer></script>
 </head>
 
@@ -15,6 +20,7 @@
   <header class="topbar">
     <a href="index.html" class="logo">AN.</a>
     <span>PERSONAL CONTROL CENTRE</span>
+    <button id="logoutButton" type="button">LOG OUT</button>
     <span class="status">● YOUR SPACE</span>
   </header>
 
@@ -72,28 +78,26 @@
 
       </div>
     </section>
-    
-<!-- QUICK NOTES -->
 
-<section class="quick-notes">
+    <!-- QUICK NOTES -->
 
-  <p class="eyebrow">YOUR PERSONAL NOTEBOOK</p>
+    <section class="quick-notes">
 
-  <h2>Quick Notes.</h2>
+      <p class="eyebrow">YOUR PERSONAL NOTEBOOK</p>
+      <h2>Quick Notes.</h2>
 
-  <textarea
-    id="noteInput"
-    placeholder="What's on your mind today?"
-  ></textarea>
+      <textarea
+        id="noteInput"
+        placeholder="What's on your mind today?"
+      ></textarea>
 
-  <button id="saveNote">SAVE NOTE</button>
+      <button id="saveNote">SAVE NOTE</button>
 
-  <p id="noteStatus"></p>
+      <p id="noteStatus"></p>
 
-  <div id="savedNotes"></div>
+      <div id="savedNotes"></div>
 
-</section>
-
+    </section>
 
     <footer>
       <p>STILL BECOMING. STILL BUILDING.</p>
