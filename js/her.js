@@ -29,7 +29,6 @@ passwordForm.addEventListener("submit", async (event) => {
 
   unlockButton.disabled = true;
   unlockButton.textContent = "Opening your world...";
-
   errorMessage.textContent = "";
 
   try {
@@ -38,12 +37,10 @@ passwordForm.addEventListener("submit", async (event) => {
       `${SUPABASE_URL}/functions/v1/her-surprise`,
       {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
           "apikey": SUPABASE_KEY
         },
-
         body: JSON.stringify({ password })
       }
     );
@@ -54,6 +51,10 @@ passwordForm.addEventListener("submit", async (event) => {
       throw new Error("Incorrect password");
     }
 
+    if (!result.content) {
+      throw new Error("Missing private content");
+    }
+
     displayLovePage(result.content);
 
     lockScreen.classList.add("hidden");
@@ -62,6 +63,8 @@ passwordForm.addEventListener("submit", async (event) => {
     window.scrollTo(0, 0);
 
   } catch (error) {
+
+    console.error("Surprise page error:", error);
 
     errorMessage.textContent =
       error.message === "Incorrect password"
@@ -84,28 +87,28 @@ passwordForm.addEventListener("submit", async (event) => {
 function displayLovePage(content) {
 
   document.getElementById("introText").textContent =
-    content.intro;
+    content.intro || "";
 
   document.getElementById("loveLetter").textContent =
-    content.letter;
+    content.letter || "";
 
   const storyList = document.getElementById("storyList");
 
   storyList.replaceChildren();
 
-  content.story.forEach((item) => {
+  (content.story || []).forEach((item) => {
 
     const card = document.createElement("article");
     card.className = "story-item";
 
     const date = document.createElement("span");
-    date.textContent = item.date;
+    date.textContent = item.date || "";
 
     const title = document.createElement("h3");
-    title.textContent = item.title;
+    title.textContent = item.title || "";
 
     const description = document.createElement("p");
-    description.textContent = item.description;
+    description.textContent = item.description || "";
 
     card.append(date, title, description);
     storyList.appendChild(card);
@@ -117,7 +120,7 @@ function displayLovePage(content) {
 
   reasonsList.replaceChildren();
 
-  content.reasons.forEach((reason, index) => {
+  (content.reasons || []).forEach((reason, index) => {
 
     const card = document.createElement("div");
     card.className = "reason-card";
@@ -143,11 +146,13 @@ function displayLovePage(content) {
 
   surpriseButton.onclick = () => {
 
-    surpriseMessage.textContent = content.surprise;
+    surpriseMessage.textContent =
+      content.surprise || "You are loved. Always. ♡";
 
     surpriseMessage.classList.remove("hidden");
 
-    surpriseButton.textContent = "A little reminder for you ♡";
+    surpriseButton.textContent =
+      "A little reminder for you ♡";
 
     surpriseButton.disabled = true;
 
