@@ -68,3 +68,75 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
+
+
+// QUICK NOTES
+
+const noteInput = document.getElementById("noteInput");
+const saveNoteButton = document.getElementById("saveNote");
+const savedNotes = document.getElementById("savedNotes");
+const noteStatus = document.getElementById("noteStatus");
+
+// Load previously saved notes
+let notes = JSON.parse(localStorage.getItem("myNotes")) || [];
+
+// Display notes on the page
+function displayNotes() {
+  savedNotes.innerHTML = "";
+
+  notes.forEach((note, index) => {
+    const noteBox = document.createElement("div");
+    noteBox.className = "saved-note";
+
+    const noteText = document.createElement("p");
+    noteText.textContent = note;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "DELETE";
+
+    deleteButton.addEventListener("click", () => {
+      notes.splice(index, 1);
+
+      localStorage.setItem(
+        "myNotes",
+        JSON.stringify(notes)
+      );
+
+      displayNotes();
+    });
+
+    noteBox.appendChild(noteText);
+    noteBox.appendChild(deleteButton);
+
+    savedNotes.appendChild(noteBox);
+  });
+}
+
+// Save a new note
+if (saveNoteButton) {
+  saveNoteButton.addEventListener("click", () => {
+    const note = noteInput.value.trim();
+
+    if (note === "") {
+      noteStatus.textContent = "Write something first!";
+      return;
+    }
+
+    notes.unshift(note);
+
+    localStorage.setItem(
+      "myNotes",
+      JSON.stringify(notes)
+    );
+
+    noteInput.value = "";
+    noteStatus.textContent = "Your thought has been saved.";
+
+    displayNotes();
+  });
+}
+
+// Show saved notes when the page opens
+displayNotes();
+
+
