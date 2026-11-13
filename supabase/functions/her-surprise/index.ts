@@ -1,101 +1,83 @@
 
-
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS"
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 const privateContent = {
-
-  intro:
-    "You make ordinary moments feel extraordinary. I made this little place because you deserve something special.",
+  intro: "You are my favourite part of every day. ❤️",
 
   story: [
     {
-      date: "THE BEGINNING",
+      date: "The beginning",
       title: "Where it all started",
-      description:
-        "This is where our beautiful story began. Add your favourite memory here."
+      description: "A little moment that became something beautiful."
     },
     {
-      date: "A SPECIAL MOMENT",
-      title: "One I'll always remember",
-      description:
-        "Some moments stay in your heart forever. This is one of mine."
+      date: "Our journey",
+      title: "Making memories",
+      description: "Every little adventure with you means something to me."
     },
     {
-      date: "TODAY & ALWAYS",
-      title: "Our next chapter",
-      description:
-        "There are still so many beautiful memories waiting for us."
+      date: "Today",
+      title: "Still choosing you",
+      description: "And I hope we keep making memories together."
     }
   ],
 
   reasons: [
-    "The way you make me smile.",
-    "Your beautiful little personality.",
-    "The way you care about people.",
-    "Even the smallest moments with you.",
-    "Your smile on difficult days.",
-    "Simply being yourself."
+    "Your smile makes my day.",
+    "You make ordinary moments special.",
+    "I can be myself around you.",
+    "You make life more beautiful."
   ],
 
-  letter:
-    "My love,\n\nI don't always find the perfect words to explain how much you mean to me. Sometimes the simplest moments become the most beautiful memories, just because I get to share them with you.\n\nI made this little corner of the internet for you. It isn't something expensive or extraordinary. It's simply a small reminder that someone thinks about you, appreciates you, and wants to make you smile.\n\nThank you for being you. I hope we continue making beautiful memories together.\n\nYou deserve all the happiness in the world.\n\nWith love,",
+  letter: "My love, I made this little corner of the internet just for you. I hope it reminds you how special you are to me. No matter where life takes us, I want to keep creating beautiful memories with you. ❤️",
 
-  surprise:
-    "If I could choose one place to be, it would be wherever you are. And if I could make one wish, it would be for us to keep finding reasons to smile together. I love you. ♡"
-
+  surprise: "One more thing... I love you. Always. ❤️"
 };
 
-
 Deno.serve(async (req: Request) => {
-
   if (req.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: corsHeaders
-    });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   if (req.method !== "POST") {
     return new Response(
-      JSON.stringify({ error: "Method not allowed" }),
+      JSON.stringify({ success: false, error: "Method not allowed" }),
       {
         status: 405,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
-        }
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );
   }
 
   try {
+    const correctPassword = Deno.env.get("SURPRISE_PAGE_PASSWORD");
 
-    const expectedPassword =
-      Deno.env.get("SURPRISE_PAGE_PASSWORD");
-
-    if (!expectedPassword) {
-      throw new Error("Password is not configured");
+    if (!correctPassword) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Server configuration error"
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
     }
 
-    const body = await req.json();
-
-    const suppliedPassword =
-      typeof body.password === "string"
-        ? body.password
-        : "";
+    const { password } = await req.json();
 
     if (
-      suppliedPassword.length < 1 ||
-      suppliedPassword.length > 128 ||
-      suppliedPassword !== expectedPassword
+      typeof password !== "string" ||
+      password !== correctPassword
     ) {
-
       return new Response(
         JSON.stringify({
           success: false,
@@ -103,13 +85,9 @@ Deno.serve(async (req: Request) => {
         }),
         {
           status: 401,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
         }
       );
-
     }
 
     return new Response(
@@ -127,24 +105,16 @@ Deno.serve(async (req: Request) => {
       }
     );
 
-  } catch (error) {
-
-    console.error(error);
-
+  } catch {
     return new Response(
       JSON.stringify({
         success: false,
-        error: "Server configuration error"
+        error: "Something went wrong"
       }),
       {
-        status: 500,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
-        }
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );
-
   }
-
 });
