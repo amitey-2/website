@@ -1,4 +1,30 @@
+// SUPABASE CONNECTION
+const SUPABASE_URL =
+  "https://fqbcfuduinjdumozfbja.supabase.co";
 
+const SUPABASE_KEY =
+  "sb_publishable_CI3BreLTxzIgIB_IcdTg5Q_OyBVx1vw";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+// CHECK LOGIN SESSION
+document.documentElement.style.visibility = "hidden";
+
+async function checkLogin() {
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error || !data.session) {
+    window.location.replace("login.html");
+    return;
+  }
+
+  document.documentElement.style.visibility = "visible";
+}
+
+checkLogin();
 // CHEF'S LAB — Welcome
 console.log("Welcome to Chef's Lab.");
 console.log("Ideas are ingredients too.");
