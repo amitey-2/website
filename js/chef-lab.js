@@ -338,3 +338,4 @@ alert("Success! " + data.length + " recipe(s) uploaded!");
 
 migrateLocalRecipes();
 
+alert("Chef's Lab JavaScript is running!");
