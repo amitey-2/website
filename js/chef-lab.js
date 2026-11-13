@@ -326,9 +326,11 @@ async function migrateLocalRecipes() {
     .select("id");
 
   if (error) {
-    console.error("Migration failed:", error);
-    return;
-  }
+  alert("Migration failed: " + error.message);
+  return;
+}
+
+alert("Success! " + data.length + " recipe(s) uploaded!");
 
   localStorage.setItem(migrationKey, "done");
   console.log("Cloud migration successful:", data.length, "recipe(s).");
