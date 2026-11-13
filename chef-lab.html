@@ -70,23 +70,83 @@
       </div>
 
     </section>
+    
+    
+<section class="notebook">
+  <p class="eyebrow">YOUR CREATIVE SPACE</p>
+  <h2>Put an idea on the table.</h2>
+  <p class="notebook-intro">
+    Every dish starts with an idea. Record yours here.
+  </p>
+
+  <form id="entryForm">
+
+    <label for="entryTitle">What are we making?</label>
+    <input
+      type="text"
+      id="entryTitle"
+      placeholder="e.g. Creamy mushroom pasta"
+      required
+    >
+
+    <label for="entryCategory">Choose a category</label>
+    <select id="entryCategory" required>
+      <option value="creations">My Creations</option>
+      <option value="experiments">Experiments</option>
+      <option value="ideas">Random Ideas</option>
+      <option value="diary">Kitchen Diary</option>
+    </select>
+
+    <label for="entryIngredients">Ingredients</label>
+    <textarea
+      id="entryIngredients"
+      placeholder="Write your ingredients..."
+      rows="4"
+    ></textarea>
+
+    <label for="entryMethod">Method / Process</label>
+    <textarea
+      id="entryMethod"
+      placeholder="How will you make it?"
+      rows="5"
+    ></textarea>
+
+    <label for="entryNotes">Kitchen notes</label>
+    <textarea
+      id="entryNotes"
+      placeholder="What worked? What failed? What could be better?"
+      rows="3"
+    ></textarea>
+
+    <button type="submit" class="save-entry">
+      SAVE TO MY KITCHEN
+    </button>
+
+    <p id="entryStatus" aria-live="polite"></p>
+  </form>
+</section>
+
 
     <section id="creations" class="lab-placeholder">
+      <div id="creationsList"></div>
       <h2>My Creations</h2>
       <p>My personal collection of dishes.</p>
     </section>
 
     <section id="experiments" class="lab-placeholder">
+      <div id="experimentsList"></div>
       <h2>Experiments</h2>
       <p>Not every experiment needs to succeed.</p>
     </section>
 
     <section id="ideas" class="lab-placeholder">
+      <div id="ideasList"></div>
       <h2>Random Ideas</h2>
       <p>Every great dish begins somewhere.</p>
     </section>
 
     <section id="diary" class="lab-placeholder">
+      <div id="diaryList"></div>
       <h2>Kitchen Diary</h2>
       <p>Things learned along the way.</p>
     </section>
