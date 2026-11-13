@@ -96,6 +96,26 @@
       <option value="ideas">Random Ideas</option>
       <option value="diary">Kitchen Diary</option>
     </select>
+      
+<label for="entryPhoto">Dish Photography</label>
+
+<div class="photo-upload">
+  <input
+    type="file"
+    id="entryPhoto"
+    accept="image/*"
+  >
+
+  <p class="photo-hint">
+    Choose a photo of your creation.
+  </p>
+
+  <img
+    id="photoPreview"
+    alt="Recipe photo preview"
+    hidden
+  >
+</div>
 
     <label for="entryIngredients">Ingredients</label>
     <textarea
