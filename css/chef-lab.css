@@ -342,4 +342,37 @@ body {
   background: transparent;
   color: var(--accent);
 }
+ 
+
+/* RECIPE PHOTO UPLOADER */
+
+.photo-upload {
+  background: #101010;
+  border: 1px dashed var(--accent);
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+.photo-upload input {
+  width: 100%;
+  color: var(--muted);
+}
+
+.photo-hint {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+#photoPreview {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin-top: 18px;
+  border-radius: 4px;
+}
+
+#photoPreview[hidden] {
+  display: none;
+}
 
