@@ -181,3 +181,92 @@ body {
     min-height: 155px;
   }
 }
+
+
+/* CHEF'S LAB NOTEBOOK */
+
+.notebook {
+  padding: 55px 30px;
+  margin: 30px 0 70px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.notebook h2 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.notebook-intro {
+  color: var(--muted);
+  margin-bottom: 35px;
+}
+
+#entryForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#entryForm label {
+  color: var(--accent);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+#entryForm input,
+#entryForm select,
+#entryForm textarea {
+  width: 100%;
+  padding: 15px;
+  background: #101010;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#entryForm textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+#entryForm input:focus,
+#entryForm select:focus,
+#entryForm textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.save-entry {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--accent);
+  color: #101010;
+  border: none;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.save-entry:hover {
+  opacity: 0.85;
+}
+
+#entryStatus {
+  color: var(--accent);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+@media (max-width: 650px) {
+  .notebook {
+    padding: 30px 18px;
+  }
+
+  .notebook h2 {
+    font-size: 25px;
+  }
+}
