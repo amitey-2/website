@@ -263,3 +263,76 @@ if (entryForm) {
 displayEntries();
 
 console.log("Chef's Lab notebook is ready!");
+
+
+// ONE-TIME LOCAL TO CLOUD MIGRATION
+async function migrateLocalRecipes() {
+  const { data: sessionData, error: sessionError } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionError || !sessionData.session) {
+    console.error("Please log in before migrating.");
+    return;
+  }
+
+  const migrationKey = "chefLabCloudMigrationV1";
+
+  if (localStorage.getItem(migrationKey) === "done") {
+    console.log("Recipes have already been migrated.");
+    return;
+  }
+
+  let localEntries = [];
+
+  try {
+    localEntries = JSON.parse(
+      localStorage.getItem("chefLabEntries") || "[]"
+    );
+  } catch (error) {
+    console.error("Could not read local recipes:", error);
+    return;
+  }
+
+  if (!Array.isArray(localEntries) || localEntries.length === 0) {
+    console.log("No local recipes to migrate.");
+    return;
+  }
+
+  const { count, error: countError } = await supabaseClient
+    .from("recipes")
+    .select("id", { count: "exact", head: true });
+
+  if (countError) {
+    console.error("Could not check cloud recipes:", countError);
+    return;
+  }
+
+  if (count > 0) {
+    console.log("Cloud recipes already exist. Migration skipped.");
+    return;
+  }
+
+  const recipesToUpload = localEntries.map((entry) => ({
+    title: entry.title,
+    category: entry.category,
+    ingredients: entry.ingredients || "",
+    method: entry.method || "",
+    notes: entry.notes || ""
+  }));
+
+  const { data, error } = await supabaseClient
+    .from("recipes")
+    .insert(recipesToUpload)
+    .select("id");
+
+  if (error) {
+    console.error("Migration failed:", error);
+    return;
+  }
+
+  localStorage.setItem(migrationKey, "done");
+  console.log("Cloud migration successful:", data.length, "recipe(s).");
+}
+
+migrateLocalRecipes();
+
