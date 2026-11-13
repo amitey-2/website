@@ -1,0 +1,30 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap');
+
+:root {
+  --bg: #101010;
+  --card: #191919;
+  --text: #f3eee6;
+  --muted: #aaa49a;
+  --accent: #d6a66a;
+  --line: #33302c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.7;
+}
+
+/* Paste the rest of your previous CSS here */
