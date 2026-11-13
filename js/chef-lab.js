@@ -47,6 +47,9 @@ const entryStatus = document.getElementById("entryStatus");
 // Load saved entries from this browser
 let kitchenEntries = [];
 
+let editingEntryId = null;
+
+
 try {
   kitchenEntries = JSON.parse(
     localStorage.getItem("chefLabEntries") || "[]"
@@ -98,22 +101,61 @@ function displayEntries() {
     const date = document.createElement("small");
     date.textContent = new Date(entry.date).toLocaleDateString();
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "DELETE ENTRY";
-    deleteButton.className = "delete-entry";
+    
+const editButton = document.createElement("button");
+editButton.textContent = "EDIT ENTRY";
+editButton.className = "edit-entry";
 
-    deleteButton.addEventListener("click", () => {
-      kitchenEntries = kitchenEntries.filter(
-        (item) => item.id !== entry.id
-      );
+editButton.addEventListener("click", () => {
+  editingEntryId = entry.id;
 
-      saveEntries();
-      displayEntries();
-    });
+  entryTitle.value = entry.title;
+  entryCategory.value = entry.category;
+  entryIngredients.value = entry.ingredients;
+  entryMethod.value = entry.method;
+  entryNotes.value = entry.notes;
 
-    card.append(title, ingredients, method, notes, date, deleteButton);
-    container.appendChild(card);
+  document.querySelector(".notebook").scrollIntoView({
+    behavior: "smooth"
   });
+
+  entryStatus.textContent = "Editing: " + entry.title;
+
+  entryForm.querySelector('[type="submit"]').textContent =
+    "UPDATE ENTRY";
+});
+
+const deleteButton = document.createElement("button");
+deleteButton.textContent = "DELETE ENTRY";
+deleteButton.className = "delete-entry";
+
+deleteButton.addEventListener("click", () => {
+  kitchenEntries = kitchenEntries.filter(
+    (item) => item.id !== entry.id
+  );
+
+  if (editingEntryId === entry.id) {
+    editingEntryId = null;
+    entryForm.reset();
+    entryForm.querySelector('[type="submit"]').textContent =
+      "SAVE TO MY KITCHEN";
+    entryStatus.textContent = "";
+  }
+
+  saveEntries();
+  displayEntries();
+});
+
+
+    card.append(
+  title,
+  ingredients,
+  method,
+  notes,
+  date,
+  editButton,
+  deleteButton
+);
 }
 
 // Save entries in browser storage
@@ -144,15 +186,38 @@ if (entryForm) {
       return;
     }
 
-    kitchenEntries.unshift(newEntry);
+    
+if (editingEntryId) {
+  kitchenEntries = kitchenEntries.map((entry) => {
+    if (entry.id === editingEntryId) {
+      return {
+        ...entry,
+        ...newEntry,
+        id: editingEntryId,
+        date: entry.date,
+        updatedAt: new Date().toISOString()
+      };
+    }
 
-    saveEntries();
-    displayEntries();
-
-    entryForm.reset();
-
-    entryStatus.textContent = "Saved to your kitchen! 🍝";
+    return entry;
   });
+
+  entryStatus.textContent = "Recipe updated! ✨";
+  editingEntryId = null;
+
+} else {
+  kitchenEntries.unshift(newEntry);
+  entryStatus.textContent = "Saved to your kitchen! 🍝";
+}
+
+saveEntries();
+displayEntries();
+
+entryForm.reset();
+
+entryForm.querySelector('[type="submit"]').textContent =
+  "SAVE TO MY KITCHEN";
+
 }
 
 // Show entries when the page opens
