@@ -12,10 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const SUPABASE_KEY =
     "sb_publishable_CI3BreLTxzIgIB_IcdTg5Q_OyBVx1vw";
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  let supabaseClient;
 
   const STORAGE_KEY = "moneta_transactions";
   const GOAL_KEY = "moneta_savings_goal";
