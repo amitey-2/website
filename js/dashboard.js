@@ -16,10 +16,14 @@ const supabaseClient = window.supabase.createClient(
 
 
 // ========================================
-// AUTHENTICATION CHECK
+// START DASHBOARD
 // ========================================
 
 async function startDashboard() {
+
+  // ======================================
+  // AUTHENTICATION
+  // ======================================
 
   const { data, error } =
     await supabaseClient.auth.getSession();
@@ -29,80 +33,42 @@ async function startDashboard() {
     return;
   }
 
-  console.log("Welcome to your personal dashboard.");
+  console.log("Dashboard authenticated.");
 
+  
+  // ======================================
+  // 1. DATE
+  // ======================================
 
-// ========================================
-// 1. DISPLAY TODAY'S DATE
-// ========================================
-
-  const todayElement = document.getElementById("today");
+  const todayElement =
+    document.getElementById("today");
 
   if (todayElement) {
-    const today = new Date();
 
-    todayElement.textContent = today.toLocaleDateString(
-      "en-US",
-      {
+    todayElement.textContent =
+      new Date().toLocaleDateString("en-US", {
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric"
-      }
-    );
+      });
+
   }
 
 
-// ========================================
-// 2. ROOM CARD NAVIGATION
-// ========================================
+  // ======================================
+  // 2. LIVE CLOCK
+  // ======================================
 
-  const roomCards = document.querySelectorAll(".room-card");
-
-  roomCards.forEach((card) => {
-
-    card.addEventListener("click", (event) => {
-
-      const link = card.getAttribute("href");
-
-      if (link && link !== "#") {
-        return;
-      }
-
-      event.preventDefault();
-
-      const roomName =
-        card.querySelector("h3").textContent;
-
-      alert(roomName + " is coming soon! 🚧");
-
-    });
-
-  });
-
-
-// ========================================
-// 3. LIVE CLOCK
-// ========================================
-
-  const clockElement = document.createElement("p");
-
-  clockElement.id = "liveClock";
-  clockElement.className = "live-clock";
-
-  const welcomeSection =
-    document.querySelector(".welcome");
-
-  if (welcomeSection) {
-    welcomeSection.appendChild(clockElement);
-  }
+  const clockElement =
+    document.getElementById("liveClock");
 
   function updateClock() {
 
-    const now = new Date();
+    if (!clockElement) return;
 
     clockElement.textContent =
-      now.toLocaleTimeString("en-US", {
+      new Date().toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit"
@@ -111,12 +77,47 @@ async function startDashboard() {
   }
 
   updateClock();
+
   setInterval(updateClock, 1000);
 
 
-// ========================================
-// 4. CHEF'S LAB — RECIPE SUMMARY
-// ========================================
+  // ======================================
+  // 3. ROOM NAVIGATION
+  // ======================================
+
+  const roomCards =
+    document.querySelectorAll(".room-card");
+
+  roomCards.forEach((card) => {
+
+    card.addEventListener("click", (event) => {
+
+      const link = card.getAttribute("href");
+
+      // Allow real page links to work normally.
+      if (link && link !== "#") {
+        return;
+      }
+
+      event.preventDefault();
+
+      const heading =
+        card.querySelector("h3");
+
+      const roomName = heading
+        ? heading.textContent
+        : "This room";
+
+      alert(roomName + " is coming soon! 🚧");
+
+    });
+
+  });
+
+
+  // ======================================
+  // 4. CHEF'S LAB RECIPE SUMMARY
+  // ======================================
 
   async function loadRecipeSummary() {
 
@@ -132,9 +133,8 @@ async function startDashboard() {
     if (!countElement || !latestElement) return;
 
     countElement.textContent = "...";
-    latestElement.textContent = "Loading...";
 
-    // Get total recipe count for the logged-in user
+    latestElement.textContent = "Loading...";
 
     const { count, error: countError } =
       await supabaseClient
@@ -152,6 +152,7 @@ async function startDashboard() {
       );
 
       countElement.textContent = "Unavailable";
+
       latestElement.textContent =
         "Could not load recipes.";
 
@@ -160,7 +161,8 @@ async function startDashboard() {
 
     countElement.textContent = count ?? 0;
 
-    // Get latest recipe
+
+    // GET LATEST RECIPE
 
     const { data: recipes, error: latestError } =
       await supabaseClient
@@ -218,12 +220,12 @@ async function startDashboard() {
 
   }
 
-  loadRecipeSummary();
+  await loadRecipeSummary();
 
 
-// ========================================
-// 5. QUICK NOTES
-// ========================================
+  // ======================================
+  // 5. QUICK NOTES
+  // ======================================
 
   const noteInput =
     document.getElementById("noteInput");
@@ -242,14 +244,22 @@ async function startDashboard() {
   try {
 
     notes =
-      JSON.parse(localStorage.getItem("myNotes")) || [];
+      JSON.parse(
+        localStorage.getItem("myNotes")
+      ) || [];
+
+    if (!Array.isArray(notes)) {
+      notes = [];
+    }
 
   } catch (error) {
 
     console.error("Could not load notes:", error);
+
     notes = [];
 
   }
+
 
   function displayNotes() {
 
@@ -272,6 +282,8 @@ async function startDashboard() {
       const deleteButton =
         document.createElement("button");
 
+      deleteButton.type = "button";
+
       deleteButton.textContent = "DELETE";
 
       deleteButton.addEventListener("click", () => {
@@ -288,6 +300,7 @@ async function startDashboard() {
       });
 
       noteBox.appendChild(noteText);
+
       noteBox.appendChild(deleteButton);
 
       savedNotes.appendChild(noteBox);
@@ -295,6 +308,7 @@ async function startDashboard() {
     });
 
   }
+
 
   if (saveNoteButton && noteInput && noteStatus) {
 
@@ -331,36 +345,42 @@ async function startDashboard() {
   displayNotes();
 
 
-// ========================================
-// 6. LOG OUT
-// ========================================
+  // ======================================
+  // 6. LOG OUT
+  // ======================================
 
   const logoutButton =
     document.getElementById("logoutButton");
 
   if (logoutButton) {
 
-    logoutButton.addEventListener("click", async () => {
+    logoutButton.addEventListener(
+      "click",
+      async () => {
 
-      logoutButton.disabled = true;
-      logoutButton.textContent = "LOGGING OUT...";
+        logoutButton.disabled = true;
 
-      const { error } =
-        await supabaseClient.auth.signOut();
+        logoutButton.textContent =
+          "LOGGING OUT...";
 
-      if (error) {
+        const { error } =
+          await supabaseClient.auth.signOut();
 
-        alert("Logout failed: " + error.message);
+        if (error) {
 
-        logoutButton.disabled = false;
-        logoutButton.textContent = "LOG OUT";
+          alert("Logout failed: " + error.message);
 
-        return;
+          logoutButton.disabled = false;
+
+          logoutButton.textContent = "LOG OUT";
+
+          return;
+        }
+
+        window.location.replace("login.html");
+
       }
-
-      window.location.replace("login.html");
-
-    });
+    );
 
   }
 
@@ -368,7 +388,13 @@ async function startDashboard() {
 
 
 // ========================================
-// START DASHBOARD
+// INITIALIZE
 // ========================================
 
-startDashboard();
+startDashboard().catch((error) => {
+
+  console.error("Dashboard error:", error);
+
+  alert("Something went wrong loading your dashboard. Please refresh.");
+
+});
