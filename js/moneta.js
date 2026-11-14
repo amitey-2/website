@@ -720,333 +720,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 9. PAYSLIP OCR — PNG ONLY
+  // 9. MANUAL PAYSLIP ENTRY
   // =========================================
 
-  async function readPayslip() {
-    const file = elements.payslipFile.files[0];
-
-    if (!file) {
-      setMessage(
-        elements.payslipStatus,
-        "Please choose your PNG payslip first.",
-        "error"
-      );
-      return;
+  function hidePayslipOCRControls() {
+    // Disable the old PNG upload control.
+    if (elements.payslipFile) {
+      elements.payslipFile.hidden = true;
+      elements.payslipFile.disabled = true;
+      elements.payslipFile.required = false;
     }
 
-    const isPNG =
-      file.type === "image/png" ||
-      file.name.toLowerCase().endsWith(".png");
+    // Hide its associated label, if present.
+    document.querySelectorAll('label[for="payslipFile"]')
+      .forEach(label => {
+        label.hidden = true;
+      });
 
-    if (!isPNG) {
-      setMessage(
-        elements.payslipStatus,
-        "Please upload a PNG image.",
-        "error"
-      );
-      return;
+    // Hide the old OCR button.
+    if (elements.readPayslipBtn) {
+      elements.readPayslipBtn.hidden = true;
+      elements.readPayslipBtn.disabled = true;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      setMessage(
-        elements.payslipStatus,
-        "Please choose a PNG smaller than 10 MB.",
-        "error"
-      );
-      return;
+    // Hide OCR status and extracted text.
+    if (elements.payslipStatus) {
+      elements.payslipStatus.hidden = true;
     }
 
-    if (!window.Tesseract) {
-      setMessage(
-        elements.payslipStatus,
-        "Image reader could not load. Please refresh and try again.",
-        "error"
-      );
-      return;
-    }
-
-    // Clear old figures so they cannot accidentally be saved
-    // as values from the newly selected payslip.
-    clearPayslipFigures();
-
-    setMessage(
-      elements.payslipStatus,
-      "Preparing to read your payslip..."
-    );
-
-    setBusy(
-      elements.readPayslipBtn,
-      true,
-      "Reading payslip...",
-      "Read payslip"
-    );
-
-    try {
-      const result = await window.Tesseract.recognize(
-        file,
-        "eng",
-        {
-          logger: message => {
-            if (message.status === "recognizing text") {
-              const progress = Math.round(
-                (message.progress || 0) * 100
-              );
-
-              elements.payslipStatus.textContent =
-                `Reading payslip... ${progress}%`;
-            }
-          }
-        }
-      );
-
-      const extractedText = result.data.text || "";
-
-      if (!extractedText.trim()) {
-        throw new Error(
-          "No readable text found. Please check the PNG and enter the figures manually."
-        );
-      }
-
-      elements.payslipText.value = extractedText;
-      elements.payslipTextSection.hidden = false;
-
-      suggestPayslipFields(extractedText, result.data);
-
-    } catch (error) {
-      console.error("Payslip OCR error:", error);
-
-      setMessage(
-        elements.payslipStatus,
-        error.message || "Could not read the payslip.",
-        "error"
-      );
-
-    } finally {
-      setBusy(
-        elements.readPayslipBtn,
-        false,
-        "Reading payslip...",
-        "Read payslip"
-      );
+    if (elements.payslipTextSection) {
+      elements.payslipTextSection.hidden = true;
     }
   }
 
   // =========================================
-  // 10. CONSERVATIVE PAYSLIP FIELD SUGGESTIONS
-  // =========================================
-
-  function clearPayslipFigures() {
-    elements.basicSalary.value = "";
-    elements.serviceCharge.value = "";
-    elements.tips.value = "";
-    elements.grossSalary.value = "";
-    elements.netPay.value = "";
-  }
-
-  function normalizePayslipText(text) {
-    return String(text || "")
-      .replace(/\u00a0/g, " ")
-      .replace(/[|¦]/g, " ")
-      .replace(/[–—]/g, "-")
-      .replace(/[ \t]+/g, " ")
-      .trim();
-  }
-
-  function parseSalaryNumber(value) {
-    if (value === null || value === undefined) return null;
-
-    const cleaned = String(value)
-      .replace(/,/g, "")
-      .replace(/[^\d.]/g, "");
-
-    if (!cleaned || (cleaned.match(/\./g) || []).length > 1) {
-      return null;
-    }
-
-    const number = Number(cleaned);
-
-    return Number.isFinite(number) ? number : null;
-  }
-
-  function findMoneyInText(text) {
-    const matches = String(text || "").match(
-      /\b\d{1,3}(?:,\d{3})+\.\d{2}\b|\b\d+\.\d{2}\b/g
-    ) || [];
-
-    return matches
-      .map(parseSalaryNumber)
-      .filter(value => value !== null);
-  }
-
-  function getOCRLines(text, ocrData) {
-    // Prefer Tesseract's actual line objects when available.
-    if (
-      ocrData &&
-      Array.isArray(ocrData.lines) &&
-      ocrData.lines.length
-    ) {
-      return ocrData.lines.map(line => ({
-        text: normalizePayslipText(line.text || ""),
-        confidence: Number(line.confidence)
-      })).filter(line => line.text);
-    }
-
-    // Fallback: use the raw OCR text line by line.
-    return String(text || "")
-      .split(/\r?\n/)
-      .map(line => ({
-        text: normalizePayslipText(line),
-        confidence: null
-      }))
-      .filter(line => line.text);
-  }
-
-  function lineContainsLabel(line, labels) {
-    const lowerLine = line.toLowerCase();
-
-    return labels.some(label => {
-      const escaped = label.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&"
-      );
-
-      const regex = new RegExp(
-        `(^|[^a-z])${escaped}([^a-z]|$)`,
-        "i"
-      );
-
-      return regex.test(lowerLine);
-    });
-  }
-
-  function getConservativeLineAmount(lines, labels) {
-    const matches = [];
-
-    for (const line of lines) {
-      if (!lineContainsLabel(line.text, labels)) {
-        continue;
-      }
-
-      // Ignore low-confidence OCR lines.
-      if (
-        Number.isFinite(line.confidence) &&
-        line.confidence > 0 &&
-        line.confidence < 65
-      ) {
-        continue;
-      }
-
-      const amounts = findMoneyInText(line.text);
-
-      // Only accept a line containing exactly one amount.
-      // If the OCR combined multiple table columns into one line,
-      // leave the field blank rather than guessing.
-      if (amounts.length !== 1) {
-        continue;
-      }
-
-      matches.push(amounts[0]);
-    }
-
-    // If a label appears more than once with different amounts,
-    // do not decide which one is correct.
-    const uniqueMatches = [...new Set(matches)];
-
-    if (uniqueMatches.length !== 1) {
-      return null;
-    }
-
-    return uniqueMatches[0];
-  }
-
-  function suggestPayslipFields(text, ocrData) {
-    const lines = getOCRLines(text, ocrData);
-
-    const fields = {
-      basicSalary: getConservativeLineAmount(
-        lines,
-        ["Actual Basic Salary", "Basic Salary", "Basic Pay"]
-      ),
-
-      serviceCharge: getConservativeLineAmount(
-        lines,
-        ["Service Charge", "Service Charges"]
-      ),
-
-      tips: getConservativeLineAmount(
-        lines,
-        ["Outlet Tips", "Tips", "Tip"]
-      ),
-
-      grossSalary: getConservativeLineAmount(
-        lines,
-        ["Gross Salary", "Gross Pay"]
-      ),
-
-      netPay: getConservativeLineAmount(
-        lines,
-        [
-          "Net Salary",
-          "Net Pay",
-          "Take Home Salary",
-          "Take Home Pay"
-        ]
-      )
-    };
-
-    const inputFields = {
-      basicSalary: elements.basicSalary,
-      serviceCharge: elements.serviceCharge,
-      tips: elements.tips,
-      grossSalary: elements.grossSalary,
-      netPay: elements.netPay
-    };
-
-    Object.entries(fields).forEach(([key, value]) => {
-      if (
-        value !== null &&
-        Number.isFinite(value) &&
-        inputFields[key]
-      ) {
-        inputFields[key].value = value.toFixed(2);
-      }
-    });
-
-    if (!elements.payMonth.value) {
-      elements.payMonth.value = currentMonthString();
-    }
-
-    const recognised = Object.values(fields)
-      .filter(value => value !== null).length;
-
-    if (recognised === 5) {
-      setMessage(
-        elements.payslipStatus,
-        "5 of 5 fields suggested. Please compare every figure with your payslip before saving.",
-        "success"
-      );
-
-    } else if (recognised > 0) {
-      setMessage(
-        elements.payslipStatus,
-        `${recognised} of 5 fields suggested. Fill in the remaining fields manually and check every figure.`,
-        "error"
-      );
-
-    } else {
-      setMessage(
-        elements.payslipStatus,
-        "OCR could not safely match the salary figures. Enter all five amounts manually using your PNG.",
-        "error"
-      );
-    }
-
-    console.log("MONETA conservative OCR suggestions:", fields);
-  }
-
-  // =========================================
-  // 11. PAYSLIP HISTORY — SUPABASE
+  // 10. PAYSLIP HISTORY — SUPABASE
   // =========================================
 
   async function loadPaychecks() {
@@ -1165,7 +873,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Ask the user to verify the exact values before saving.
     const confirmationMessage = [
       "Please confirm these figures match your payslip:",
       "",
@@ -1203,8 +910,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     try {
-      const file = elements.payslipFile.files[0];
-
       const payload = {
         user_id: currentUser.id,
         pay_month: monthStart(month),
@@ -1223,9 +928,8 @@ document.addEventListener("DOMContentLoaded", () => {
         other_income: 0,
         deductions: 0,
 
-        file_name: file
-          ? file.name.slice(0, 250)
-          : "",
+        // No payslip image is uploaded or stored.
+        file_name: "",
 
         notes: elements.payNotes.value.trim(),
         updated_at: new Date().toISOString()
@@ -1272,7 +976,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 12. MONTHLY BUDGET
+  // 11. MONTHLY BUDGET
   // =========================================
 
   function getPaycheckForMonth(month) {
@@ -1579,7 +1283,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 13. CSV EXPORT
+  // 12. CSV EXPORT
   // =========================================
 
   function downloadFile(content, filename, type) {
@@ -1632,7 +1336,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 14. JSON BACKUP AND RESTORE
+  // 13. JSON BACKUP AND RESTORE
   // =========================================
 
   function backupData() {
@@ -1756,7 +1460,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 15. LOGOUT
+  // 14. LOGOUT
   // =========================================
 
   async function logout() {
@@ -1778,7 +1482,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 16. EVENT LISTENERS
+  // 15. EVENT LISTENERS
   // =========================================
 
   elements.typeInput.addEventListener(
@@ -1865,10 +1569,8 @@ document.addEventListener("DOMContentLoaded", () => {
     importBackup(event.target.files[0]);
   });
 
-  elements.readPayslipBtn.addEventListener(
-    "click",
-    readPayslip
-  );
+  // No OCR or image-reading event listener.
+  // Payslips are entered manually.
 
   elements.payslipForm.addEventListener(
     "submit",
@@ -1905,7 +1607,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================
-  // 17. START MONETA
+  // 16. START MONETA
   // =========================================
 
   async function startMoneta() {
@@ -1919,6 +1621,9 @@ document.addEventListener("DOMContentLoaded", () => {
       SUPABASE_URL,
       SUPABASE_KEY
     );
+
+    // Remove the old OCR controls from the interface.
+    hidePayslipOCRControls();
 
     elements.todayLabel.textContent =
       new Date().toLocaleDateString("en-US", {
