@@ -21,31 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let savingsGoal = 1000;
 
   const EXPENSE_CATEGORIES = [
-    "Food",
-    "Groceries",
-    "Transport",
-    "Shopping",
-    "Bills",
-    "Housing",
-    "Health",
-    "Gym",
-    "Personal",
-    "Entertainment",
-    "Education",
-    "Debt repayment",
-    "Savings",
-    "Emergency fund",
-    "Other"
+    "Food", "Groceries", "Transport", "Shopping",
+    "Bills", "Housing", "Health", "Gym", "Personal",
+    "Entertainment", "Education", "Debt repayment",
+    "Savings", "Emergency fund", "Other"
   ];
 
   const INCOME_CATEGORIES = [
-    "Salary",
-    "Tips",
-    "Service charge",
-    "Freelance",
-    "Business",
-    "Investment",
-    "Other"
+    "Salary", "Tips", "Service charge", "Freelance",
+    "Business", "Investment", "Other"
   ];
 
   const BUDGET_DEFAULTS = [
@@ -467,19 +451,16 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.categoryChart.innerHTML =
       categories.map(([category, amount]) => `
         <div class="category-row">
-
           <div class="category-row-top">
             <span>${escapeHTML(category)}</span>
             <strong>${formatCurrency(amount)}</strong>
           </div>
-
           <div class="category-track">
             <div
               class="category-fill"
               style="width:${amount / max * 100}%"
             ></div>
           </div>
-
         </div>
       `).join("");
   }
@@ -498,10 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return transactions.filter(item => {
       const matchesMonth = item.date.startsWith(month);
-
-      const matchesType =
-        type === "all" || item.type === type;
-
+      const matchesType = type === "all" || item.type === type;
       const matchesCategory =
         category === "all" || item.category === category;
 
@@ -534,7 +512,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           return `
             <article class="transaction-item">
-
               <div class="transaction-info">
                 <strong>${escapeHTML(item.title)}</strong>
                 <span>
@@ -550,27 +527,20 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
 
               <div class="transaction-actions">
-
                 <button
                   type="button"
                   class="edit-btn"
                   data-action="edit"
                   data-id="${escapeHTML(item.id)}"
-                >
-                  Edit
-                </button>
+                >Edit</button>
 
                 <button
                   type="button"
                   class="delete-btn"
                   data-action="delete"
                   data-id="${escapeHTML(item.id)}"
-                >
-                  Delete
-                </button>
-
+                >Delete</button>
               </div>
-
             </article>
           `;
         }).join("");
@@ -707,12 +677,8 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.amountInput.value = item.amount;
     elements.dateInput.value = item.date;
 
-    elements.formHeading.textContent =
-      "Edit transaction";
-
-    elements.submitBtn.textContent =
-      "Update transaction";
-
+    elements.formHeading.textContent = "Edit transaction";
+    elements.submitBtn.textContent = "Update transaction";
     elements.cancelEditBtn.hidden = false;
 
     $("transactionSection").scrollIntoView({
@@ -746,19 +712,13 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.editId.value = "";
     elements.dateInput.value = localDateString();
 
-    elements.formHeading.textContent =
-      "Add a transaction";
-
-    elements.submitBtn.textContent =
-      "Add transaction";
-
+    elements.formHeading.textContent = "Add a transaction";
+    elements.submitBtn.textContent = "Add transaction";
     elements.cancelEditBtn.hidden = true;
 
     populateCategories();
   }
 
-  // =========================================
-  
   // =========================================
   // 9. PAYSLIP OCR — PNG ONLY
   // =========================================
@@ -775,10 +735,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (
-      file.type !== "image/png" &&
-      !file.name.toLowerCase().endsWith(".png")
-    ) {
+    const isPNG =
+      file.type === "image/png" ||
+      file.name.toLowerCase().endsWith(".png");
+
+    if (!isPNG) {
       setMessage(
         elements.payslipStatus,
         "Please upload a PNG image.",
@@ -804,6 +765,15 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       return;
     }
+
+    // Clear old figures so they cannot accidentally be saved
+    // as values from the newly selected payslip.
+    clearPayslipFigures();
+
+    setMessage(
+      elements.payslipStatus,
+      "Preparing to read your payslip..."
+    );
 
     setBusy(
       elements.readPayslipBtn,
@@ -834,7 +804,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!extractedText.trim()) {
         throw new Error(
-          "No readable text found. Please use a clearer PNG."
+          "No readable text found. Please check the PNG and enter the figures manually."
         );
       }
 
@@ -862,10 +832,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // =========================================
+  // 10. CONSERVATIVE PAYSLIP FIELD SUGGESTIONS
+  // =========================================
 
-  // =========================================
-  // 10. EXTRACT THE FIVE SALARY FIGURES
-  // =========================================
+  function clearPayslipFigures() {
+    elements.basicSalary.value = "";
+    elements.serviceCharge.value = "";
+    elements.tips.value = "";
+    elements.grossSalary.value = "";
+    elements.netPay.value = "";
+  }
 
   function normalizePayslipText(text) {
     return String(text || "")
@@ -877,11 +854,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function parseSalaryNumber(value) {
-    if (!value) return null;
+    if (value === null || value === undefined) return null;
 
     const cleaned = String(value)
       .replace(/,/g, "")
       .replace(/[^\d.]/g, "");
+
+    if (!cleaned || (cleaned.match(/\./g) || []).length > 1) {
+      return null;
+    }
 
     const number = Number(cleaned);
 
@@ -898,261 +879,121 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(value => value !== null);
   }
 
-  function findLabelAmount(text, labels) {
-    const normalized = normalizePayslipText(text);
+  function getOCRLines(text, ocrData) {
+    // Prefer Tesseract's actual line objects when available.
+    if (
+      ocrData &&
+      Array.isArray(ocrData.lines) &&
+      ocrData.lines.length
+    ) {
+      return ocrData.lines.map(line => ({
+        text: normalizePayslipText(line.text || ""),
+        confidence: Number(line.confidence)
+      })).filter(line => line.text);
+    }
 
-    for (const label of labels) {
+    // Fallback: use the raw OCR text line by line.
+    return String(text || "")
+      .split(/\r?\n/)
+      .map(line => ({
+        text: normalizePayslipText(line),
+        confidence: null
+      }))
+      .filter(line => line.text);
+  }
+
+  function lineContainsLabel(line, labels) {
+    const lowerLine = line.toLowerCase();
+
+    return labels.some(label => {
       const escaped = label.replace(
         /[.*+?^${}()|[\]\\]/g,
         "\\$&"
       );
 
       const regex = new RegExp(
-        escaped +
-        "[\\s\\S]{0,100}?" +
-        "(\\d{1,3}(?:,\\d{3})+\\.\\d{2}|\\d+\\.\\d{2})",
+        `(^|[^a-z])${escaped}([^a-z]|$)`,
         "i"
       );
 
-      const match = normalized.match(regex);
+      return regex.test(lowerLine);
+    });
+  }
 
-      if (match) {
-        return parseSalaryNumber(match[1]);
+  function getConservativeLineAmount(lines, labels) {
+    const matches = [];
+
+    for (const line of lines) {
+      if (!lineContainsLabel(line.text, labels)) {
+        continue;
       }
+
+      // Ignore low-confidence OCR lines.
+      if (
+        Number.isFinite(line.confidence) &&
+        line.confidence > 0 &&
+        line.confidence < 65
+      ) {
+        continue;
+      }
+
+      const amounts = findMoneyInText(line.text);
+
+      // Only accept a line containing exactly one amount.
+      // If the OCR combined multiple table columns into one line,
+      // leave the field blank rather than guessing.
+      if (amounts.length !== 1) {
+        continue;
+      }
+
+      matches.push(amounts[0]);
     }
 
-    return null;
-  }
+    // If a label appears more than once with different amounts,
+    // do not decide which one is correct.
+    const uniqueMatches = [...new Set(matches)];
 
-  function findLabelPosition(text, labels) {
-    const positions = labels
-      .map(label => {
-        const escaped = label.replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&"
-        );
+    if (uniqueMatches.length !== 1) {
+      return null;
+    }
 
-        const match = new RegExp(escaped, "i").exec(text);
-
-        return match ? match.index : -1;
-      })
-      .filter(position => position >= 0);
-
-    return positions.length
-      ? Math.min(...positions)
-      : -1;
-  }
-
-  function extractTableAmounts(text, startLabels, endLabels) {
-    const start = findLabelPosition(text, startLabels);
-
-    if (start < 0) return [];
-
-    const afterStart = text.slice(start);
-
-    const endPositions = endLabels
-      .map(label => {
-        const escaped = label.replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&"
-        );
-
-        const match = new RegExp(escaped, "i")
-          .exec(afterStart.slice(1));
-
-        return match ? match.index + 1 : -1;
-      })
-      .filter(position => position > 0);
-
-    const end = endPositions.length
-      ? Math.min(...endPositions)
-      : afterStart.length;
-
-    return findMoneyInText(
-      afterStart.slice(0, end)
-    );
-  }
-
-  function extractAmountsFromLines(text) {
-    return String(text || "")
-      .split(/\r?\n/)
-      .map(line => ({
-        text: normalizePayslipText(line),
-        amounts: findMoneyInText(line)
-      }))
-      .filter(line => line.text && line.amounts.length);
-  }
-
-  function getAmountAfterHeader(text, header) {
-    const escaped = header.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      "\\$&"
-    );
-
-    const regex = new RegExp(escaped, "i");
-    const match = regex.exec(text);
-
-    if (!match) return [];
-
-    const remaining = text.slice(
-      match.index + match[0].length
-    );
-
-    return findMoneyInText(
-      remaining.slice(0, 250)
-    );
+    return uniqueMatches[0];
   }
 
   function suggestPayslipFields(text, ocrData) {
-    const normalized = normalizePayslipText(text);
+    const lines = getOCRLines(text, ocrData);
 
     const fields = {
-      basicSalary: null,
-      serviceCharge: null,
-      tips: null,
-      grossSalary: null,
-      netPay: null
+      basicSalary: getConservativeLineAmount(
+        lines,
+        ["Actual Basic Salary", "Basic Salary", "Basic Pay"]
+      ),
+
+      serviceCharge: getConservativeLineAmount(
+        lines,
+        ["Service Charge", "Service Charges"]
+      ),
+
+      tips: getConservativeLineAmount(
+        lines,
+        ["Outlet Tips", "Tips", "Tip"]
+      ),
+
+      grossSalary: getConservativeLineAmount(
+        lines,
+        ["Gross Salary", "Gross Pay"]
+      ),
+
+      netPay: getConservativeLineAmount(
+        lines,
+        [
+          "Net Salary",
+          "Net Pay",
+          "Take Home Salary",
+          "Take Home Pay"
+        ]
+      )
     };
-
-    // -----------------------------------------
-    // BASIC SALARY
-    // -----------------------------------------
-
-    fields.basicSalary = findLabelAmount(
-      normalized,
-      [
-        "Basic Salary",
-        "Basic Pay"
-      ]
-    );
-
-    // -----------------------------------------
-    // SERVICE CHARGE
-    // -----------------------------------------
-
-    fields.serviceCharge = findLabelAmount(
-      normalized,
-      [
-        "Service Charge",
-        "Service Charges"
-      ]
-    );
-
-    // -----------------------------------------
-    // TIPS
-    // -----------------------------------------
-
-    fields.tips = findLabelAmount(
-      normalized,
-      [
-        "Outlet Tips",
-        "Tips",
-        "Tip"
-      ]
-    );
-
-    // -----------------------------------------
-    // GROSS SALARY
-    // -----------------------------------------
-
-    fields.grossSalary = findLabelAmount(
-      normalized,
-      [
-        "Gross Salary",
-        "Gross Pay"
-      ]
-    );
-
-    // -----------------------------------------
-    // NET SALARY
-    // -----------------------------------------
-
-    fields.netPay = findLabelAmount(
-      normalized,
-      [
-        "Net Salary",
-        "Net Pay",
-        "Take Home Salary",
-        "Take Home Pay"
-      ]
-    );
-
-    // -----------------------------------------
-    // TABLE-BASED FALLBACKS
-    // -----------------------------------------
-
-    const basicAmounts = extractTableAmounts(
-      normalized,
-      ["Basic Salary"],
-      ["Allowance", "Declaration"]
-    );
-
-    if (
-      fields.basicSalary === null &&
-      basicAmounts.length
-    ) {
-      fields.basicSalary = basicAmounts[0];
-    }
-
-    const allowanceAmounts = extractTableAmounts(
-      normalized,
-      ["Allowance"],
-      ["Leave Details", "Gross Salary", "Declaration"]
-    );
-
-    if (
-      fields.serviceCharge === null &&
-      allowanceAmounts.length >= 1
-    ) {
-      fields.serviceCharge = allowanceAmounts[0];
-    }
-
-    if (
-      fields.tips === null &&
-      allowanceAmounts.length >= 2
-    ) {
-      fields.tips = allowanceAmounts[1];
-    }
-
-    // -----------------------------------------
-    // GROSS / NET FALLBACK
-    // -----------------------------------------
-
-    const salaryAmounts = extractTableAmounts(
-      normalized,
-      ["Gross Salary"],
-      ["Declaration"]
-    );
-
-    if (
-      fields.grossSalary === null &&
-      salaryAmounts.length
-    ) {
-      fields.grossSalary = salaryAmounts[0];
-    }
-
-    if (
-      fields.netPay === null &&
-      salaryAmounts.length >= 2
-    ) {
-      fields.netPay = salaryAmounts[1];
-    }
-
-    // -----------------------------------------
-    // USE OCR LINE DATA WHEN AVAILABLE
-    // -----------------------------------------
-
-    if (ocrData && Array.isArray(ocrData.lines)) {
-      const lines = extractAmountsFromLines(
-        ocrData.text || text
-      );
-
-      console.log("Payslip OCR lines:", lines);
-    }
-
-    // -----------------------------------------
-    // FILL FORM FIELDS
-    // -----------------------------------------
 
     const inputFields = {
       basicSalary: elements.basicSalary,
@@ -1179,19 +1020,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const recognised = Object.values(fields)
       .filter(value => value !== null).length;
 
-    setMessage(
-      elements.payslipStatus,
-      `${recognised} of 5 salary fields recognised. Check all five figures against your payslip before saving.`,
-      recognised === 5 ? "success" : "error"
-    );
+    if (recognised === 5) {
+      setMessage(
+        elements.payslipStatus,
+        "5 of 5 fields suggested. Please compare every figure with your payslip before saving.",
+        "success"
+      );
 
-    console.log(
-      "MONETA extracted salary fields:",
-      fields
-    );
+    } else if (recognised > 0) {
+      setMessage(
+        elements.payslipStatus,
+        `${recognised} of 5 fields suggested. Fill in the remaining fields manually and check every figure.`,
+        "error"
+      );
+
+    } else {
+      setMessage(
+        elements.payslipStatus,
+        "OCR could not safely match the salary figures. Enter all five amounts manually using your PNG.",
+        "error"
+      );
+    }
+
+    console.log("MONETA conservative OCR suggestions:", fields);
   }
-
-
 
   // =========================================
   // 11. PAYSLIP HISTORY — SUPABASE
@@ -1227,9 +1079,7 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.payslipHistory.innerHTML =
       paychecks.map(paycheck => `
         <article class="transaction-item">
-
           <div class="transaction-info">
-
             <strong>
               ${escapeHTML(paycheck.pay_month.slice(0, 7))}
             </strong>
@@ -1249,13 +1099,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>
               Gross: ${formatCurrency(paycheck.gross_salary)}
             </span>
-
           </div>
 
           <div class="transaction-amount income-text">
             ${formatCurrency(paycheck.net_pay)}
           </div>
-
         </article>
       `).join("");
   }
@@ -1266,11 +1114,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const month = elements.payMonth.value;
     const payDate = elements.payDate.value || null;
 
-    const basic = Number(elements.basicSalary.value);
-    const serviceCharge = Number(elements.serviceCharge.value);
-    const tipsAmount = Number(elements.tips.value);
-    const gross = Number(elements.grossSalary.value);
-    const net = Number(elements.netPay.value);
+    const rawFigures = [
+      elements.basicSalary.value.trim(),
+      elements.serviceCharge.value.trim(),
+      elements.tips.value.trim(),
+      elements.grossSalary.value.trim(),
+      elements.netPay.value.trim()
+    ];
+
+    // Empty fields must not silently become zero.
+    if (rawFigures.some(value => value === "")) {
+      setMessage(
+        elements.payslipFormMessage,
+        "Please enter all five salary figures before saving.",
+        "error"
+      );
+      return;
+    }
+
+    const [
+      basic,
+      serviceCharge,
+      tipsAmount,
+      gross,
+      net
+    ] = rawFigures.map(Number);
 
     const figures = [
       basic,
@@ -1282,6 +1150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       !month ||
+      !/^\d{4}-\d{2}$/.test(month) ||
       figures.some(value =>
         !Number.isFinite(value) || value < 0
       ) ||
@@ -1290,7 +1159,29 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
       setMessage(
         elements.payslipFormMessage,
-        "Please check the salary month and all five figures.",
+        "Please check the month and all five salary figures.",
+        "error"
+      );
+      return;
+    }
+
+    // Ask the user to verify the exact values before saving.
+    const confirmationMessage = [
+      "Please confirm these figures match your payslip:",
+      "",
+      `Basic salary: ${formatCurrency(basic)}`,
+      `Service charge: ${formatCurrency(serviceCharge)}`,
+      `Tips: ${formatCurrency(tipsAmount)}`,
+      `Gross salary: ${formatCurrency(gross)}`,
+      `Net salary: ${formatCurrency(net)}`,
+      "",
+      "Save these figures?"
+    ].join("\n");
+
+    if (!confirm(confirmationMessage)) {
+      setMessage(
+        elements.payslipFormMessage,
+        "Not saved. Check or correct the figures, then try again.",
         "error"
       );
       return;
@@ -1298,7 +1189,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (net > gross) {
       const confirmed = confirm(
-        "Your net salary is higher than your gross salary. Are you sure the figures are correct?"
+        "Your net salary is higher than your gross salary. Are you certain these figures are correct?"
       );
 
       if (!confirmed) return;
@@ -1326,7 +1217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         gross_salary: gross,
         net_salary: net,
 
-        // Retained legacy columns in the database.
+        // Retained legacy database columns.
         allowances: 0,
         overtime: 0,
         other_income: 0,
@@ -1353,7 +1244,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setMessage(
         elements.payslipFormMessage,
-        "Your five salary figures have been saved successfully."
+        "Your confirmed salary figures have been saved successfully."
       );
 
       setCloudStatus(
@@ -1519,10 +1410,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return `
           <div class="budget-row">
-
             <div class="budget-row-heading">
               <strong>${escapeHTML(item.category)}</strong>
-
               <span>
                 Spent: ${formatCurrency(actual)}
                 · Left: ${formatCurrency(left)}
@@ -1531,7 +1420,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <label>
               Planned amount (AED)
-
               <input
                 type="number"
                 class="budget-amount-input"
@@ -1548,7 +1436,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 style="width:${spentProgress}%"
               ></div>
             </div>
-
           </div>
         `;
       }).join("");
