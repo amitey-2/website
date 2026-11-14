@@ -11,15 +11,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/moneta.css">
-
-  <!-- PDF reader -->
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.min.js" defer></script>
-
-  <!-- PNG / JPG OCR reader -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" defer></script>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0" defer></script>
@@ -48,7 +42,7 @@
       <p class="eyebrow">YOUR MONEY, YOUR CONTROL</p>
       <h1>Financial <em>overview.</em></h1>
       <p class="muted">A clearer picture of where your money goes.</p>
-      <p class="muted" id="cloudStatus" aria-live="polite">
+      <p class="muted cloud-status" id="cloudStatus" aria-live="polite">
         Connecting to your secure account...
       </p>
     </div>
@@ -96,7 +90,7 @@
 
   </section>
 
-  <!-- PAYSLIP READER -->
+  <!-- MANUAL PAYSLIP -->
   <section class="panel payslip-panel">
 
     <div class="panel-heading">
@@ -104,43 +98,19 @@
         <p class="eyebrow">KNOW YOUR INCOME</p>
         <h2>My payslip</h2>
         <p class="muted">
-          Upload your payslip and review the figures before saving.
+          Enter the figures from your payslip and confirm them before saving.
         </p>
       </div>
     </div>
 
-    <div class="payslip-upload">
-
-      <label for="payslipFile">Choose payslip (PDF or image)</label>
-
-      <input
-        type="file"
-        id="payslipFile"
-        accept=".pdf,.png,.jpg,.jpeg,image/png,image/jpeg"
-      >
-
-      <button
-        class="button button-primary"
-        id="readPayslipBtn"
-        type="button"
-      >
-        Read payslip
-      </button>
-
-      <p id="payslipStatus" class="form-message" aria-live="polite">
-        Your document is processed in your browser. The original file is not saved to the database.
+    <div class="payslip-info">
+      <span class="payslip-info-icon">ⓘ</span>
+      <p>
+        Enter your salary details manually. MONETA saves the figures you confirm;
+        it does not upload or store your payslip document.
       </p>
-
     </div>
 
-    <div class="payslip-text-preview" id="payslipTextSection" hidden>
-      <label for="payslipText">
-        Recognised text — check the figures carefully
-      </label>
-      <textarea id="payslipText" rows="6" readonly></textarea>
-    </div>
-
-    <!-- FIVE SALARY FIELDS -->
     <form id="payslipForm">
 
       <div class="form-grid">
@@ -187,16 +157,22 @@
 
       </div>
 
-      <button class="button button-primary" id="savePayslipBtn" type="submit">
-        Save confirmed payslip
-      </button>
+      <div class="payslip-form-actions">
+        <button class="button button-primary" id="savePayslipBtn" type="submit">
+          Save confirmed payslip
+        </button>
+      </div>
 
       <p id="payslipFormMessage" class="form-message" aria-live="polite"></p>
 
     </form>
 
     <div class="payslip-history">
-      <h3>Salary history</h3>
+      <div class="section-subheading">
+        <h3>Salary history</h3>
+        <p class="muted">Your previously saved payslips</p>
+      </div>
+
       <div id="payslipHistory">
         <p class="empty-message">No payslips saved yet.</p>
       </div>
