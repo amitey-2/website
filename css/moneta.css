@@ -44,7 +44,7 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, -apple-system, BlinkMacSystemFont,
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
   font-size: 14px;
   line-height: 1.6;
@@ -53,7 +53,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -64,6 +65,10 @@ button {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .muted,
@@ -94,13 +99,17 @@ a {
   letter-spacing: 2px;
 }
 
+.logo span {
+  color: var(--accent);
+}
+
 .topbar-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-#todayLabel {
+.today-label {
   color: var(--muted);
   font-size: 12px;
 }
@@ -125,6 +134,19 @@ a {
 
 .welcome {
   margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.welcome > div {
+  min-width: 0;
+}
+
+.cloud-status {
+  margin-top: 8px;
+  font-size: 11px;
 }
 
 .eyebrow {
@@ -142,6 +164,11 @@ h1 {
   letter-spacing: -1.2px;
   line-height: 1.2;
   margin-bottom: 9px;
+}
+
+h1 em {
+  color: var(--accent);
+  font-style: normal;
 }
 
 h2 {
@@ -195,16 +222,43 @@ h3 {
   font-size: 12px;
 }
 
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px;
+}
+
+.text-button:hover {
+  color: #E2A3AD;
+}
+
 /* MONTH TOOLBAR */
 
 .month-toolbar {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 12px;
   margin-bottom: 18px;
 }
 
+.month-toolbar label,
+.budget-controls label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.month-toolbar input {
+  max-width: 190px;
+}
+
 select,
-input {
+input,
+textarea {
   background: #261D20;
   color: var(--text);
   border: 1px solid var(--border);
@@ -216,10 +270,20 @@ input {
   color-scheme: dark;
 }
 
+textarea {
+  resize: vertical;
+}
+
 select:focus,
-input:focus {
+input:focus,
+textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8F7D82;
 }
 
 /* SUMMARY CARDS */
@@ -239,8 +303,7 @@ input:focus {
   padding: 23px;
   min-width: 0;
   box-shadow: var(--shadow);
-  transition: transform 0.2s ease,
-    background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .summary-card:hover {
@@ -248,24 +311,14 @@ input:focus {
   background: var(--light-card);
 }
 
-/* Keep the balance card dark */
-
 .balance-card {
-  background: linear-gradient(
-    135deg,
-    #39252D,
-    #302225
-  );
+  background: linear-gradient(135deg, #39252D, #302225);
   color: var(--text);
   border-color: rgba(199, 124, 136, 0.25);
 }
 
 .balance-card:hover {
-  background: linear-gradient(
-    135deg,
-    #432B34,
-    #35262A
-  );
+  background: linear-gradient(135deg, #432B34, #35262A);
 }
 
 .card-top {
@@ -276,7 +329,8 @@ input:focus {
   margin-bottom: 18px;
 }
 
-.card-top p {
+.card-top p,
+.summary-card > p {
   color: var(--light-muted);
   font-size: 13px;
 }
@@ -294,6 +348,7 @@ input:focus {
   background: var(--accent-soft);
   color: var(--accent-dark);
   font-size: 17px;
+  flex-shrink: 0;
 }
 
 .balance-card .card-icon {
@@ -345,14 +400,174 @@ input:focus {
   font-size: 12px;
 }
 
+.panel-heading .eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  margin-bottom: 7px;
+}
+
+.panel-heading h2 {
+  margin-bottom: 5px;
+}
+
+/* PAYSLIP */
+
+.payslip-panel {
+  background: linear-gradient(145deg, #302225, #2A1F22);
+}
+
+.payslip-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 13px 15px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(199, 124, 136, 0.18);
+  border-radius: 12px;
+  background: rgba(199, 124, 136, 0.07);
+}
+
+.payslip-info-icon {
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.payslip-info p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.payslip-panel .form-grid {
+  margin-bottom: 17px;
+}
+
+.payslip-panel .form-grid label {
+  color: var(--muted);
+}
+
+.payslip-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-message {
+  color: var(--accent);
+  font-size: 12px;
+  margin-top: 12px;
+  min-height: 0;
+}
+
+.payslip-history {
+  border-top: 1px solid var(--border);
+  margin-top: 25px;
+  padding-top: 22px;
+}
+
+.section-subheading {
+  margin-bottom: 12px;
+}
+
+.section-subheading h3 {
+  margin-bottom: 3px;
+}
+
+.section-subheading p {
+  font-size: 11px;
+}
+
+/* PAYSLIP HISTORY - COMMON GENERATED CONTENT */
+
+.payslip-history > div:last-child {
+  min-width: 0;
+}
+
+.payslip-history .empty-message {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+/* BUDGET */
+
+.budget-panel {
+  background: linear-gradient(145deg, #302225, #2A2023);
+}
+
+.budget-controls {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.budget-controls label {
+  grid-column: 1 / -1;
+  margin-bottom: -7px;
+}
+
+.budget-controls input {
+  max-width: 260px;
+}
+
+.budget-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.budget-summary-grid .summary-card {
+  padding: 17px;
+  box-shadow: none;
+}
+
+.budget-summary-grid .summary-card p {
+  font-size: 11px;
+  color: var(--light-muted);
+  margin-bottom: 7px;
+}
+
+.budget-summary-grid .summary-card h2 {
+  font-size: clamp(17px, 2vw, 23px);
+}
+
+.budget-progress {
+  margin: 10px 0 22px;
+}
+
+.budget-progress > p {
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.budget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+  min-width: 0;
+}
+
+.budget-list > * {
+  min-width: 0;
+}
+
+.budget-panel .empty-message {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+.budget-panel > .button {
+  margin-top: 3px;
+}
+
 /* SAVINGS GOAL */
 
 .savings-panel {
-  background: linear-gradient(
-    115deg,
-    #302126,
-    #302225
-  );
+  background: linear-gradient(115deg, #302126, #302225);
 }
 
 .goal-input-row {
@@ -360,6 +575,12 @@ input:focus {
   align-items: center;
   gap: 10px;
   margin-bottom: 19px;
+}
+
+.goal-input-row label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .goal-input-row input {
@@ -378,16 +599,12 @@ input:focus {
 .progress-fill {
   height: 100%;
   width: 0;
-  background: linear-gradient(
-    90deg,
-    var(--accent-dark),
-    var(--accent)
-  );
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent));
   border-radius: inherit;
   transition: width 0.4s ease;
 }
 
-#goalPercent {
+.goal-percent {
   color: var(--accent);
   font-weight: 700;
 }
@@ -493,7 +710,7 @@ input:focus {
   margin-top: 18px;
 }
 
-/* TRANSACTION FORM */
+/* FORMS */
 
 .form-panel {
   scroll-margin-top: 95px;
@@ -532,6 +749,37 @@ input:focus {
 
 .transactions-panel {
   min-width: 0;
+}
+
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.backup-import {
+  padding: 15px;
+  margin-bottom: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.backup-import label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.backup-import input {
+  font-size: 12px;
+}
+
+.backup-import .muted {
+  font-size: 11px;
+  margin-top: 7px;
 }
 
 .filter-grid {
@@ -664,6 +912,12 @@ input:focus {
   text-align: center;
 }
 
+.footer > p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 5px;
+}
+
 .footer-note {
   font-size: 11px;
 }
@@ -717,8 +971,13 @@ a:focus-visible {
     gap: 9px;
   }
 
-  #todayLabel {
+  .today-label {
     font-size: 10px;
+  }
+
+  .avatar {
+    width: 33px;
+    height: 33px;
   }
 
   .container {
@@ -727,11 +986,25 @@ a:focus-visible {
   }
 
   .welcome {
+    align-items: flex-start;
+    flex-direction: column;
     margin-bottom: 22px;
+  }
+
+  .welcome > .button {
+    width: 100%;
   }
 
   h1 {
     font-size: 29px;
+  }
+
+  .month-toolbar {
+    justify-content: space-between;
+  }
+
+  .month-toolbar input {
+    max-width: 165px;
   }
 
   .summary-grid {
@@ -769,6 +1042,36 @@ a:focus-visible {
     grid-column: auto;
   }
 
+  .budget-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .budget-controls label {
+    grid-column: auto;
+    margin-bottom: -5px;
+  }
+
+  .budget-controls input {
+    max-width: none;
+  }
+
+  .budget-controls button {
+    width: 100%;
+  }
+
+  .budget-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .budget-summary-grid .summary-card {
+    padding: 14px 16px;
+  }
+
+  .budget-summary-grid .summary-card h2 {
+    font-size: 21px;
+  }
+
   .filter-grid {
     grid-template-columns: 1fr;
     gap: 9px;
@@ -788,13 +1091,25 @@ a:focus-visible {
     gap: 4px;
   }
 
+  .transactions-panel > .panel-heading {
+    flex-direction: column;
+  }
+
   .goal-input-row {
     flex-wrap: wrap;
+  }
+
+  .goal-input-row label {
+    width: 100%;
   }
 
   .goal-input-row input {
     max-width: none;
     flex: 1;
+  }
+
+  .goal-input-row button {
+    flex-shrink: 0;
   }
 
   .category-row {
@@ -813,6 +1128,15 @@ a:focus-visible {
 
   .button {
     padding: 10px 13px;
+  }
+
+  .payslip-form-actions .button {
+    width: 100%;
+  }
+
+  .transaction-actions .button {
+    font-size: 11px;
+    padding: 8px 9px;
   }
 }
 
@@ -840,10 +1164,17 @@ a:focus-visible {
     width: 28px;
     height: 28px;
   }
+
+  .topbar-right {
+    gap: 6px;
+  }
+
+  .today-label {
+    display: none;
+  }
 }
 
-
-/* Mobile-friendly transaction form navigation */
+/* TRANSACTION FORM NAVIGATION */
 
 #transactionSection {
   scroll-margin-top: 24px;
