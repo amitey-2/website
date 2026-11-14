@@ -91,94 +91,112 @@
   </section>
 
   <!-- MANUAL PAYSLIP -->
-  <section class="panel payslip-panel">
+ 
+<!-- MANUAL PAYSLIP -->
+<section class="panel payslip-panel">
 
-    <div class="panel-heading">
-      <div>
-        <p class="eyebrow">KNOW YOUR INCOME</p>
-        <h2>My payslip</h2>
-        <p class="muted">
-          Enter the figures from your payslip and confirm them before saving.
-        </p>
-      </div>
-    </div>
-
-    <div class="payslip-info">
-      <span class="payslip-info-icon">ⓘ</span>
-      <p>
-        Enter your salary details manually. MONETA saves the figures you confirm;
-        it does not upload or store your payslip document.
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">KNOW YOUR INCOME</p>
+      <h2>My payslip</h2>
+      <p class="muted">
+        Enter the figures from your payslip and confirm them before saving.
       </p>
     </div>
+  </div>
 
-    <form id="payslipForm">
+  <!-- Hidden legacy OCR elements for JavaScript compatibility -->
+  <div hidden aria-hidden="true">
+    <label for="payslipFile">Choose payslip</label>
+    <input type="file" id="payslipFile" accept=".pdf,.png,.jpg,.jpeg">
 
-      <div class="form-grid">
+    <button id="readPayslipBtn" type="button">Read payslip</button>
 
-        <label>
-          Salary month
-          <input type="month" id="payMonth" required>
-        </label>
+    <p id="payslipStatus"></p>
 
-        <label>
-          Payment date
-          <input type="date" id="payDate">
-        </label>
+    <div id="payslipTextSection">
+      <label for="payslipText">Recognised text</label>
+      <textarea id="payslipText"></textarea>
+    </div>
+  </div>
 
-        <label>
-          Basic salary (AED)
-          <input type="number" id="basicSalary" min="0" step="0.01" value="0" required>
-        </label>
+  <div class="payslip-info">
+    <span class="payslip-info-icon">ⓘ</span>
+    <p>
+      Enter your salary details manually. MONETA saves the figures you confirm;
+      it does not upload or store your payslip document.
+    </p>
+  </div>
 
-        <label>
-          Service charge (AED)
-          <input type="number" id="serviceCharge" min="0" step="0.01" value="0" required>
-        </label>
+  <form id="payslipForm">
 
-        <label>
-          Tips (AED)
-          <input type="number" id="tips" min="0" step="0.01" value="0" required>
-        </label>
+    <div class="form-grid">
 
-        <label>
-          Gross salary (AED)
-          <input type="number" id="grossSalary" min="0" step="0.01" required>
-        </label>
+      <label>
+        Salary month
+        <input type="month" id="payMonth" required>
+      </label>
 
-        <label>
-          Net salary (AED)
-          <input type="number" id="netPay" min="0" step="0.01" required>
-        </label>
+      <label>
+        Payment date
+        <input type="date" id="payDate">
+      </label>
 
-        <label class="full-width">
-          Notes
-          <input type="text" id="payNotes" maxlength="250" placeholder="Optional notes">
-        </label>
+      <label>
+        Basic salary (AED)
+        <input type="number" id="basicSalary" min="0" step="0.01" value="0" required>
+      </label>
 
-      </div>
+      <label>
+        Service charge (AED)
+        <input type="number" id="serviceCharge" min="0" step="0.01" value="0" required>
+      </label>
 
-      <div class="payslip-form-actions">
-        <button class="button button-primary" id="savePayslipBtn" type="submit">
-          Save confirmed payslip
-        </button>
-      </div>
+      <label>
+        Tips (AED)
+        <input type="number" id="tips" min="0" step="0.01" value="0" required>
+      </label>
 
-      <p id="payslipFormMessage" class="form-message" aria-live="polite"></p>
+      <label>
+        Gross salary (AED)
+        <input type="number" id="grossSalary" min="0" step="0.01" required>
+      </label>
 
-    </form>
+      <label>
+        Net salary (AED)
+        <input type="number" id="netPay" min="0" step="0.01" required>
+      </label>
 
-    <div class="payslip-history">
-      <div class="section-subheading">
-        <h3>Salary history</h3>
-        <p class="muted">Your previously saved payslips</p>
-      </div>
+      <label class="full-width">
+        Notes
+        <input type="text" id="payNotes" maxlength="250" placeholder="Optional notes">
+      </label>
 
-      <div id="payslipHistory">
-        <p class="empty-message">No payslips saved yet.</p>
-      </div>
     </div>
 
-  </section>
+    <div class="payslip-form-actions">
+      <button class="button button-primary" id="savePayslipBtn" type="submit">
+        Save confirmed payslip
+      </button>
+    </div>
+
+    <p id="payslipFormMessage" class="form-message" aria-live="polite"></p>
+
+  </form>
+
+  <div class="payslip-history">
+    <div class="section-subheading">
+      <h3>Salary history</h3>
+      <p class="muted">Your previously saved payslips</p>
+    </div>
+
+    <div id="payslipHistory">
+      <p class="empty-message">No payslips saved yet.</p>
+    </div>
+  </div>
+
+</section>
+
 
   <!-- MONTHLY BUDGET -->
   <section class="panel budget-panel">
