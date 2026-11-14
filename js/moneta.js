@@ -6,28 +6,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. CONFIGURATION
   // =========================================
 
-  const SUPABASE_URL = "https://fqbcfuduinjdumozfbja.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_CI3BreLTxzIgIB_IcdTg5Q_OyBVx1vw";
+  const SUPABASE_URL =
+    "https://fqbcfuduinjdumozfbja.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_CI3BreLTxzIgIB_IcdTg5Q_OyBVx1vw";
 
   let supabaseClient;
   let currentUser = null;
+
   let transactions = [];
   let paychecks = [];
   let budgetItems = [];
   let savingsGoal = 1000;
 
   const EXPENSE_CATEGORIES = [
-    "Food", "Groceries", "Transport", "Shopping",
-    "Bills", "Housing", "Health", "Entertainment",
-    "Gym", "Education", "Other"
+    "Food",
+    "Groceries",
+    "Transport",
+    "Shopping",
+    "Bills",
+    "Housing",
+    "Health",
+    "Gym",
+    "Personal",
+    "Entertainment",
+    "Education",
+    "Debt repayment",
+    "Savings",
+    "Emergency fund",
+    "Other"
   ];
 
   const INCOME_CATEGORIES = [
-    "Salary", "Tips", "Freelance", "Business",
-    "Investment", "Other"
+    "Salary",
+    "Tips",
+    "Service charge",
+    "Freelance",
+    "Business",
+    "Investment",
+    "Other"
   ];
 
-  // Editable starting allocation: totals 100%.
   const BUDGET_DEFAULTS = [
     { category: "Housing", percent: 8 },
     { category: "Food", percent: 18 },
@@ -104,10 +124,9 @@ document.addEventListener("DOMContentLoaded", () => {
     payMonth: $("payMonth"),
     payDate: $("payDate"),
     basicSalary: $("basicSalary"),
-    allowances: $("allowances"),
-    overtime: $("overtime"),
-    otherIncome: $("otherIncome"),
-    deductions: $("deductions"),
+    serviceCharge: $("serviceCharge"),
+    tips: $("tips"),
+    grossSalary: $("grossSalary"),
     netPay: $("netPay"),
     payNotes: $("payNotes"),
     savePayslipBtn: $("savePayslipBtn"),
@@ -127,14 +146,15 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // =========================================
-  // 2. GENERAL HELPERS
+  // 2. HELPERS
   // =========================================
 
   function localDateString(date = new Date()) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
   }
 
   function currentMonthString() {
@@ -165,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setMessage(element, message, type = "success") {
     if (!element) return;
+
     element.textContent = message;
     element.dataset.type = type;
   }
@@ -187,39 +208,23 @@ document.addEventListener("DOMContentLoaded", () => {
     return elements.budgetMonth.value || currentMonthString();
   }
 
-  function getMonthTransactions() {
-    const month = getSelectedMonth();
-    return transactions.filter(item => item.date.startsWith(month));
-  }
-
-  function getMonthTotals() {
-    const items = getMonthTransactions();
-
-    const income = items
-      .filter(item => item.type === "income")
-      .reduce((sum, item) => sum + Number(item.amount), 0);
-
-    const expenses = items
-      .filter(item => item.type === "expense")
-      .reduce((sum, item) => sum + Number(item.amount), 0);
-
-    return { income, expenses, balance: income - expenses };
-  }
-
   // =========================================
-  // 3. CATEGORIES
+  // 3. CATEGORY SELECTORS
   // =========================================
 
   function populateCategories() {
-    const categories = elements.typeInput.value === "income"
-      ? INCOME_CATEGORIES
-      : EXPENSE_CATEGORIES;
+    const categories =
+      elements.typeInput.value === "income"
+        ? INCOME_CATEGORIES
+        : EXPENSE_CATEGORIES;
 
     const previous = elements.categoryInput.value;
 
-    elements.categoryInput.innerHTML = categories.map(category =>
-      `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`
-    ).join("");
+    elements.categoryInput.innerHTML = categories.map(category => `
+      <option value="${escapeHTML(category)}">
+        ${escapeHTML(category)}
+      </option>
+    `).join("");
 
     if (categories.includes(previous)) {
       elements.categoryInput.value = previous;
@@ -227,29 +232,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function populateCategoryFilter() {
-    const selected = elements.categoryFilter.value || "all";
-    const categories = [...new Set([
-      ...EXPENSE_CATEGORIES,
-      ...INCOME_CATEGORIES
-    ])];
+    const previous = elements.categoryFilter.value || "all";
+
+    const categories = [
+      ...new Set([
+        ...EXPENSE_CATEGORIES,
+        ...INCOME_CATEGORIES
+      ])
+    ];
 
     elements.categoryFilter.innerHTML =
       '<option value="all">All categories</option>' +
-      categories.map(category =>
-        `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`
-      ).join("");
+      categories.map(category => `
+        <option value="${escapeHTML(category)}">
+          ${escapeHTML(category)}
+        </option>
+      `).join("");
 
     elements.categoryFilter.value =
-      categories.includes(selected) ? selected : "all";
+      categories.includes(previous) ? previous : "all";
   }
 
   // =========================================
-  // 4. TRANSACTIONS: CLOUD
+  // 4. TRANSACTIONS — LOAD FROM SUPABASE
   // =========================================
 
   async function loadTransactions() {
-    setCloudStatus("Loading your transactions...");
-
     const { data, error } = await supabaseClient
       .from("moneta_transactions")
       .select("id, title, type, category, amount, transaction_date, note")
@@ -283,7 +291,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (error) throw error;
 
-    savingsGoal = data ? Number(data.savings_goal) : 1000;
+    savingsGoal = data
+      ? Number(data.savings_goal)
+      : 1000;
+
     elements.goalInput.value = savingsGoal;
 
     renderDashboard();
@@ -297,7 +308,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    setBusy(elements.saveGoalBtn, true, "Saving...", "Save goal");
+    setBusy(
+      elements.saveGoalBtn,
+      true,
+      "Saving...",
+      "Save goal"
+    );
 
     try {
       const { error } = await supabaseClient
@@ -306,17 +322,27 @@ document.addEventListener("DOMContentLoaded", () => {
           user_id: currentUser.id,
           savings_goal: goal,
           updated_at: new Date().toISOString()
-        }, { onConflict: "user_id" });
+        }, {
+          onConflict: "user_id"
+        });
 
       if (error) throw error;
 
       savingsGoal = goal;
       renderDashboard();
-      setCloudStatus("Savings goal saved to cloud", "success");
+
+      setCloudStatus("Savings goal saved", "success");
+
     } catch (error) {
       alert("Could not save your goal: " + error.message);
+
     } finally {
-      setBusy(elements.saveGoalBtn, false, "Saving...", "Save goal");
+      setBusy(
+        elements.saveGoalBtn,
+        false,
+        "Saving...",
+        "Save goal"
+      );
     }
   }
 
@@ -324,12 +350,43 @@ document.addEventListener("DOMContentLoaded", () => {
   // 6. DASHBOARD
   // =========================================
 
+  function getMonthTransactions() {
+    const month = getSelectedMonth();
+
+    return transactions.filter(item =>
+      item.date.startsWith(month)
+    );
+  }
+
+  function getMonthTotals() {
+    const items = getMonthTransactions();
+
+    const income = items
+      .filter(item => item.type === "income")
+      .reduce((sum, item) => sum + Number(item.amount), 0);
+
+    const expenses = items
+      .filter(item => item.type === "expense")
+      .reduce((sum, item) => sum + Number(item.amount), 0);
+
+    return {
+      income,
+      expenses,
+      balance: income - expenses
+    };
+  }
+
   function renderDashboard() {
     const totals = getMonthTotals();
 
-    elements.balanceValue.textContent = formatCurrency(totals.balance);
-    elements.incomeValue.textContent = formatCurrency(totals.income);
-    elements.expenseValue.textContent = formatCurrency(totals.expenses);
+    elements.balanceValue.textContent =
+      formatCurrency(totals.balance);
+
+    elements.incomeValue.textContent =
+      formatCurrency(totals.income);
+
+    elements.expenseValue.textContent =
+      formatCurrency(totals.expenses);
 
     renderSavingsGoal(totals.balance);
     renderComparisonChart(totals);
@@ -342,17 +399,24 @@ document.addEventListener("DOMContentLoaded", () => {
       ? Math.max(0, balance / savingsGoal * 100)
       : 0;
 
-    elements.goalPercent.textContent = `${Math.round(progress)}%`;
-    elements.goalProgress.style.width = `${Math.min(progress, 100)}%`;
+    elements.goalPercent.textContent =
+      `${Math.round(progress)}%`;
+
+    elements.goalProgress.style.width =
+      `${Math.min(progress, 100)}%`;
 
     if (savingsGoal === 0) {
-      elements.goalMessage.textContent = "Set a savings target above zero.";
+      elements.goalMessage.textContent =
+        "Set a savings target above zero.";
+
     } else if (balance < 0) {
       elements.goalMessage.textContent =
         "Your expenses are higher than your income this month.";
+
     } else if (balance >= savingsGoal) {
       elements.goalMessage.textContent =
         "Congratulations! You've reached your savings goal.";
+
     } else {
       elements.goalMessage.textContent =
         `${formatCurrency(savingsGoal - balance)} left to reach your goal.`;
@@ -360,10 +424,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderComparisonChart(totals) {
-    elements.chartIncome.textContent = formatCurrency(totals.income);
-    elements.chartExpense.textContent = formatCurrency(totals.expenses);
+    elements.chartIncome.textContent =
+      formatCurrency(totals.income);
 
-    const max = Math.max(totals.income, totals.expenses, 1);
+    elements.chartExpense.textContent =
+      formatCurrency(totals.expenses);
+
+    const max = Math.max(
+      totals.income,
+      totals.expenses,
+      1
+    );
 
     elements.incomeBar.style.width =
       `${totals.income / max * 100}%`;
@@ -393,32 +464,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const max = Math.max(...categories.map(item => item[1]));
 
-    elements.categoryChart.innerHTML = categories.map(([category, amount]) => `
-      <div class="category-row">
-        <div class="category-row-top">
-          <span>${escapeHTML(category)}</span>
-          <strong>${formatCurrency(amount)}</strong>
+    elements.categoryChart.innerHTML =
+      categories.map(([category, amount]) => `
+        <div class="category-row">
+
+          <div class="category-row-top">
+            <span>${escapeHTML(category)}</span>
+            <strong>${formatCurrency(amount)}</strong>
+          </div>
+
+          <div class="category-track">
+            <div
+              class="category-fill"
+              style="width:${amount / max * 100}%"
+            ></div>
+          </div>
+
         </div>
-        <div class="category-track">
-          <div class="category-fill" style="width:${amount / max * 100}%"></div>
-        </div>
-      </div>
-    `).join("");
+      `).join("");
   }
 
   // =========================================
-  // 7. TRANSACTION LIST
+  // 7. TRANSACTION LIST AND FILTERS
   // =========================================
 
   function getFilteredTransactions() {
-    const search = elements.searchInput.value.trim().toLowerCase();
+    const search =
+      elements.searchInput.value.trim().toLowerCase();
+
     const type = elements.typeFilter.value;
     const category = elements.categoryFilter.value;
     const month = getSelectedMonth();
 
     return transactions.filter(item => {
       const matchesMonth = item.date.startsWith(month);
-      const matchesType = type === "all" || item.type === type;
+
+      const matchesType =
+        type === "all" || item.type === type;
+
       const matchesCategory =
         category === "all" || item.category === category;
 
@@ -426,10 +509,14 @@ document.addEventListener("DOMContentLoaded", () => {
         item.title.toLowerCase().includes(search) ||
         item.category.toLowerCase().includes(search);
 
-      return matchesMonth && matchesType &&
-        matchesCategory && matchesSearch;
+      return (
+        matchesMonth &&
+        matchesType &&
+        matchesCategory &&
+        matchesSearch
+      );
     }).sort((a, b) =>
-      b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id))
+      b.date.localeCompare(a.date)
     );
   }
 
@@ -439,46 +526,73 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!filtered.length) {
       elements.transactionList.innerHTML =
         '<p class="empty-message">No matching transactions found.</p>';
+
     } else {
-      elements.transactionList.innerHTML = filtered.map(item => {
-        const income = item.type === "income";
+      elements.transactionList.innerHTML =
+        filtered.map(item => {
+          const isIncome = item.type === "income";
 
-        return `
-          <article class="transaction-item">
-            <div class="transaction-info">
-              <strong>${escapeHTML(item.title)}</strong>
-              <span>${escapeHTML(item.category)} · ${escapeHTML(item.date)}</span>
-            </div>
+          return `
+            <article class="transaction-item">
 
-            <div class="transaction-amount ${income ? "income-text" : "expense-text"}">
-              ${income ? "+" : "−"}${formatCurrency(item.amount)}
-            </div>
+              <div class="transaction-info">
+                <strong>${escapeHTML(item.title)}</strong>
+                <span>
+                  ${escapeHTML(item.category)}
+                  · ${escapeHTML(item.date)}
+                </span>
+              </div>
 
-            <div class="transaction-actions">
-              <button type="button" class="edit-btn"
-                data-action="edit" data-id="${escapeHTML(item.id)}">Edit</button>
-              <button type="button" class="delete-btn"
-                data-action="delete" data-id="${escapeHTML(item.id)}">Delete</button>
-            </div>
-          </article>
-        `;
-      }).join("");
+              <div class="transaction-amount ${
+                isIncome ? "income-text" : "expense-text"
+              }">
+                ${isIncome ? "+" : "−"}${formatCurrency(item.amount)}
+              </div>
+
+              <div class="transaction-actions">
+
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-action="edit"
+                  data-id="${escapeHTML(item.id)}"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  class="delete-btn"
+                  data-action="delete"
+                  data-id="${escapeHTML(item.id)}"
+                >
+                  Delete
+                </button>
+
+              </div>
+
+            </article>
+          `;
+        }).join("");
     }
 
     elements.transactionCount.textContent =
       `${filtered.length} transaction${filtered.length === 1 ? "" : "s"}`;
 
-    const total = filtered.reduce((sum, item) =>
-      sum + (item.type === "income"
-        ? Number(item.amount)
-        : -Number(item.amount)), 0
-    );
+    const total = filtered.reduce((sum, item) => {
+      return sum + (
+        item.type === "income"
+          ? Number(item.amount)
+          : -Number(item.amount)
+      );
+    }, 0);
 
-    elements.filteredTotal.textContent = formatCurrency(total);
+    elements.filteredTotal.textContent =
+      formatCurrency(total);
   }
 
   // =========================================
-  // 8. ADD / EDIT TRANSACTION
+  // 8. ADD AND EDIT TRANSACTIONS
   // =========================================
 
   async function addTransaction(event) {
@@ -491,8 +605,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const date = elements.dateInput.value;
     const editId = elements.editId.value;
 
-    if (!title || !category || !date ||
-        !Number.isFinite(amount) || amount <= 0) {
+    if (
+      !title ||
+      !category ||
+      !date ||
+      !Number.isFinite(amount) ||
+      amount <= 0
+    ) {
       setMessage(
         elements.formMessage,
         "Please complete all fields correctly.",
@@ -510,9 +629,16 @@ document.addEventListener("DOMContentLoaded", () => {
       note: ""
     };
 
-    const normalText = editId ? "Update transaction" : "Add transaction";
+    const normalText = editId
+      ? "Update transaction"
+      : "Add transaction";
 
-    setBusy(elements.submitBtn, true, "Saving...", normalText);
+    setBusy(
+      elements.submitBtn,
+      true,
+      "Saving...",
+      normalText
+    );
 
     try {
       let result;
@@ -524,6 +650,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .eq("id", editId)
           .select()
           .single();
+
       } else {
         result = await supabaseClient
           .from("moneta_transactions")
@@ -534,35 +661,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (result.error) throw result.error;
 
-      resetForm();
+      resetTransactionForm();
       await loadTransactions();
 
       setMessage(
         elements.formMessage,
-        editId ? "Transaction updated successfully." : "Transaction saved to cloud."
+        editId
+          ? "Transaction updated successfully."
+          : "Transaction saved successfully."
       );
+
     } catch (error) {
       setMessage(
         elements.formMessage,
         "Could not save: " + error.message,
         "error"
       );
+
     } finally {
       setBusy(
         elements.submitBtn,
         false,
         "Saving...",
-        elements.editId.value ? "Update transaction" : "Add transaction"
+        elements.editId.value
+          ? "Update transaction"
+          : "Add transaction"
       );
     }
   }
 
   function editTransaction(id) {
-    const item = transactions.find(entry => String(entry.id) === String(id));
+    const item = transactions.find(entry =>
+      String(entry.id) === String(id)
+    );
+
     if (!item) return;
 
     elements.editId.value = item.id;
     elements.typeInput.value = item.type;
+
     populateCategories();
 
     elements.titleInput.value = item.title;
@@ -570,20 +707,24 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.amountInput.value = item.amount;
     elements.dateInput.value = item.date;
 
-    elements.formHeading.textContent = "Edit transaction";
-    elements.submitBtn.textContent = "Update transaction";
+    elements.formHeading.textContent =
+      "Edit transaction";
+
+    elements.submitBtn.textContent =
+      "Update transaction";
+
     elements.cancelEditBtn.hidden = false;
 
     $("transactionSection").scrollIntoView({
       behavior: "smooth",
       block: "center"
     });
-
-    elements.titleInput.focus({ preventScroll: true });
   }
 
   async function deleteTransaction(id) {
-    if (!confirm("Are you sure you want to delete this transaction?")) return;
+    if (!confirm("Are you sure you want to delete this transaction?")) {
+      return;
+    }
 
     const { error } = await supabaseClient
       .from("moneta_transactions")
@@ -599,25 +740,36 @@ document.addEventListener("DOMContentLoaded", () => {
     setCloudStatus("Transaction deleted", "success");
   }
 
-  function resetForm() {
+  function resetTransactionForm() {
     elements.transactionForm.reset();
+
     elements.editId.value = "";
     elements.dateInput.value = localDateString();
-    elements.formHeading.textContent = "Add a transaction";
-    elements.submitBtn.textContent = "Add transaction";
+
+    elements.formHeading.textContent =
+      "Add a transaction";
+
+    elements.submitBtn.textContent =
+      "Add transaction";
+
     elements.cancelEditBtn.hidden = true;
+
     populateCategories();
   }
 
   // =========================================
-  // 9. PAYSLIP READER
+  // 9. PAYSLIP OCR — PDF AND IMAGE
   // =========================================
 
   async function readPayslip() {
     const file = elements.payslipFile.files[0];
 
     if (!file) {
-      setMessage(elements.payslipStatus, "Choose a payslip first.", "error");
+      setMessage(
+        elements.payslipStatus,
+        "Please choose your payslip first.",
+        "error"
+      );
       return;
     }
 
@@ -634,12 +786,14 @@ document.addEventListener("DOMContentLoaded", () => {
       file.type === "application/pdf" ||
       file.name.toLowerCase().endsWith(".pdf");
 
-    const isImage = file.type.startsWith("image/");
+    const isImage =
+      file.type.startsWith("image/") ||
+      /\.(png|jpe?g)$/i.test(file.name);
 
     if (!isPDF && !isImage) {
       setMessage(
         elements.payslipStatus,
-        "Please upload a PDF or image such as PNG or JPG.",
+        "Please upload a PDF, PNG or JPG image.",
         "error"
       );
       return;
@@ -657,20 +811,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (isPDF) {
         if (!window.pdfjsLib) {
-          throw new Error("PDF reader could not load. Refresh and try again.");
+          throw new Error(
+            "PDF reader could not load. Refresh and try again."
+          );
         }
 
         window.pdfjsLib.GlobalWorkerOptions.workerSrc =
           "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.worker.min.js";
 
         const buffer = await file.arrayBuffer();
-        const pdf = await window.pdfjsLib.getDocument({
-          data: buffer
-        }).promise;
+
+        const pdf = await window.pdfjsLib
+          .getDocument({ data: buffer })
+          .promise;
 
         const pageCount = Math.min(pdf.numPages, 5);
 
-        for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
+        for (
+          let pageNumber = 1;
+          pageNumber <= pageCount;
+          pageNumber++
+        ) {
           const page = await pdf.getPage(pageNumber);
           const content = await page.getTextContent();
 
@@ -681,20 +842,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!extractedText.trim()) {
           throw new Error(
-            "This PDF has no selectable text. Try a clear PNG or JPG image instead."
+            "This PDF contains no selectable text. Try a clear PNG or JPG image."
           );
         }
+
       } else {
         if (!window.Tesseract) {
-          throw new Error("Image reader could not load. Refresh and try again.");
+          throw new Error(
+            "Image reader could not load. Refresh and try again."
+          );
         }
 
-        const result = await window.Tesseract.recognize(file, "eng");
+        const result = await window.Tesseract.recognize(
+          file,
+          "eng"
+        );
+
         extractedText = result.data.text || "";
       }
 
       if (!extractedText.trim()) {
-        throw new Error("No readable text found. Try a clearer image.");
+        throw new Error(
+          "No readable text found. Try a clearer payslip image."
+        );
       }
 
       elements.payslipText.value = extractedText;
@@ -702,17 +872,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       suggestPayslipFields(extractedText);
 
-      setMessage(
-        elements.payslipStatus,
-        "Reading complete. Check the recognised text and verify every figure manually."
-      );
     } catch (error) {
-      console.error(error);
+      console.error("Payslip OCR error:", error);
+
       setMessage(
         elements.payslipStatus,
         error.message || "Could not read the payslip.",
         "error"
       );
+
     } finally {
       setBusy(
         elements.readPayslipBtn,
@@ -723,21 +891,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function findMoneyAfterLabel(text, labels) {
+  // =========================================
+  // 10. EXTRACT THE FIVE SALARY FIGURES
+  // =========================================
+
+  function extractSalaryAmount(text, labels) {
+    const lines = text
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(Boolean);
+
     for (const label of labels) {
-      const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escaped = label.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      );
 
       const regex = new RegExp(
+        "(?:^|\\b)" +
         escaped +
-        "\\s*[:\\-]?\\s*(?:AED|د\\.إ)?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
+        "\\b\\s*[:\\-]?\\s*(?:AED|د\\.إ)?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
         "i"
       );
 
-      const match = text.match(regex);
+      for (const line of lines) {
+        const match = line.match(regex);
 
-      if (match) {
-        const value = Number(match[1].replace(/,/g, ""));
-        if (Number.isFinite(value)) return value;
+        if (match) {
+          const amount = Number(
+            match[1].replace(/,/g, "")
+          );
+
+          if (Number.isFinite(amount)) {
+            return amount;
+          }
+        }
       }
     }
 
@@ -745,56 +933,75 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function suggestPayslipFields(text) {
-    const normalised = text.replace(/\s+/g, " ");
+    const fields = {
+      basicSalary: extractSalaryAmount(text, [
+        "Basic Salary",
+        "Basic Pay"
+      ]),
 
-    const basic = findMoneyAfterLabel(normalised, [
-      "Basic Salary", "Basic Pay"
-    ]);
+      serviceCharge: extractSalaryAmount(text, [
+        "Service Charge",
+        "Service Charges"
+      ]),
 
-    const allowances = findMoneyAfterLabel(normalised, [
-      "Total Allowances", "Allowances"
-    ]);
+      tips: extractSalaryAmount(text, [
+        "Tips",
+        "Tip"
+      ]),
 
-    const overtime = findMoneyAfterLabel(normalised, [
-      "Overtime", "OT Amount"
-    ]);
+      grossSalary: extractSalaryAmount(text, [
+        "Gross Salary",
+        "Gross Pay",
+        "Total Gross"
+      ]),
 
-    const other = findMoneyAfterLabel(normalised, [
-      "Other Income", "Other Earnings"
-    ]);
+      netPay: extractSalaryAmount(text, [
+        "Net Salary",
+        "Net Pay",
+        "Take Home Salary",
+        "Take Home Pay"
+      ])
+    };
 
-    const deductions = findMoneyAfterLabel(normalised, [
-      "Total Deductions", "Deductions"
-    ]);
+    if (fields.basicSalary !== null) {
+      elements.basicSalary.value = fields.basicSalary;
+    }
 
-    const net = findMoneyAfterLabel(normalised, [
-      "Net Pay", "Net Salary", "Take Home Pay",
-      "Take-home Pay", "Net Amount"
-    ]);
+    if (fields.serviceCharge !== null) {
+      elements.serviceCharge.value = fields.serviceCharge;
+    }
 
-    if (basic !== null) elements.basicSalary.value = basic;
-    if (allowances !== null) elements.allowances.value = allowances;
-    if (overtime !== null) elements.overtime.value = overtime;
-    if (other !== null) elements.otherIncome.value = other;
-    if (deductions !== null) elements.deductions.value = deductions;
-    if (net !== null) elements.netPay.value = net;
+    if (fields.tips !== null) {
+      elements.tips.value = fields.tips;
+    }
+
+    if (fields.grossSalary !== null) {
+      elements.grossSalary.value = fields.grossSalary;
+    }
+
+    if (fields.netPay !== null) {
+      elements.netPay.value = fields.netPay;
+    }
 
     if (!elements.payMonth.value) {
       elements.payMonth.value = currentMonthString();
     }
 
+    const recognised = Object.values(fields)
+      .filter(value => value !== null).length;
+
     setMessage(
       elements.payslipStatus,
-      "Possible figures filled in where recognised. Compare every amount with your original payslip."
+      `${recognised} of 5 salary fields recognised. Please compare every amount with your original payslip.`,
+      recognised === 5 ? "success" : "error"
     );
   }
 
   // =========================================
-  // 10. PAYSLIP HISTORY: CLOUD
+  // 11. PAYSLIP HISTORY — SUPABASE
   // =========================================
 
   async function loadPaychecks() {
-    // IMPORTANT: this is the actual table created in Supabase.
     const { data, error } = await supabaseClient
       .from("moneta_payslips")
       .select("*")
@@ -804,12 +1011,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     paychecks = (data || []).map(item => ({
       ...item,
-      net_pay: Number(item.net_salary),
       basic_salary: Number(item.basic_salary),
-      allowances: Number(item.allowances),
-      overtime: Number(item.overtime),
-      other_income: Number(item.other_income),
-      deductions: Number(item.deductions)
+      service_charge: Number(item.service_charge),
+      tips: Number(item.tips),
+      gross_salary: Number(item.gross_salary),
+      net_pay: Number(item.net_salary)
     }));
 
     renderPaycheckHistory();
@@ -822,21 +1028,40 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    elements.payslipHistory.innerHTML = paychecks.map(paycheck => `
-      <article class="transaction-item">
-        <div class="transaction-info">
-          <strong>${escapeHTML(paycheck.pay_month.slice(0, 7))}</strong>
-          <span>
-            Basic ${formatCurrency(paycheck.basic_salary)}
-            · Deductions ${formatCurrency(paycheck.deductions)}
-          </span>
-        </div>
+    elements.payslipHistory.innerHTML =
+      paychecks.map(paycheck => `
+        <article class="transaction-item">
 
-        <div class="transaction-amount income-text">
-          ${formatCurrency(paycheck.net_pay)}
-        </div>
-      </article>
-    `).join("");
+          <div class="transaction-info">
+
+            <strong>
+              ${escapeHTML(paycheck.pay_month.slice(0, 7))}
+            </strong>
+
+            <span>
+              Basic: ${formatCurrency(paycheck.basic_salary)}
+            </span>
+
+            <span>
+              Service charge: ${formatCurrency(paycheck.service_charge)}
+            </span>
+
+            <span>
+              Tips: ${formatCurrency(paycheck.tips)}
+            </span>
+
+            <span>
+              Gross: ${formatCurrency(paycheck.gross_salary)}
+            </span>
+
+          </div>
+
+          <div class="transaction-amount income-text">
+            ${formatCurrency(paycheck.net_pay)}
+          </div>
+
+        </article>
+      `).join("");
   }
 
   async function savePayslip(event) {
@@ -846,42 +1071,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const payDate = elements.payDate.value || null;
 
     const basic = Number(elements.basicSalary.value);
-    const allowances = Number(elements.allowances.value || 0);
-    const overtime = Number(elements.overtime.value || 0);
-    const otherIncome = Number(elements.otherIncome.value || 0);
-    const deductions = Number(elements.deductions.value || 0);
-    const netPay = Number(elements.netPay.value);
+    const serviceCharge = Number(elements.serviceCharge.value);
+    const tipsAmount = Number(elements.tips.value);
+    const gross = Number(elements.grossSalary.value);
+    const net = Number(elements.netPay.value);
 
     const figures = [
-      basic, allowances, overtime, otherIncome, deductions, netPay
+      basic,
+      serviceCharge,
+      tipsAmount,
+      gross,
+      net
     ];
 
-    if (!month || figures.some(value =>
-      !Number.isFinite(value) || value < 0
-    )) {
+    if (
+      !month ||
+      figures.some(value =>
+        !Number.isFinite(value) || value < 0
+      ) ||
+      gross <= 0 ||
+      net <= 0
+    ) {
       setMessage(
         elements.payslipFormMessage,
-        "Check the payslip month and all amounts.",
+        "Please check the salary month and all five figures.",
         "error"
       );
       return;
     }
 
-    if (netPay <= 0) {
-      setMessage(
-        elements.payslipFormMessage,
-        "Take-home pay must be greater than zero.",
-        "error"
+    if (net > gross) {
+      const confirmed = confirm(
+        "Your net salary is higher than your gross salary. Are you sure the figures are correct?"
       );
-      return;
-    }
 
-    const gross = basic + allowances + overtime + otherIncome;
-
-    if (netPay > gross && gross > 0) {
-      if (!confirm(
-        "Your take-home pay is higher than the combined salary figures. Are you sure these numbers are correct?"
-      )) return;
+      if (!confirmed) return;
     }
 
     setBusy(
@@ -899,18 +1123,27 @@ document.addEventListener("DOMContentLoaded", () => {
         pay_month: monthStart(month),
         pay_date: payDate,
         currency: "AED",
+
         basic_salary: basic,
-        allowances,
-        overtime,
-        other_income: otherIncome,
-        deductions,
-        net_salary: netPay,
-        file_name: file ? file.name.slice(0, 250) : "",
+        service_charge: serviceCharge,
+        tips: tipsAmount,
+        gross_salary: gross,
+        net_salary: net,
+
+        // Retained legacy columns in the database.
+        allowances: 0,
+        overtime: 0,
+        other_income: 0,
+        deductions: 0,
+
+        file_name: file
+          ? file.name.slice(0, 250)
+          : "",
+
         notes: elements.payNotes.value.trim(),
         updated_at: new Date().toISOString()
       };
 
-      // One payslip per month. Update it if it already exists.
       const { error } = await supabaseClient
         .from("moneta_payslips")
         .upsert(payload, {
@@ -924,17 +1157,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setMessage(
         elements.payslipFormMessage,
-        "Payslip figures saved successfully."
+        "Your five salary figures have been saved successfully."
       );
 
-      setCloudStatus("Payslip saved to your cloud account", "success");
+      setCloudStatus(
+        "Payslip saved to your cloud account",
+        "success"
+      );
+
     } catch (error) {
-      console.error(error);
+      console.error("Payslip save error:", error);
+
       setMessage(
         elements.payslipFormMessage,
         "Could not save payslip: " + error.message,
         "error"
       );
+
     } finally {
       setBusy(
         elements.savePayslipBtn,
@@ -946,7 +1185,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 11. MONTHLY BUDGET
+  // 12. MONTHLY BUDGET
   // =========================================
 
   function getPaycheckForMonth(month) {
@@ -975,20 +1214,16 @@ document.addEventListener("DOMContentLoaded", () => {
       planned: Math.round(income * item.percent) / 100
     }));
 
-    // Correct rounding so the suggested allocations equal the net salary.
     const allocated = budgetItems.reduce(
-      (sum, item) => sum + item.planned, 0
+      (sum, item) => sum + item.planned,
+      0
     );
 
     const difference =
       Math.round((income - allocated) * 100) / 100;
 
     if (budgetItems.length) {
-      budgetItems[budgetItems.length - 1].planned =
-        Math.max(
-          0,
-          budgetItems[budgetItems.length - 1].planned + difference
-        );
+      budgetItems[budgetItems.length - 1].planned += difference;
     }
 
     renderBudget();
@@ -1025,33 +1260,47 @@ document.addEventListener("DOMContentLoaded", () => {
         item.category === category &&
         item.date.startsWith(month)
       )
-      .reduce((sum, item) => sum + Number(item.amount), 0);
+      .reduce(
+        (sum, item) => sum + Number(item.amount),
+        0
+      );
   }
 
   function renderBudget() {
     const month = getSelectedBudgetMonth();
     const paycheck = getPaycheckForMonth(month);
-    const income = paycheck ? Number(paycheck.net_pay) : 0;
+
+    const income = paycheck
+      ? Number(paycheck.net_pay)
+      : 0;
 
     const planned = budgetItems.reduce(
-      (sum, item) => sum + Number(item.planned), 0
+      (sum, item) => sum + Number(item.planned),
+      0
     );
 
     const remaining = income - planned;
 
-    elements.budgetIncome.textContent = formatCurrency(income);
-    elements.budgetPlanned.textContent = formatCurrency(planned);
-    elements.budgetRemaining.textContent = formatCurrency(remaining);
+    elements.budgetIncome.textContent =
+      formatCurrency(income);
+
+    elements.budgetPlanned.textContent =
+      formatCurrency(planned);
+
+    elements.budgetRemaining.textContent =
+      formatCurrency(remaining);
 
     const progress = income > 0
       ? Math.min(planned / income * 100, 100)
       : 0;
 
-    elements.budgetProgress.style.width = `${progress}%`;
+    elements.budgetProgress.style.width =
+      `${progress}%`;
 
-    elements.budgetProgressMessage.textContent = income
-      ? `${Math.round(progress)}% of your take-home pay has been allocated.`
-      : "Save a payslip to calculate your monthly budget.";
+    elements.budgetProgressMessage.textContent =
+      income
+        ? `${Math.round(progress)}% of your take-home pay has been allocated.`
+        : "Save a payslip to calculate your monthly budget.";
 
     if (!budgetItems.length) {
       elements.budgetList.innerHTML =
@@ -1059,55 +1308,70 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    elements.budgetList.innerHTML = budgetItems.map((item, index) => {
-      const actual = getActualExpensesForCategory(item.category, month);
-      const left = Number(item.planned) - actual;
+    elements.budgetList.innerHTML =
+      budgetItems.map((item, index) => {
+        const actual = getActualExpensesForCategory(
+          item.category,
+          month
+        );
 
-      return `
-        <div class="budget-row">
-          <div class="budget-row-heading">
-            <strong>${escapeHTML(item.category)}</strong>
-            <span>
-              Spent: ${formatCurrency(actual)}
-              · Left: ${formatCurrency(left)}
-            </span>
-          </div>
+        const left = Number(item.planned) - actual;
 
-          <label>
-            Planned amount (AED)
-            <input
-              type="number"
-              class="budget-amount-input"
-              data-budget-index="${index}"
-              min="0"
-              step="0.01"
-              value="${Number(item.planned).toFixed(2)}"
-            >
-          </label>
+        const spentProgress = Number(item.planned) > 0
+          ? Math.min(actual / Number(item.planned) * 100, 100)
+          : 0;
 
-          <div class="progress-track">
-            <div class="progress-fill"
-              style="width:${item.planned > 0
-                ? Math.min(actual / item.planned * 100, 100)
-                : 0}%">
+        return `
+          <div class="budget-row">
+
+            <div class="budget-row-heading">
+              <strong>${escapeHTML(item.category)}</strong>
+
+              <span>
+                Spent: ${formatCurrency(actual)}
+                · Left: ${formatCurrency(left)}
+              </span>
             </div>
+
+            <label>
+              Planned amount (AED)
+
+              <input
+                type="number"
+                class="budget-amount-input"
+                data-budget-index="${index}"
+                min="0"
+                step="0.01"
+                value="${Number(item.planned).toFixed(2)}"
+              >
+            </label>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                style="width:${spentProgress}%"
+              ></div>
+            </div>
+
           </div>
-        </div>
-      `;
-    }).join("");
+        `;
+      }).join("");
   }
 
   function updateBudgetInput(event) {
     const input = event.target.closest(".budget-amount-input");
+
     if (!input) return;
 
     const index = Number(input.dataset.budgetIndex);
     const amount = Number(input.value);
 
-    if (!Number.isInteger(index) ||
-        !budgetItems[index] ||
-        !Number.isFinite(amount) ||
-        amount < 0) {
+    if (
+      !Number.isInteger(index) ||
+      !budgetItems[index] ||
+      !Number.isFinite(amount) ||
+      amount < 0
+    ) {
       return;
     }
 
@@ -1115,14 +1379,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const month = getSelectedBudgetMonth();
     const paycheck = getPaycheckForMonth(month);
-    const income = paycheck ? Number(paycheck.net_pay) : 0;
+
+    const income = paycheck
+      ? Number(paycheck.net_pay)
+      : 0;
 
     const planned = budgetItems.reduce(
-      (sum, item) => sum + Number(item.planned), 0
+      (sum, item) => sum + Number(item.planned),
+      0
     );
 
-    elements.budgetIncome.textContent = formatCurrency(income);
-    elements.budgetPlanned.textContent = formatCurrency(planned);
+    elements.budgetIncome.textContent =
+      formatCurrency(income);
+
+    elements.budgetPlanned.textContent =
+      formatCurrency(planned);
+
     elements.budgetRemaining.textContent =
       formatCurrency(income - planned);
 
@@ -1130,7 +1402,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ? Math.min(planned / income * 100, 100)
       : 0;
 
-    elements.budgetProgress.style.width = `${progress}%`;
+    elements.budgetProgress.style.width =
+      `${progress}%`;
 
     elements.budgetProgressMessage.textContent =
       `${Math.round(progress)}% of your take-home pay has been allocated.`;
@@ -1148,9 +1421,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const paycheck = getPaycheckForMonth(month);
-
-    if (!paycheck) {
+    if (!getPaycheckForMonth(month)) {
       setMessage(
         elements.budgetMessage,
         "A confirmed payslip is needed for this month.",
@@ -1166,7 +1437,11 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     if (invalid) {
-      setMessage(elements.budgetMessage, "Check the budget amounts.", "error");
+      setMessage(
+        elements.budgetMessage,
+        "Please check the budget amounts.",
+        "error"
+      );
       return;
     }
 
@@ -1202,13 +1477,14 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       setCloudStatus("Monthly budget saved", "success");
+
     } catch (error) {
-      console.error(error);
       setMessage(
         elements.budgetMessage,
         "Could not save budget: " + error.message,
         "error"
       );
+
     } finally {
       setBusy(
         elements.saveBudgetBtn,
@@ -1220,7 +1496,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 12. CSV EXPORT
+  // 13. CSV EXPORT
   // =========================================
 
   function downloadFile(content, filename, type) {
@@ -1228,6 +1504,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
+
     link.href = url;
     link.download = filename;
 
@@ -1248,6 +1525,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const rows = [
       ["Date", "Description", "Type", "Category", "Amount (AED)"],
+
       ...filtered.map(item => [
         item.date,
         item.title,
@@ -1271,13 +1549,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 13. JSON BACKUP AND RESTORE
+  // 14. JSON BACKUP AND RESTORE
   // =========================================
 
   function backupData() {
     const backup = {
       app: "MONETA",
-      version: 3,
+      version: 4,
       exportedAt: new Date().toISOString(),
       savingsGoal,
       transactions: transactions.map(item => ({
@@ -1304,7 +1582,10 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const backup = JSON.parse(await file.text());
 
-      if (!backup || !Array.isArray(backup.transactions)) {
+      if (
+        !backup ||
+        !Array.isArray(backup.transactions)
+      ) {
         throw new Error("This is not a valid MONETA backup.");
       }
 
@@ -1317,13 +1598,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const imported = backup.transactions.map(item => {
         const amount = Number(item.amount);
 
-        if (!item.title ||
-            !["income", "expense"].includes(item.type) ||
-            !item.category ||
-            !Number.isFinite(amount) ||
-            amount <= 0 ||
-            !/^\d{4}-\d{2}-\d{2}$/.test(item.date)) {
-          throw new Error("The backup contains an invalid transaction.");
+        if (
+          !item.title ||
+          !["income", "expense"].includes(item.type) ||
+          !item.category ||
+          !Number.isFinite(amount) ||
+          amount <= 0 ||
+          !/^\d{4}-\d{2}-\d{2}$/.test(item.date)
+        ) {
+          throw new Error(
+            "The backup contains an invalid transaction."
+          );
         }
 
         return {
@@ -1342,7 +1627,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!confirm(
         `Import ${imported.length} transactions into your cloud account?`
-      )) return;
+      )) {
+        return;
+      }
 
       elements.importMessage.textContent = "Importing...";
 
@@ -1361,7 +1648,9 @@ document.addEventListener("DOMContentLoaded", () => {
             user_id: currentUser.id,
             savings_goal: goal,
             updated_at: new Date().toISOString()
-          }, { onConflict: "user_id" });
+          }, {
+            onConflict: "user_id"
+          });
 
         if (goalError) throw goalError;
       }
@@ -1371,17 +1660,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       elements.importMessage.textContent =
         `Successfully imported ${imported.length} transactions.`;
+
     } catch (error) {
       console.error(error);
+
       elements.importMessage.textContent =
         error.message || "Import failed.";
+
     } finally {
       elements.importFile.value = "";
     }
   }
 
   // =========================================
-  // 14. LOGOUT
+  // 15. LOGOUT
   // =========================================
 
   async function logout() {
@@ -1392,8 +1684,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (error) {
       alert("Logout failed: " + error.message);
+
       elements.logoutBtn.disabled = false;
       elements.logoutBtn.textContent = "Log out";
+
       return;
     }
 
@@ -1401,18 +1695,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 15. EVENT LISTENERS
+  // 16. EVENT LISTENERS
   // =========================================
 
-  elements.typeInput.addEventListener("change", populateCategories);
-  elements.transactionForm.addEventListener("submit", addTransaction);
-  elements.cancelEditBtn.addEventListener("click", resetForm);
-  elements.saveGoalBtn.addEventListener("click", saveSavingsGoal);
+  elements.typeInput.addEventListener(
+    "change",
+    populateCategories
+  );
 
-  elements.monthFilter.addEventListener("change", renderDashboard);
-  elements.searchInput.addEventListener("input", renderTransactions);
-  elements.typeFilter.addEventListener("change", renderTransactions);
-  elements.categoryFilter.addEventListener("change", renderTransactions);
+  elements.transactionForm.addEventListener(
+    "submit",
+    addTransaction
+  );
+
+  elements.cancelEditBtn.addEventListener(
+    "click",
+    resetTransactionForm
+  );
+
+  elements.saveGoalBtn.addEventListener(
+    "click",
+    saveSavingsGoal
+  );
+
+  elements.monthFilter.addEventListener(
+    "change",
+    renderDashboard
+  );
+
+  elements.searchInput.addEventListener(
+    "input",
+    renderTransactions
+  );
+
+  elements.typeFilter.addEventListener(
+    "change",
+    renderTransactions
+  );
+
+  elements.categoryFilter.addEventListener(
+    "change",
+    renderTransactions
+  );
 
   elements.addTransactionBtn.addEventListener("click", () => {
     $("transactionSection").scrollIntoView({
@@ -1425,37 +1749,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
   elements.transactionList.addEventListener("click", event => {
     const button = event.target.closest("button[data-action]");
+
     if (!button) return;
 
+    const id = button.dataset.id;
+
     if (button.dataset.action === "edit") {
-      editTransaction(button.dataset.id);
+      editTransaction(id);
     }
 
     if (button.dataset.action === "delete") {
-      deleteTransaction(button.dataset.id);
+      deleteTransaction(id);
     }
   });
 
-  elements.exportBtn.addEventListener("click", exportCSV);
-  elements.backupBtn.addEventListener("click", backupData);
-  elements.logoutBtn.addEventListener("click", logout);
+  elements.exportBtn.addEventListener(
+    "click",
+    exportCSV
+  );
+
+  elements.backupBtn.addEventListener(
+    "click",
+    backupData
+  );
+
+  elements.logoutBtn.addEventListener(
+    "click",
+    logout
+  );
 
   elements.importFile.addEventListener("change", event => {
     importBackup(event.target.files[0]);
   });
 
-  elements.readPayslipBtn.addEventListener("click", readPayslip);
-  elements.payslipForm.addEventListener("submit", savePayslip);
+  elements.readPayslipBtn.addEventListener(
+    "click",
+    readPayslip
+  );
 
-  elements.generateBudgetBtn.addEventListener("click", generateBudget);
-  elements.saveBudgetBtn.addEventListener("click", saveBudget);
+  elements.payslipForm.addEventListener(
+    "submit",
+    savePayslip
+  );
 
-  elements.budgetList.addEventListener("change", updateBudgetInput);
+  elements.generateBudgetBtn.addEventListener(
+    "click",
+    generateBudget
+  );
+
+  elements.saveBudgetBtn.addEventListener(
+    "click",
+    saveBudget
+  );
+
+  elements.budgetList.addEventListener(
+    "change",
+    updateBudgetInput
+  );
 
   elements.budgetMonth.addEventListener("change", async () => {
     try {
       await loadBudget();
       renderBudget();
+
     } catch (error) {
       setMessage(
         elements.budgetMessage,
@@ -1466,12 +1822,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================
-  // 16. START MONETA
+  // 17. START MONETA
   // =========================================
 
   async function startMoneta() {
     if (!window.supabase) {
-      throw new Error("Supabase library could not be loaded.");
+      throw new Error(
+        "Supabase library could not be loaded."
+      );
     }
 
     supabaseClient = window.supabase.createClient(
@@ -1487,17 +1845,26 @@ document.addEventListener("DOMContentLoaded", () => {
         day: "numeric"
       });
 
-    elements.year.textContent = new Date().getFullYear();
+    elements.year.textContent =
+      new Date().getFullYear();
 
-    elements.monthFilter.value = currentMonthString();
-    elements.dateInput.value = localDateString();
-    elements.payMonth.value = currentMonthString();
-    elements.budgetMonth.value = currentMonthString();
+    elements.monthFilter.value =
+      currentMonthString();
+
+    elements.dateInput.value =
+      localDateString();
+
+    elements.payMonth.value =
+      currentMonthString();
+
+    elements.budgetMonth.value =
+      currentMonthString();
 
     populateCategories();
     populateCategoryFilter();
 
-    const { data, error } = await supabaseClient.auth.getUser();
+    const { data, error } =
+      await supabaseClient.auth.getUser();
 
     if (error || !data.user) {
       window.location.replace("login.html");
@@ -1517,11 +1884,15 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDashboard();
     renderBudget();
 
-    setCloudStatus("Connected · Your data is synced", "success");
+    setCloudStatus(
+      "Connected · Your data is synced",
+      "success"
+    );
   }
 
   startMoneta().catch(error => {
-    console.error("MONETA error:", error);
+    console.error("MONETA startup error:", error);
+
     setCloudStatus(
       "Could not connect: " + error.message,
       "error"
