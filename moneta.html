@@ -15,12 +15,16 @@
 
   <link rel="stylesheet" href="css/moneta.css">
 
-  <!-- Browser-based payslip reading libraries -->
+  <!-- PDF reader -->
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.min.js" defer></script>
+
+  <!-- PNG / JPG OCR reader -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" defer></script>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0" defer></script>
+
+  <!-- MONETA application -->
   <script src="js/moneta.js" defer></script>
 </head>
 
@@ -44,7 +48,9 @@
       <p class="eyebrow">YOUR MONEY, YOUR CONTROL</p>
       <h1>Financial <em>overview.</em></h1>
       <p class="muted">A clearer picture of where your money goes.</p>
-      <p class="muted" id="cloudStatus" aria-live="polite">Connecting to your secure account...</p>
+      <p class="muted" id="cloudStatus" aria-live="polite">
+        Connecting to your secure account...
+      </p>
     </div>
 
     <button class="button button-primary" id="addTransactionBtn" type="button">
@@ -90,23 +96,27 @@
 
   </section>
 
-  <!-- NEW: PAYSLIP READER -->
+  <!-- PAYSLIP READER -->
   <section class="panel payslip-panel">
 
     <div class="panel-heading">
       <div>
         <p class="eyebrow">KNOW YOUR INCOME</p>
         <h2>My payslip</h2>
-        <p class="muted">Upload your payslip and review the figures before saving.</p>
+        <p class="muted">
+          Upload your payslip and review the figures before saving.
+        </p>
       </div>
     </div>
 
     <div class="payslip-upload">
+
       <label for="payslipFile">Choose payslip (PDF or image)</label>
+
       <input
         type="file"
         id="payslipFile"
-        accept=".pdf,image/*"
+        accept=".pdf,.png,.jpg,.jpeg,image/png,image/jpeg"
       >
 
       <button
@@ -118,15 +128,19 @@
       </button>
 
       <p id="payslipStatus" class="form-message" aria-live="polite">
-        Your document is processed in your browser. It is not uploaded to our database.
+        Your document is processed in your browser. The original file is not saved to the database.
       </p>
+
     </div>
 
     <div class="payslip-text-preview" id="payslipTextSection" hidden>
-      <label for="payslipText">Recognised text — check the figures carefully</label>
+      <label for="payslipText">
+        Recognised text — check the figures carefully
+      </label>
       <textarea id="payslipText" rows="6" readonly></textarea>
     </div>
 
+    <!-- FIVE SALARY FIELDS -->
     <form id="payslipForm">
 
       <div class="form-grid">
@@ -147,27 +161,22 @@
         </label>
 
         <label>
-          Allowances (AED)
-          <input type="number" id="allowances" min="0" step="0.01" value="0">
+          Service charge (AED)
+          <input type="number" id="serviceCharge" min="0" step="0.01" value="0" required>
         </label>
 
         <label>
-          Overtime (AED)
-          <input type="number" id="overtime" min="0" step="0.01" value="0">
+          Tips (AED)
+          <input type="number" id="tips" min="0" step="0.01" value="0" required>
         </label>
 
         <label>
-          Other income (AED)
-          <input type="number" id="otherIncome" min="0" step="0.01" value="0">
+          Gross salary (AED)
+          <input type="number" id="grossSalary" min="0" step="0.01" required>
         </label>
 
         <label>
-          Deductions (AED)
-          <input type="number" id="deductions" min="0" step="0.01" value="0">
-        </label>
-
-        <label>
-          Take-home pay (AED)
+          Net salary (AED)
           <input type="number" id="netPay" min="0" step="0.01" required>
         </label>
 
@@ -195,14 +204,16 @@
 
   </section>
 
-  <!-- NEW: MONTHLY BUDGET -->
+  <!-- MONTHLY BUDGET -->
   <section class="panel budget-panel">
 
     <div class="panel-heading">
       <div>
         <p class="eyebrow">PLAN BEFORE YOU SPEND</p>
         <h2>Monthly budget</h2>
-        <p class="muted">Create a spending plan from your confirmed take-home pay.</p>
+        <p class="muted">
+          Create a spending plan from your confirmed take-home pay.
+        </p>
       </div>
     </div>
 
@@ -238,6 +249,7 @@
       <div class="progress-track">
         <div class="progress-fill" id="budgetProgress"></div>
       </div>
+
       <p class="muted" id="budgetProgressMessage">
         Save a payslip and generate your first budget.
       </p>
@@ -269,7 +281,9 @@
     <div class="goal-input-row">
       <label for="goalInput">Your savings target (AED)</label>
       <input type="number" id="goalInput" min="0" step="1" value="1000">
-      <button class="button button-small" id="saveGoalBtn" type="button">Save goal</button>
+      <button class="button button-small" id="saveGoalBtn" type="button">
+        Save goal
+      </button>
     </div>
 
     <div class="progress-track">
@@ -341,12 +355,14 @@
         <p class="eyebrow">KEEP TRACK</p>
         <h2 id="formHeading">Add a transaction</h2>
       </div>
+
       <button class="text-button" id="cancelEditBtn" type="button" hidden>
         Cancel edit
       </button>
     </div>
 
     <form id="transactionForm">
+
       <input type="hidden" id="editId">
 
       <div class="form-grid">
@@ -386,6 +402,7 @@
       </button>
 
       <p class="form-message" id="formMessage" aria-live="polite"></p>
+
     </form>
 
   </section>
@@ -400,12 +417,15 @@
       </div>
 
       <div class="transaction-actions">
+
         <button class="button button-small button-outline" id="backupBtn" type="button">
           ↓ Backup JSON
         </button>
+
         <button class="button button-small button-outline" id="exportBtn" type="button">
           ↓ Export CSV
         </button>
+
       </div>
     </div>
 
@@ -416,6 +436,7 @@
     </div>
 
     <div class="filter-grid">
+
       <input type="search" id="searchInput" placeholder="Search transactions...">
 
       <select id="typeFilter">
@@ -427,6 +448,7 @@
       <select id="categoryFilter">
         <option value="all">All categories</option>
       </select>
+
     </div>
 
     <div class="transaction-list" id="transactionList">
@@ -446,7 +468,9 @@
   <a href="dashboard.html" class="logo">MONETA<span>.</span></a>
   <p>MAKE EVERY DIRHAM COUNT.</p>
   <p>© <span id="year"></span> MONETA. PERSONAL FINANCE TRACKER.</p>
-  <p class="footer-note">Your financial records are stored in your personal cloud account.</p>
+  <p class="footer-note">
+    Your financial records are stored in your personal cloud account.
+  </p>
 </footer>
 
 </body>
