@@ -8,10 +8,7 @@
 
   <link rel="stylesheet" href="css/dashboard.css">
 
-  <!-- Supabase connection -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-
-  <!-- Dashboard JavaScript -->
   <script src="js/dashboard.js" defer></script>
 </head>
 
@@ -35,6 +32,35 @@
       <p id="today"></p>
     </section>
 
+    <!-- CHEF'S LAB SUMMARY -->
+
+    <section class="chef-summary">
+
+      <p class="eyebrow">FROM YOUR KITCHEN</p>
+      <h2>Chef's Lab.</h2>
+
+      <div class="chef-stats">
+        <p>Total recipes saved</p>
+        <h3 id="recipeCount">Loading...</h3>
+      </div>
+
+      <div class="latest-recipe">
+        <p class="eyebrow">LATEST CREATION</p>
+        <h3 id="latestRecipe">Loading your latest recipe...</h3>
+        <p id="latestRecipeDate"></p>
+      </div>
+
+      <a href="chef-lab.html" class="room-card">
+        <span class="room-icon">👨🏽‍🍳</span>
+        <h3>OPEN CHEF'S LAB →</h3>
+        <p>Your creative kitchen and cooking journal.</p>
+      </a>
+
+    </section>
+
+
+    <!-- YOUR ROOMS -->
+
     <section class="rooms">
       <h2>Your rooms</h2>
 
@@ -51,13 +77,12 @@
           <h3>Recipe Archive</h3>
           <p>My dishes, ingredients and experiments.</p>
         </a>
-        
-        
+
         <a href="chef-lab.html" class="room-card">
-           <span class="room-icon">👨🏽‍🍳</span>
-            <h3>Chef's Lab</h3>
-            <p>My creative kitchen and cooking journal.</p>
-      </a>
+          <span class="room-icon">👨🏽‍🍳</span>
+          <h3>Chef's Lab</h3>
+          <p>My creative kitchen and cooking journal.</p>
+        </a>
 
         <a href="#" class="room-card">
           <span class="room-icon">📷</span>
@@ -86,6 +111,7 @@
       </div>
     </section>
 
+
     <!-- QUICK NOTES -->
 
     <section class="quick-notes">
@@ -105,6 +131,7 @@
       <div id="savedNotes"></div>
 
     </section>
+
 
     <footer>
       <p>STILL BECOMING. STILL BUILDING.</p>
