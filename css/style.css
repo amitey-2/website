@@ -30,6 +30,10 @@ a {
   text-decoration: none;
 }
 
+button {
+  font: inherit;
+}
+
 .container {
   width: min(1100px, 88%);
   margin: auto;
@@ -42,6 +46,7 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -54,7 +59,7 @@ nav {
 
 .nav-links {
   display: flex;
-  gap: 27px;
+  gap: 24px;
 }
 
 .nav-links a {
@@ -71,7 +76,7 @@ nav {
 /* HERO */
 
 .hero {
-  min-height: 570px;
+  min-height: 590px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -115,9 +120,12 @@ nav {
 .btn {
   display: inline-block;
   border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
   padding: 12px 22px;
   font-size: 10px;
   letter-spacing: 2px;
+  cursor: pointer;
   transition: 0.3s;
 }
 
@@ -128,11 +136,29 @@ nav {
   color: #101010;
 }
 
+.hero-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 35px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #91a987;
+  box-shadow: 0 0 12px rgba(145, 169, 135, 0.4);
+}
+
 /* SECTIONS */
 
 section {
   padding: 85px 0;
   border-top: 1px solid var(--border);
+  scroll-margin-top: 25px;
 }
 
 section h2 {
@@ -168,7 +194,55 @@ section h2 {
   margin-top: 15px;
 }
 
-/* CARDS */
+/* RANDOM THOUGHTS */
+
+.quote-box {
+  margin-top: 30px;
+  padding: 35px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+}
+
+.quote-mark {
+  font-family: Georgia, serif;
+  font-size: 65px;
+  line-height: 1;
+  color: var(--accent);
+}
+
+#quoteText {
+  font-family: Georgia, serif;
+  font-size: clamp(21px, 4vw, 32px);
+  line-height: 1.5;
+  margin: 15px 0 25px;
+}
+
+#quoteAuthor {
+  color: var(--accent);
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+
+.quote-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.quote-buttons button {
+  font-family: inherit;
+}
+
+#copyStatus {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 15px;
+  min-height: 20px;
+}
+
+/* GENERAL CARDS */
 
 .grid {
   display: grid;
@@ -232,6 +306,10 @@ section h2 {
   padding-bottom: 35px;
 }
 
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
 .timeline-item::before {
   content: "";
   position: absolute;
@@ -259,6 +337,106 @@ section h2 {
   font-size: 14px;
 }
 
+/* PROJECTS */
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 35px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 310px;
+  padding: 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+}
+
+.project-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.project-label {
+  color: var(--accent);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.project-symbol {
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.project-card h3 {
+  font-size: 23px;
+  margin-bottom: 12px;
+}
+
+.project-card p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.project-card .tags {
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+.project-link {
+  display: inline-block;
+  margin-top: 25px;
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 2px;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 5px;
+  transition: opacity 0.3s;
+}
+
+.project-link:hover {
+  opacity: 0.7;
+}
+
+.project-status {
+  display: inline-block;
+  margin-top: 25px;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.project-note {
+  margin-top: 25px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* CONTACT */
+
+.contact-actions {
+  margin-top: 30px;
+}
+
+.contact-note {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 20px;
+}
+
 /* FOOTER */
 
 footer {
@@ -278,22 +456,39 @@ footer span {
   color: var(--accent);
 }
 
+.back-to-top {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+/* FOCUS ACCESSIBILITY */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
 /* MOBILE */
 
-@media (max-width: 650px) {
+@media (max-width: 750px) {
   .container {
     width: 90%;
   }
 
   nav {
-    min-height: 75px;
+    min-height: 90px;
     flex-direction: column;
     justify-content: center;
     gap: 12px;
+    padding: 15px 0;
   }
 
   .nav-links {
-    gap: 15px;
+    gap: 14px;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -321,11 +516,13 @@ footer span {
     padding: 65px 0;
   }
 
-  .grid {
+  .grid,
+  .project-grid {
     grid-template-columns: 1fr;
   }
 
-  .card {
+  .card,
+  .project-card {
     padding: 25px;
   }
 
@@ -333,9 +530,34 @@ footer span {
     font-size: 16px;
     padding: 22px;
   }
+
+  .quote-box {
+    padding: 25px;
+  }
 }
 
-/* ACCESSIBILITY */
+/* SMALL PHONES */
+
+@media (max-width: 380px) {
+  .nav-links {
+    gap: 10px;
+  }
+
+  .nav-links a {
+    font-size: 8px;
+  }
+
+  .hero h1 {
+    font-size: 55px;
+  }
+
+  .btn {
+    padding: 11px 15px;
+    font-size: 9px;
+  }
+}
+
+/* REDUCED MOTION */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -346,53 +568,3 @@ footer span {
     animation-duration: 0.01ms !important;
   }
 }
-
-
-/* RANDOM THOUGHTS */
-
-.quote-box {
-  margin-top: 30px;
-  padding: 35px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-}
-
-.quote-mark {
-  font-family: Georgia, serif;
-  font-size: 65px;
-  line-height: 1;
-  color: var(--accent);
-}
-
-#quoteText {
-  font-family: Georgia, serif;
-  font-size: clamp(21px, 4vw, 32px);
-  line-height: 1.5;
-  margin: 15px 0 25px;
-}
-
-#quoteAuthor {
-  color: var(--accent);
-  letter-spacing: 2px;
-  font-size: 11px;
-}
-
-.quote-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 30px;
-}
-
-.quote-buttons button {
-  cursor: pointer;
-  font-family: inherit;
-}
-
-#copyStatus {
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 15px;
-}
-
