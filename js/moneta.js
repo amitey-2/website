@@ -934,6 +934,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!window.supabase) {
       throw new Error("Supabase library could not be loaded.");
     }
+    
+    supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
     elements.todayLabel.textContent =
       new Date().toLocaleDateString("en-US", {
