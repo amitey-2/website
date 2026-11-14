@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#101010">
-  <meta name="description" content="Amit Neupane — Chef, learner, coder, coffee enthusiast and a work in progress.">
+  <meta name="description" content="Amit Neupane — Chef, curious learner and aspiring web developer. Explore my journey, experiments and projects.">
 
   <title>Amit Neupane | A Work in Progress</title>
 
@@ -13,44 +13,54 @@
   <script src="js/script.js" defer></script>
 </head>
 
-<body>
+<body id="top">
   <div class="container">
 
     <nav>
-      <a href="#" class="logo">AN.</a>
+      <a href="#top" class="logo" aria-label="Back to top">AN.</a>
 
       <div class="nav-links">
         <a href="#about">ABOUT</a>
         <a href="#skills">SKILLS</a>
         <a href="#journey">JOURNEY</a>
-        <a href="#interests">INTERESTS</a>
+        <a href="#projects">PROJECTS</a>
+        <a href="#contact">CONTACT</a>
       </div>
     </nav>
 
+    <!-- HERO -->
+
     <header class="hero">
-      <div class="eyebrow">CHEF · LEARNER · HUMAN</div>
+      <div class="eyebrow">CHEF · LEARNER · BUILDER</div>
 
       <h1>AMIT<br><span>NEUPANE.</span></h1>
 
       <p>
         Not just a chef. Not just a developer.
-        Just a curious human trying to learn everything,
-        create something meaningful and figure life out
+        Just a curious human trying to learn, create
+        something meaningful and figure life out
         along the way.
       </p>
 
       <div class="buttons">
         <a href="#about" class="btn primary">DISCOVER ME</a>
-        <a href="#interests" class="btn">MY UNIVERSE</a>
+        <a href="#projects" class="btn">EXPLORE MY WORK</a>
+      </div>
+
+      <div class="hero-note">
+        <span class="status-dot"></span>
+        Currently learning, building and experimenting.
       </div>
     </header>
+
+    <!-- ABOUT -->
 
     <section id="about">
       <div class="number">01 / ABOUT ME</div>
       <h2>A little bit of everything.</h2>
 
       <p class="intro">
-        I'm a hospitality professional, an aspiring developer,
+        I'm a hospitality professional, an aspiring web developer,
         a coffee enthusiast and a lifelong learner.
         I spend my days in the kitchen and my free time exploring
         ideas, technology, music and stories.
@@ -61,41 +71,45 @@
         <small>— AMIT NEUPANE</small>
       </div>
     </section>
-      
-<section id="thoughts">
-  <div class="number">02 / RANDOM THOUGHTS</div>
-  <h2>Things that live in my head.</h2>
 
-  <div class="quote-box">
-    <div class="quote-mark">“</div>
+    <!-- RANDOM THOUGHTS -->
 
-    <p id="quoteText">
-      Life — dying, suffering; chaos I live in as routine.
-    </p>
+    <section id="thoughts">
+      <div class="number">02 / RANDOM THOUGHTS</div>
+      <h2>Things that live in my head.</h2>
 
-    <small id="quoteAuthor">— AMIT NEUPANE</small>
+      <div class="quote-box">
+        <div class="quote-mark">“</div>
 
-    <div class="quote-buttons">
-      <button id="nextQuote" class="btn primary">
-        NEXT THOUGHT ↗
-      </button>
+        <p id="quoteText">
+          Life — dying, suffering; chaos I live in as routine.
+        </p>
 
-      <button id="copyQuote" class="btn">
-        COPY QUOTE
-      </button>
-    </div>
+        <small id="quoteAuthor">— AMIT NEUPANE</small>
 
-    <p id="copyStatus" aria-live="polite"></p>
-  </div>
-</section>
+        <div class="quote-buttons">
+          <button id="nextQuote" class="btn primary" type="button">
+            NEXT THOUGHT ↗
+          </button>
+
+          <button id="copyQuote" class="btn" type="button">
+            COPY QUOTE
+          </button>
+        </div>
+
+        <p id="copyStatus" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- SKILLS AND INTERESTS -->
 
     <section id="skills">
-      <div class="number">02 / WHAT I DO</div>
+      <div class="number">03 / DIFFERENT WORLDS</div>
       <h2>Different worlds. One person.</h2>
 
       <div class="grid">
 
-        <div class="card">
+        <article class="card">
           <div class="icon">👨‍🍳</div>
           <h3>The Chef</h3>
           <p>
@@ -108,46 +122,49 @@
             <span class="tag">COLD KITCHEN</span>
             <span class="tag">DESSERTS</span>
           </div>
-        </div>
+        </article>
 
-        <div class="card">
+        <article class="card">
           <div class="icon">💻</div>
-          <h3>The Learner</h3>
+          <h3>The Developer in Progress</h3>
           <p>
-            Exploring web development, HTML, CSS, JavaScript
-            and the mysterious world of backend programming.
+            Learning web development by building real projects
+            and figuring out how the frontend and backend work together.
           </p>
           <div class="tags">
             <span class="tag">HTML</span>
             <span class="tag">CSS</span>
             <span class="tag">JAVASCRIPT</span>
-            <span class="tag">PHP — LEARNING</span>
+            <span class="tag">SUPABASE</span>
+            <span class="tag">GITHUB</span>
           </div>
-        </div>
+        </article>
 
-        <div class="card">
+        <article class="card">
           <div class="icon">☕</div>
           <h3>The Coffee Enthusiast</h3>
           <p>
             Interested in coffee, café culture and the craft
             behind a good cup.
           </p>
-        </div>
+        </article>
 
-        <div class="card">
+        <article class="card">
           <div class="icon">🥊</div>
           <h3>The Fighter</h3>
           <p>
             Training, boxing, fitness and trying to become
             a stronger version of myself.
           </p>
-        </div>
+        </article>
 
       </div>
     </section>
 
+    <!-- JOURNEY -->
+
     <section id="journey">
-      <div class="number">03 / MY JOURNEY</div>
+      <div class="number">04 / MY JOURNEY</div>
       <h2>Every chapter counts.</h2>
 
       <div class="timeline">
@@ -174,61 +191,159 @@
           <small>2026 — ONGOING</small>
           <h3>Exploring Technology</h3>
           <p>
-            Learning to code and building my own corner
-            of the internet.
+            Learning to code, experimenting with databases
+            and building my own corner of the internet.
           </p>
         </div>
 
       </div>
     </section>
 
+    <!-- INTERESTS -->
+
     <section id="interests">
-      <div class="number">04 / BEYOND THE ROUTINE</div>
+      <div class="number">05 / BEYOND THE ROUTINE</div>
       <h2>Welcome to my chaos.</h2>
 
       <div class="grid">
 
-        <div class="card">
+        <article class="card">
           <div class="icon">⛩️</div>
           <h3>Anime & Manga</h3>
           <p>
             One Piece, Jujutsu Kaisen and stories
             that stay with you.
           </p>
-        </div>
+        </article>
 
-        <div class="card">
+        <article class="card">
           <div class="icon">📚</div>
           <h3>Books & Philosophy</h3>
           <p>
             Kafka, Dostoevsky, existential questions
             and overthinking.
           </p>
-        </div>
+        </article>
 
-        <div class="card">
+        <article class="card">
           <div class="icon">🎸</div>
           <h3>Music</h3>
           <p>
             Guitar, violin and the dream of learning
             more instruments.
           </p>
-        </div>
+        </article>
 
-        <div class="card">
+        <article class="card">
           <div class="icon">🃏</div>
           <h3>Memes & Sarcasm</h3>
           <p>
             A once-upon-a-time memer with
             questionable humour.
           </p>
-        </div>
+        </article>
 
       </div>
     </section>
 
-    <section>
-      <div class="number">05 / A FINAL THOUGHT</div>
+    <!-- PROJECTS -->
+
+    <section id="projects">
+      <div class="number">06 / THINGS I'M BUILDING</div>
+      <h2>Ideas becoming real.</h2>
+
+      <p class="intro">
+        I learn best by making things. These are some of the
+        projects and experiments I've been working on.
+      </p>
+
+      <div class="project-grid">
+
+        <article class="project-card">
+          <div class="project-top">
+            <span class="project-label">PERSONAL WEBSITE</span>
+            <span class="project-symbol">↗</span>
+          </div>
+
+          <h3>My Digital Space</h3>
+
+          <p>
+            My personal corner of the internet — a place to
+            document my journey, interests, ideas and experiments.
+          </p>
+
+          <div class="tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JAVASCRIPT</span>
+          </div>
+
+          <a
+            class="project-link"
+            href="https://amitneupane.com.np"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            VISIT WEBSITE ↗
+          </a>
+        </article>
+
+        <article class="project-card">
+          <div class="project-top">
+            <span class="project-label">PERSONAL PROJECT</span>
+            <span class="project-symbol">✦</span>
+          </div>
+
+          <h3>Chef's Lab</h3>
+
+          <p>
+            A private digital kitchen journal for saving recipes,
+            recording experiments, keeping notes and documenting
+            ideas from the kitchen.
+          </p>
+
+          <div class="tags">
+            <span class="tag">JAVASCRIPT</span>
+            <span class="tag">SUPABASE</span>
+            <span class="tag">STORAGE</span>
+          </div>
+
+          <span class="project-status">PRIVATE EXPERIMENT</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-top">
+            <span class="project-label">PERSONAL PROJECT</span>
+            <span class="project-symbol">✧</span>
+          </div>
+
+          <h3>Personal Dashboard</h3>
+
+          <p>
+            A private workspace I'm developing to organise
+            journal entries, memories, recipes and personal notes.
+          </p>
+
+          <div class="tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">SUPABASE</span>
+          </div>
+
+          <span class="project-status">IN DEVELOPMENT</span>
+        </article>
+
+      </div>
+
+      <p class="project-note">
+        More experiments, ideas and projects coming as I learn.
+      </p>
+    </section>
+
+    <!-- FINAL THOUGHT -->
+
+    <section id="final-thought">
+      <div class="number">07 / A FINAL THOUGHT</div>
       <h2>I'm not finished yet.</h2>
 
       <p class="intro">
@@ -238,10 +353,40 @@
       </p>
     </section>
 
+    <!-- CONTACT -->
+
+    <section id="contact">
+      <div class="number">08 / SAY HELLO</div>
+      <h2>Every good connection starts somewhere.</h2>
+
+      <p class="intro">
+        Have an idea, want to talk about a project,
+        or simply want to say hello? I'd be happy to connect.
+      </p>
+
+      <div class="contact-actions">
+        <a
+          class="btn primary"
+          href="https://github.com/amitey-2"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          FIND ME ON GITHUB ↗
+        </a>
+      </div>
+
+      <p class="contact-note">
+        Open to learning, collaboration and interesting ideas.
+      </p>
+    </section>
+
+    <!-- FOOTER -->
+
     <footer>
       <p>Designed with curiosity and a little chaos.</p>
       <p>© <span id="year"></span> AMIT NEUPANE</p>
       <p>Still becoming. Always learning.</p>
+      <a href="#top" class="back-to-top">BACK TO TOP ↑</a>
     </footer>
 
   </div>
