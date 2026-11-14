@@ -1,6 +1,6 @@
 
 /* ========================================
-   DASHBOARD — MAIN STYLES
+   DASHBOARD — COMPLETE STYLES
 ======================================== */
 
 * {
@@ -19,73 +19,124 @@
   --accent: #c5a47e;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
   font-family: Georgia, "Times New Roman", serif;
-  padding: 35px 7%;
+  padding: 0 7%;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
 }
 
 /* ========================================
-   HEADER
+   TOP BAR
 ======================================== */
 
-.dashboard-header {
+.topbar {
+  min-height: 85px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 20px;
-  margin-bottom: 45px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 65px;
+  flex-wrap: wrap;
 }
 
-.dashboard-header h1 {
-  font-size: 32px;
-  font-weight: 400;
+.logo {
+  color: var(--accent);
+  font-size: 27px;
+  text-decoration: none;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.topbar > span:not(.status) {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.status {
+  color: var(--accent);
+  font-size: 11px;
   letter-spacing: 1px;
 }
 
-.dashboard-header p {
-  color: var(--muted);
-  font-size: 14px;
-  margin-top: 8px;
-}
-
-#logoutBtn {
+#logoutButton {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 10px 18px;
+  padding: 9px 16px;
   cursor: pointer;
   font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
   transition: 0.3s;
 }
 
-#logoutBtn:hover {
+#logoutButton:hover {
   background: var(--surface-light);
   border-color: var(--accent);
 }
 
 /* ========================================
-   DATE AND CLOCK
+   MAIN CONTAINER
 ======================================== */
 
-.dashboard-time {
-  margin-bottom: 35px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
+.container {
+  max-width: 1150px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-#currentDate {
-  color: var(--muted);
-  font-size: 14px;
+/* ========================================
+   WELCOME SECTION
+======================================== */
+
+.welcome {
+  margin-bottom: 55px;
 }
 
-#currentTime {
-  font-size: 25px;
-  margin-top: 8px;
+.eyebrow {
   color: var(--accent);
+  font-size: 11px;
   letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.welcome h1 {
+  font-size: clamp(36px, 5vw, 54px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+#today {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.live-clock {
+  color: var(--accent);
+  font-size: 21px;
+  letter-spacing: 2px;
+  margin-top: 5px;
 }
 
 /* ========================================
@@ -95,81 +146,70 @@ body {
 .chef-summary {
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 28px;
-  margin-bottom: 45px;
+  padding: 35px;
+  margin-bottom: 65px;
 }
 
-.chef-summary h2 {
-  font-size: 23px;
+.chef-summary > h2 {
+  font-size: 30px;
   font-weight: 400;
-  margin-bottom: 10px;
-}
-
-.chef-summary > p {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
+  margin-bottom: 25px;
 }
 
 .chef-stats {
+  margin: 25px 0;
   display: flex;
   align-items: center;
-  gap: 35px;
-  margin: 25px 0;
 }
 
-.chef-stats div {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.chef-stats strong {
-  color: var(--accent);
-  font-size: 30px;
-  font-weight: 400;
-}
-
-.chef-stats span {
+.chef-stats p {
   color: var(--muted);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 14px;
+}
+
+.chef-stats h3 {
+  color: var(--accent);
+  font-size: 34px;
+  font-weight: 400;
+  margin-top: 5px;
 }
 
 .latest-recipe {
   border-top: 1px solid var(--border);
-  padding-top: 18px;
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.7;
+  padding-top: 22px;
+  margin-top: 20px;
+  margin-bottom: 25px;
 }
 
-.latest-recipe strong {
-  color: var(--text);
+.latest-recipe h3 {
+  font-size: 23px;
+  font-weight: 400;
+  margin: 8px 0;
+}
+
+.latest-recipe > p:last-child {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 /* ========================================
-   SECTION HEADINGS
+   ROOM CARDS
 ======================================== */
+
+.rooms {
+  margin-bottom: 65px;
+}
 
 .section-heading {
-  font-size: 22px;
+  font-size: 29px;
   font-weight: 400;
-  margin-bottom: 22px;
-  color: var(--text);
+  margin-bottom: 25px;
 }
 
-/* ========================================
-   ROOM GRID
-======================================== */
-
-.rooms-grid {
+.room-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
-  margin-bottom: 45px;
 }
 
 .room-card {
@@ -179,32 +219,43 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   padding: 25px;
-  min-height: 170px;
-  transition: 0.3s ease;
+  min-height: 185px;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s;
 }
 
 .room-card:hover {
-  transform: translateY(-4px);
   background: var(--surface-light);
   border-color: var(--accent);
+  transform: translateY(-3px);
 }
 
 .room-icon {
   display: block;
   font-size: 25px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .room-card h3 {
   font-size: 19px;
   font-weight: 400;
-  margin-bottom: 9px;
+  margin-bottom: 8px;
 }
 
 .room-card p {
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+/* Chef's Lab featured link */
+
+.chef-link {
+  min-height: auto;
+  padding: 22px;
+}
+
+.chef-link h3 {
+  font-size: 18px;
 }
 
 /* ========================================
@@ -214,19 +265,19 @@ body {
 .quick-notes {
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 25px;
-  margin-bottom: 40px;
+  padding: 30px;
+  margin-bottom: 60px;
 }
 
 .quick-notes h2 {
-  font-size: 21px;
+  font-size: 27px;
   font-weight: 400;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-#quickNote {
+#noteInput {
   width: 100%;
-  min-height: 110px;
+  min-height: 130px;
   resize: vertical;
   padding: 15px;
   background: var(--bg);
@@ -237,23 +288,67 @@ body {
   outline: none;
 }
 
-#quickNote:focus {
+#noteInput:focus {
   border-color: var(--accent);
 }
 
-#saveNoteBtn {
-  margin-top: 12px;
-  padding: 11px 20px;
+#saveNote {
+  margin-top: 14px;
+  padding: 12px 22px;
   background: var(--accent);
   color: #151515;
   border: none;
   cursor: pointer;
   font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
   transition: 0.3s;
 }
 
-#saveNoteBtn:hover {
+#saveNote:hover {
   opacity: 0.8;
+}
+
+#noteStatus {
+  color: var(--accent);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+#savedNotes {
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.saved-note {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.saved-note p {
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.saved-note button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 7px 10px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.saved-note button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ========================================
@@ -263,78 +358,182 @@ body {
 .dashboard-footer {
   text-align: center;
   border-top: 1px solid var(--border);
-  padding-top: 22px;
+  padding: 25px 0 35px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 1px;
 }
 
-/* ========================================
-   RESPONSIVE — TABLETS
-======================================== */
+.dashboard-footer a {
+  display: inline-block;
+  color: var(--accent);
+  text-decoration: none;
+  margin-top: 12px;
+  font-size: 12px;
+  letter-spacing: 0;
+}
 
-@media (max-width: 900px) {
-  .rooms-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  body {
-    padding: 30px 5%;
-  }
+.dashboard-footer a:hover {
+  text-decoration: underline;
 }
 
 /* ========================================
-   RESPONSIVE — MOBILE
+   ACCESSIBILITY
+======================================== */
+
+.room-card:focus-visible,
+button:focus-visible,
+a:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 900px) {
+
+  body {
+    padding: 0 5%;
+  }
+
+  .room-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .topbar {
+    margin-bottom: 50px;
+  }
+
+}
+
+/* ========================================
+   MOBILE
 ======================================== */
 
 @media (max-width: 600px) {
+
   body {
-    padding: 25px 18px;
+    padding: 0 18px;
   }
 
-  .dashboard-header {
-    align-items: flex-start;
+  .topbar {
+    min-height: auto;
+    padding: 20px 0;
+    margin-bottom: 40px;
+    gap: 14px;
   }
 
-  .dashboard-header h1 {
-    font-size: 25px;
+  .logo {
+    font-size: 23px;
   }
 
-  #logoutBtn {
-    padding: 8px 12px;
-    font-size: 12px;
+  .topbar > span:not(.status) {
+    font-size: 9px;
+    letter-spacing: 1px;
   }
 
-  .rooms-grid {
-    grid-template-columns: 1fr;
-    gap: 13px;
+  .status {
+    font-size: 9px;
   }
 
-  .room-card {
-    min-height: 145px;
-    padding: 22px;
+  #logoutButton {
+    padding: 8px 11px;
+    font-size: 10px;
+  }
+
+  .welcome {
+    margin-bottom: 38px;
+  }
+
+  .welcome h1 {
+    font-size: 38px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .live-clock {
+    font-size: 18px;
   }
 
   .chef-summary {
     padding: 22px;
+    margin-bottom: 45px;
   }
 
-  .chef-stats {
-    gap: 25px;
+  .chef-summary > h2 {
+    font-size: 26px;
   }
 
-  .chef-stats strong {
-    font-size: 25px;
+  .chef-stats h3 {
+    font-size: 29px;
   }
 
-  #currentTime {
+  .latest-recipe h3 {
+    font-size: 20px;
+  }
+
+  .section-heading {
+    font-size: 26px;
+  }
+
+  .room-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .room-card {
+    min-height: 155px;
+    padding: 17px;
+  }
+
+  .room-icon {
     font-size: 22px;
+    margin-bottom: 14px;
   }
+
+  .room-card h3 {
+    font-size: 16px;
+  }
+
+  .room-card p {
+    font-size: 12px;
+  }
+
+  .chef-link {
+    padding: 18px;
+  }
+
+  .quick-notes {
+    padding: 22px;
+  }
+
+  .quick-notes h2 {
+    font-size: 24px;
+  }
+
+  .saved-note {
+    flex-direction: column;
+  }
+
 }
 
-.room-card:focus-visible,
-#logoutBtn:focus-visible,
-#saveNoteBtn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 360px) {
+
+  .room-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    gap: 10px;
+  }
+
 }
