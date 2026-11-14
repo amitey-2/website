@@ -27,8 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Investment", "Other"
   ];
 
-  // Suggested budget categories and percentages.
-  // You can edit every amount after generation.
+  // Editable starting allocation: totals 100%.
   const BUDGET_DEFAULTS = [
     { category: "Housing", percent: 8 },
     { category: "Food", percent: 18 },
@@ -45,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { category: "Emergency fund", percent: 5 }
   ];
 
-  const $ = (id) => document.getElementById(id);
+  const $ = id => document.getElementById(id);
 
   const elements = {
     todayLabel: $("todayLabel"),
@@ -155,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, (char) => ({
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
@@ -208,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 3. TRANSACTION CATEGORIES
+  // 3. CATEGORIES
   // =========================================
 
   function populateCategories() {
@@ -229,10 +228,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function populateCategoryFilter() {
     const selected = elements.categoryFilter.value || "all";
-
-    const categories = [
-      ...new Set([...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES])
-    ];
+    const categories = [...new Set([
+      ...EXPENSE_CATEGORIES,
+      ...INCOME_CATEGORIES
+    ])];
 
     elements.categoryFilter.innerHTML =
       '<option value="all">All categories</option>' +
@@ -269,7 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
 
     renderDashboard();
-    setCloudStatus("Connected · Your data is synced", "success");
   }
 
   // =========================================
@@ -287,6 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     savingsGoal = data ? Number(data.savings_goal) : 1000;
     elements.goalInput.value = savingsGoal;
+
     renderDashboard();
   }
 
@@ -340,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderSavingsGoal(balance) {
     const progress = savingsGoal > 0
-      ? Math.max(0, (balance / savingsGoal) * 100)
+      ? Math.max(0, balance / savingsGoal * 100)
       : 0;
 
     elements.goalPercent.textContent = `${Math.round(progress)}%`;
@@ -366,8 +365,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const max = Math.max(totals.income, totals.expenses, 1);
 
-    elements.incomeBar.style.width = `${totals.income / max * 100}%`;
-    elements.expenseBar.style.width = `${totals.expenses / max * 100}%`;
+    elements.incomeBar.style.width =
+      `${totals.income / max * 100}%`;
+
+    elements.expenseBar.style.width =
+      `${totals.expenses / max * 100}%`;
   }
 
   function renderCategoryChart() {
@@ -417,15 +419,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return transactions.filter(item => {
       const matchesMonth = item.date.startsWith(month);
       const matchesType = type === "all" || item.type === type;
-      const matchesCategory = category === "all" || item.category === category;
+      const matchesCategory =
+        category === "all" || item.category === category;
 
       const matchesSearch =
         item.title.toLowerCase().includes(search) ||
         item.category.toLowerCase().includes(search);
 
-      return matchesMonth && matchesType && matchesCategory && matchesSearch;
+      return matchesMonth && matchesType &&
+        matchesCategory && matchesSearch;
     }).sort((a, b) =>
-      b.date.localeCompare(a.date) || b.id.localeCompare(a.id)
+      b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id))
     );
   }
 
@@ -451,8 +455,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div class="transaction-actions">
-              <button type="button" class="edit-btn" data-action="edit" data-id="${escapeHTML(item.id)}">Edit</button>
-              <button type="button" class="delete-btn" data-action="delete" data-id="${escapeHTML(item.id)}">Delete</button>
+              <button type="button" class="edit-btn"
+                data-action="edit" data-id="${escapeHTML(item.id)}">Edit</button>
+              <button type="button" class="delete-btn"
+                data-action="delete" data-id="${escapeHTML(item.id)}">Delete</button>
             </div>
           </article>
         `;
@@ -463,7 +469,9 @@ document.addEventListener("DOMContentLoaded", () => {
       `${filtered.length} transaction${filtered.length === 1 ? "" : "s"}`;
 
     const total = filtered.reduce((sum, item) =>
-      sum + (item.type === "income" ? Number(item.amount) : -Number(item.amount)), 0
+      sum + (item.type === "income"
+        ? Number(item.amount)
+        : -Number(item.amount)), 0
     );
 
     elements.filteredTotal.textContent = formatCurrency(total);
@@ -483,8 +491,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const date = elements.dateInput.value;
     const editId = elements.editId.value;
 
-    if (!title || !category || !date || !Number.isFinite(amount) || amount <= 0) {
-      setMessage(elements.formMessage, "Please complete all fields correctly.", "error");
+    if (!title || !category || !date ||
+        !Number.isFinite(amount) || amount <= 0) {
+      setMessage(
+        elements.formMessage,
+        "Please complete all fields correctly.",
+        "error"
+      );
       return;
     }
 
@@ -497,7 +510,9 @@ document.addEventListener("DOMContentLoaded", () => {
       note: ""
     };
 
-    setBusy(elements.submitBtn, true, "Saving...", editId ? "Update transaction" : "Add transaction");
+    const normalText = editId ? "Update transaction" : "Add transaction";
+
+    setBusy(elements.submitBtn, true, "Saving...", normalText);
 
     try {
       let result;
@@ -527,7 +542,11 @@ document.addEventListener("DOMContentLoaded", () => {
         editId ? "Transaction updated successfully." : "Transaction saved to cloud."
       );
     } catch (error) {
-      setMessage(elements.formMessage, "Could not save: " + error.message, "error");
+      setMessage(
+        elements.formMessage,
+        "Could not save: " + error.message,
+        "error"
+      );
     } finally {
       setBusy(
         elements.submitBtn,
@@ -539,7 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function editTransaction(id) {
-    const item = transactions.find(entry => entry.id === id);
+    const item = transactions.find(entry => String(entry.id) === String(id));
     if (!item) return;
 
     elements.editId.value = item.id;
@@ -603,19 +622,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      setMessage(elements.payslipStatus, "Please choose a file smaller than 10 MB.", "error");
+      setMessage(
+        elements.payslipStatus,
+        "Please choose a file smaller than 10 MB.",
+        "error"
+      );
       return;
     }
 
-    const isPDF = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    const isPDF =
+      file.type === "application/pdf" ||
+      file.name.toLowerCase().endsWith(".pdf");
+
     const isImage = file.type.startsWith("image/");
 
     if (!isPDF && !isImage) {
-      setMessage(elements.payslipStatus, "Please upload a PDF or image.", "error");
+      setMessage(
+        elements.payslipStatus,
+        "Please upload a PDF or image such as PNG or JPG.",
+        "error"
+      );
       return;
     }
 
-    setBusy(elements.readPayslipBtn, true, "Reading payslip...", "Read payslip");
+    setBusy(
+      elements.readPayslipBtn,
+      true,
+      "Reading payslip...",
+      "Read payslip"
+    );
 
     try {
       let extractedText = "";
@@ -629,7 +664,9 @@ document.addEventListener("DOMContentLoaded", () => {
           "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.worker.min.js";
 
         const buffer = await file.arrayBuffer();
-        const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
+        const pdf = await window.pdfjsLib.getDocument({
+          data: buffer
+        }).promise;
 
         const pageCount = Math.min(pdf.numPages, 5);
 
@@ -643,7 +680,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (!extractedText.trim()) {
-          throw new Error("No selectable text found in this PDF. Try uploading a clear image of the payslip instead.");
+          throw new Error(
+            "This PDF has no selectable text. Try a clear PNG or JPG image instead."
+          );
         }
       } else {
         if (!window.Tesseract) {
@@ -669,17 +708,28 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       console.error(error);
-      setMessage(elements.payslipStatus, error.message || "Could not read the payslip.", "error");
+      setMessage(
+        elements.payslipStatus,
+        error.message || "Could not read the payslip.",
+        "error"
+      );
     } finally {
-      setBusy(elements.readPayslipBtn, false, "Reading payslip...", "Read payslip");
+      setBusy(
+        elements.readPayslipBtn,
+        false,
+        "Reading payslip...",
+        "Read payslip"
+      );
     }
   }
 
   function findMoneyAfterLabel(text, labels) {
     for (const label of labels) {
       const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
       const regex = new RegExp(
-        escaped + "\\s*[:\\-]?\\s*(?:AED|د\\.إ)?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
+        escaped +
+        "\\s*[:\\-]?\\s*(?:AED|د\\.إ)?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
         "i"
       );
 
@@ -702,11 +752,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ]);
 
     const allowances = findMoneyAfterLabel(normalised, [
-      "Allowances", "Total Allowances"
+      "Total Allowances", "Allowances"
     ]);
 
     const overtime = findMoneyAfterLabel(normalised, [
       "Overtime", "OT Amount"
+    ]);
+
+    const other = findMoneyAfterLabel(normalised, [
+      "Other Income", "Other Earnings"
     ]);
 
     const deductions = findMoneyAfterLabel(normalised, [
@@ -714,37 +768,50 @@ document.addEventListener("DOMContentLoaded", () => {
     ]);
 
     const net = findMoneyAfterLabel(normalised, [
-      "Net Pay", "Net Salary", "Take Home Pay", "Take-home Pay", "Net Amount"
+      "Net Pay", "Net Salary", "Take Home Pay",
+      "Take-home Pay", "Net Amount"
     ]);
 
     if (basic !== null) elements.basicSalary.value = basic;
     if (allowances !== null) elements.allowances.value = allowances;
     if (overtime !== null) elements.overtime.value = overtime;
+    if (other !== null) elements.otherIncome.value = other;
     if (deductions !== null) elements.deductions.value = deductions;
     if (net !== null) elements.netPay.value = net;
 
-    const month = currentMonthString();
-    if (!elements.payMonth.value) elements.payMonth.value = month;
+    if (!elements.payMonth.value) {
+      elements.payMonth.value = currentMonthString();
+    }
 
     setMessage(
       elements.payslipStatus,
-      "Possible figures filled in where recognised. OCR can make mistakes; compare each number with your original payslip."
+      "Possible figures filled in where recognised. Compare every amount with your original payslip."
     );
   }
 
   // =========================================
-  // 10. SAVE PAYSLIP
+  // 10. PAYSLIP HISTORY: CLOUD
   // =========================================
 
   async function loadPaychecks() {
+    // IMPORTANT: this is the actual table created in Supabase.
     const { data, error } = await supabaseClient
-      .from("moneta_paychecks")
+      .from("moneta_payslips")
       .select("*")
       .order("pay_month", { ascending: false });
 
     if (error) throw error;
 
-    paychecks = data || [];
+    paychecks = (data || []).map(item => ({
+      ...item,
+      net_pay: Number(item.net_salary),
+      basic_salary: Number(item.basic_salary),
+      allowances: Number(item.allowances),
+      overtime: Number(item.overtime),
+      other_income: Number(item.other_income),
+      deductions: Number(item.deductions)
+    }));
+
     renderPaycheckHistory();
   }
 
@@ -759,8 +826,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <article class="transaction-item">
         <div class="transaction-info">
           <strong>${escapeHTML(paycheck.pay_month.slice(0, 7))}</strong>
-          <span>Basic ${formatCurrency(paycheck.basic_salary)} · Deductions ${formatCurrency(paycheck.deductions)}</span>
+          <span>
+            Basic ${formatCurrency(paycheck.basic_salary)}
+            · Deductions ${formatCurrency(paycheck.deductions)}
+          </span>
         </div>
+
         <div class="transaction-amount income-text">
           ${formatCurrency(paycheck.net_pay)}
         </div>
@@ -781,29 +852,48 @@ document.addEventListener("DOMContentLoaded", () => {
     const deductions = Number(elements.deductions.value || 0);
     const netPay = Number(elements.netPay.value);
 
-    const figures = [basic, allowances, overtime, otherIncome, deductions, netPay];
+    const figures = [
+      basic, allowances, overtime, otherIncome, deductions, netPay
+    ];
 
-    if (!month || figures.some(value => !Number.isFinite(value) || value < 0)) {
-      setMessage(elements.payslipFormMessage, "Check the payslip month and all amounts.", "error");
+    if (!month || figures.some(value =>
+      !Number.isFinite(value) || value < 0
+    )) {
+      setMessage(
+        elements.payslipFormMessage,
+        "Check the payslip month and all amounts.",
+        "error"
+      );
       return;
     }
 
     if (netPay <= 0) {
-      setMessage(elements.payslipFormMessage, "Take-home pay must be greater than zero.", "error");
+      setMessage(
+        elements.payslipFormMessage,
+        "Take-home pay must be greater than zero.",
+        "error"
+      );
       return;
     }
 
     const gross = basic + allowances + overtime + otherIncome;
 
     if (netPay > gross && gross > 0) {
-      if (!confirm("Your take-home pay is higher than the combined salary figures. Are you sure these numbers are correct?")) {
-        return;
-      }
+      if (!confirm(
+        "Your take-home pay is higher than the combined salary figures. Are you sure these numbers are correct?"
+      )) return;
     }
 
-    setBusy(elements.savePayslipBtn, true, "Saving...", "Save confirmed payslip");
+    setBusy(
+      elements.savePayslipBtn,
+      true,
+      "Saving...",
+      "Save confirmed payslip"
+    );
 
     try {
+      const file = elements.payslipFile.files[0];
+
       const payload = {
         user_id: currentUser.id,
         pay_month: monthStart(month),
@@ -814,47 +904,55 @@ document.addEventListener("DOMContentLoaded", () => {
         overtime,
         other_income: otherIncome,
         deductions,
-        net_pay: netPay,
+        net_salary: netPay,
+        file_name: file ? file.name.slice(0, 250) : "",
         notes: elements.payNotes.value.trim(),
         updated_at: new Date().toISOString()
       };
 
-      // Update an existing payslip for this month, otherwise insert.
-      const existing = paychecks.find(item => item.pay_month === monthStart(month));
+      // One payslip per month. Update it if it already exists.
+      const { error } = await supabaseClient
+        .from("moneta_payslips")
+        .upsert(payload, {
+          onConflict: "user_id,pay_month"
+        });
 
-      let result;
-
-      if (existing) {
-        result = await supabaseClient
-          .from("moneta_paychecks")
-          .update(payload)
-          .eq("id", existing.id);
-      } else {
-        result = await supabaseClient
-          .from("moneta_paychecks")
-          .insert(payload);
-      }
-
-      if (result.error) throw result.error;
+      if (error) throw error;
 
       await loadPaychecks();
+      await loadBudget();
 
-      setMessage(elements.payslipFormMessage, "Payslip figures saved successfully.");
+      setMessage(
+        elements.payslipFormMessage,
+        "Payslip figures saved successfully."
+      );
+
       setCloudStatus("Payslip saved to your cloud account", "success");
     } catch (error) {
       console.error(error);
-      setMessage(elements.payslipFormMessage, "Could not save payslip: " + error.message, "error");
+      setMessage(
+        elements.payslipFormMessage,
+        "Could not save payslip: " + error.message,
+        "error"
+      );
     } finally {
-      setBusy(elements.savePayslipBtn, false, "Saving...", "Save confirmed payslip");
+      setBusy(
+        elements.savePayslipBtn,
+        false,
+        "Saving...",
+        "Save confirmed payslip"
+      );
     }
   }
 
   // =========================================
-  // 11. BUDGET GENERATOR
+  // 11. MONTHLY BUDGET
   // =========================================
 
   function getPaycheckForMonth(month) {
-    return paychecks.find(item => item.pay_month === monthStart(month));
+    return paychecks.find(item =>
+      item.pay_month === monthStart(month)
+    );
   }
 
   async function generateBudget() {
@@ -877,17 +975,28 @@ document.addEventListener("DOMContentLoaded", () => {
       planned: Math.round(income * item.percent) / 100
     }));
 
-    // Adjust rounding so the suggested allocations total exactly to income.
-    const allocated = budgetItems.reduce((sum, item) => sum + item.planned, 0);
-    const difference = Math.round((income - allocated) * 100) / 100;
+    // Correct rounding so the suggested allocations equal the net salary.
+    const allocated = budgetItems.reduce(
+      (sum, item) => sum + item.planned, 0
+    );
+
+    const difference =
+      Math.round((income - allocated) * 100) / 100;
 
     if (budgetItems.length) {
       budgetItems[budgetItems.length - 1].planned =
-        Math.max(0, budgetItems[budgetItems.length - 1].planned + difference);
+        Math.max(
+          0,
+          budgetItems[budgetItems.length - 1].planned + difference
+        );
     }
 
     renderBudget();
-    setMessage(elements.budgetMessage, "Suggested budget created. Adjust the amounts before saving.");
+
+    setMessage(
+      elements.budgetMessage,
+      "Suggested budget created. Adjust the amounts before saving."
+    );
   }
 
   async function loadBudget() {
@@ -924,14 +1033,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const paycheck = getPaycheckForMonth(month);
     const income = paycheck ? Number(paycheck.net_pay) : 0;
 
-    const planned = budgetItems.reduce((sum, item) => sum + Number(item.planned), 0);
+    const planned = budgetItems.reduce(
+      (sum, item) => sum + Number(item.planned), 0
+    );
+
     const remaining = income - planned;
 
     elements.budgetIncome.textContent = formatCurrency(income);
     elements.budgetPlanned.textContent = formatCurrency(planned);
     elements.budgetRemaining.textContent = formatCurrency(remaining);
 
-    const progress = income > 0 ? Math.min((planned / income) * 100, 100) : 0;
+    const progress = income > 0
+      ? Math.min(planned / income * 100, 100)
+      : 0;
+
     elements.budgetProgress.style.width = `${progress}%`;
 
     elements.budgetProgressMessage.textContent = income
@@ -952,7 +1067,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="budget-row">
           <div class="budget-row-heading">
             <strong>${escapeHTML(item.category)}</strong>
-            <span>Spent: ${formatCurrency(actual)} · Left: ${formatCurrency(left)}</span>
+            <span>
+              Spent: ${formatCurrency(actual)}
+              · Left: ${formatCurrency(left)}
+            </span>
           </div>
 
           <label>
@@ -968,7 +1086,11 @@ document.addEventListener("DOMContentLoaded", () => {
           </label>
 
           <div class="progress-track">
-            <div class="progress-fill" style="width:${item.planned > 0 ? Math.min(actual / item.planned * 100, 100) : 0}%"></div>
+            <div class="progress-fill"
+              style="width:${item.planned > 0
+                ? Math.min(actual / item.planned * 100, 100)
+                : 0}%">
+            </div>
           </div>
         </div>
       `;
@@ -982,25 +1104,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const index = Number(input.dataset.budgetIndex);
     const amount = Number(input.value);
 
-    if (!Number.isInteger(index) || !budgetItems[index] ||
-        !Number.isFinite(amount) || amount < 0) {
+    if (!Number.isInteger(index) ||
+        !budgetItems[index] ||
+        !Number.isFinite(amount) ||
+        amount < 0) {
       return;
     }
 
     budgetItems[index].planned = amount;
 
-    // Update totals without replacing the active input.
     const month = getSelectedBudgetMonth();
     const paycheck = getPaycheckForMonth(month);
     const income = paycheck ? Number(paycheck.net_pay) : 0;
-    const planned = budgetItems.reduce((sum, item) => sum + Number(item.planned), 0);
+
+    const planned = budgetItems.reduce(
+      (sum, item) => sum + Number(item.planned), 0
+    );
 
     elements.budgetIncome.textContent = formatCurrency(income);
     elements.budgetPlanned.textContent = formatCurrency(planned);
-    elements.budgetRemaining.textContent = formatCurrency(income - planned);
+    elements.budgetRemaining.textContent =
+      formatCurrency(income - planned);
 
-    const progress = income > 0 ? Math.min(planned / income * 100, 100) : 0;
+    const progress = income > 0
+      ? Math.min(planned / income * 100, 100)
+      : 0;
+
     elements.budgetProgress.style.width = `${progress}%`;
+
     elements.budgetProgressMessage.textContent =
       `${Math.round(progress)}% of your take-home pay has been allocated.`;
   }
@@ -1009,14 +1140,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const month = getSelectedBudgetMonth();
 
     if (!budgetItems.length) {
-      setMessage(elements.budgetMessage, "Generate or load a budget first.", "error");
+      setMessage(
+        elements.budgetMessage,
+        "Generate or load a budget first.",
+        "error"
+      );
       return;
     }
 
     const paycheck = getPaycheckForMonth(month);
 
     if (!paycheck) {
-      setMessage(elements.budgetMessage, "A confirmed payslip is needed for this month.", "error");
+      setMessage(
+        elements.budgetMessage,
+        "A confirmed payslip is needed for this month.",
+        "error"
+      );
       return;
     }
 
@@ -1031,7 +1170,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    setBusy(elements.saveBudgetBtn, true, "Saving...", "Save monthly budget");
+    setBusy(
+      elements.saveBudgetBtn,
+      true,
+      "Saving...",
+      "Save monthly budget"
+    );
 
     try {
       const rows = budgetItems.map(item => ({
@@ -1051,13 +1195,27 @@ document.addEventListener("DOMContentLoaded", () => {
       if (error) throw error;
 
       await loadBudget();
-      setMessage(elements.budgetMessage, "Your monthly budget has been saved to the cloud.");
+
+      setMessage(
+        elements.budgetMessage,
+        "Your monthly budget has been saved to the cloud."
+      );
+
       setCloudStatus("Monthly budget saved", "success");
     } catch (error) {
       console.error(error);
-      setMessage(elements.budgetMessage, "Could not save budget: " + error.message, "error");
+      setMessage(
+        elements.budgetMessage,
+        "Could not save budget: " + error.message,
+        "error"
+      );
     } finally {
-      setBusy(elements.saveBudgetBtn, false, "Saving...", "Save monthly budget");
+      setBusy(
+        elements.saveBudgetBtn,
+        false,
+        "Saving...",
+        "Save monthly budget"
+      );
     }
   }
 
@@ -1072,6 +1230,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const link = document.createElement("a");
     link.href = url;
     link.download = filename;
+
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -1090,16 +1249,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const rows = [
       ["Date", "Description", "Type", "Category", "Amount (AED)"],
       ...filtered.map(item => [
-        item.date, item.title, item.type, item.category,
+        item.date,
+        item.title,
+        item.type,
+        item.category,
         Number(item.amount).toFixed(2)
       ])
     ];
 
     const csv = rows.map(row =>
-      row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
+      row.map(value =>
+        `"${String(value).replace(/"/g, '""')}"`
+      ).join(",")
     ).join("\n");
 
-    downloadFile(csv, "moneta-transactions.csv", "text/csv;charset=utf-8");
+    downloadFile(
+      csv,
+      "moneta-transactions.csv",
+      "text/csv;charset=utf-8"
+    );
   }
 
   // =========================================
@@ -1109,7 +1277,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function backupData() {
     const backup = {
       app: "MONETA",
-      version: 2,
+      version: 3,
       exportedAt: new Date().toISOString(),
       savingsGoal,
       transactions: transactions.map(item => ({
@@ -1141,7 +1309,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (transactions.length > 0) {
-        throw new Error("Import is only allowed when your cloud transaction list is empty.");
+        throw new Error(
+          "Import is only allowed when your cloud transaction list is empty."
+        );
       }
 
       const imported = backup.transactions.map(item => {
@@ -1166,9 +1336,13 @@ document.addEventListener("DOMContentLoaded", () => {
         };
       });
 
-      if (!imported.length) throw new Error("The backup contains no transactions.");
+      if (!imported.length) {
+        throw new Error("The backup contains no transactions.");
+      }
 
-      if (!confirm(`Import ${imported.length} transactions into your cloud account?`)) return;
+      if (!confirm(
+        `Import ${imported.length} transactions into your cloud account?`
+      )) return;
 
       elements.importMessage.textContent = "Importing...";
 
@@ -1199,7 +1373,8 @@ document.addEventListener("DOMContentLoaded", () => {
         `Successfully imported ${imported.length} transactions.`;
     } catch (error) {
       console.error(error);
-      elements.importMessage.textContent = error.message || "Import failed.";
+      elements.importMessage.textContent =
+        error.message || "Import failed.";
     } finally {
       elements.importFile.value = "";
     }
@@ -1233,6 +1408,7 @@ document.addEventListener("DOMContentLoaded", () => {
   elements.transactionForm.addEventListener("submit", addTransaction);
   elements.cancelEditBtn.addEventListener("click", resetForm);
   elements.saveGoalBtn.addEventListener("click", saveSavingsGoal);
+
   elements.monthFilter.addEventListener("change", renderDashboard);
   elements.searchInput.addEventListener("input", renderTransactions);
   elements.typeFilter.addEventListener("change", renderTransactions);
@@ -1243,6 +1419,7 @@ document.addEventListener("DOMContentLoaded", () => {
       behavior: "smooth",
       block: "center"
     });
+
     elements.titleInput.focus({ preventScroll: true });
   });
 
@@ -1272,6 +1449,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   elements.generateBudgetBtn.addEventListener("click", generateBudget);
   elements.saveBudgetBtn.addEventListener("click", saveBudget);
+
   elements.budgetList.addEventListener("change", updateBudgetInput);
 
   elements.budgetMonth.addEventListener("change", async () => {
@@ -1279,7 +1457,11 @@ document.addEventListener("DOMContentLoaded", () => {
       await loadBudget();
       renderBudget();
     } catch (error) {
-      setMessage(elements.budgetMessage, "Could not load budget: " + error.message, "error");
+      setMessage(
+        elements.budgetMessage,
+        "Could not load budget: " + error.message,
+        "error"
+      );
     }
   });
 
@@ -1332,12 +1514,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     await loadBudget();
 
+    renderDashboard();
+    renderBudget();
+
     setCloudStatus("Connected · Your data is synced", "success");
   }
 
   startMoneta().catch(error => {
     console.error("MONETA error:", error);
-    setCloudStatus("Could not connect: " + error.message, "error");
+    setCloudStatus(
+      "Could not connect: " + error.message,
+      "error"
+    );
   });
 
 });
