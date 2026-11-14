@@ -1,1 +1,143 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Journal</title>
+
+  <link rel="stylesheet" href="css/journal.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/journal.js" defer></script>
+</head>
+
+<body>
+
+  <header class="journal-header">
+    <a href="dashboard.html" class="back-link">← Dashboard</a>
+
+    <p class="eyebrow">MY PERSONAL NOTEBOOK</p>
+
+    <h1>My Journal<span>.</span></h1>
+
+    <p class="intro">
+      A place for thoughts, feelings, memories and everything in between.
+    </p>
+  </header>
+
+  <main class="journal-container">
+
+    <!-- NEW ENTRY -->
+
+    <section class="write-section">
+
+      <p class="eyebrow">A MOMENT WITH MYSELF</p>
+
+      <h2 id="formHeading">Write something.</h2>
+
+      <form id="journalForm">
+
+        <label for="entryTitle">Title</label>
+
+        <input
+          type="text"
+          id="entryTitle"
+          maxlength="120"
+          placeholder="Give this entry a title..."
+          required
+        >
+
+        <div class="form-row">
+
+          <div>
+            <label for="entryDate">Date</label>
+
+            <input
+              type="date"
+              id="entryDate"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="entryMood">How are you feeling?</label>
+
+            <select id="entryMood" required>
+              <option value="Happy">😊 Happy</option>
+              <option value="Grateful">🙏 Grateful</option>
+              <option value="Calm">😌 Calm</option>
+              <option value="Okay" selected>🙂 Okay</option>
+              <option value="Sad">😔 Sad</option>
+              <option value="Anxious">😟 Anxious</option>
+              <option value="Tired">😴 Tired</option>
+              <option value="Excited">🤩 Excited</option>
+            </select>
+          </div>
+
+        </div>
+
+        <label for="entryContent">Your thoughts</label>
+
+        <textarea
+          id="entryContent"
+          rows="9"
+          placeholder="Start writing. Nobody else needs to read this..."
+          required
+        ></textarea>
+
+        <div class="form-actions">
+
+          <button type="submit" id="saveEntry">
+            SAVE ENTRY
+          </button>
+
+          <button
+            type="button"
+            id="cancelEdit"
+            class="cancel-button"
+            hidden
+          >
+            CANCEL
+          </button>
+
+        </div>
+
+        <p id="entryStatus" aria-live="polite"></p>
+
+      </form>
+
+    </section>
+
+
+    <!-- JOURNAL COLLECTION -->
+
+    <section class="entries-section">
+
+      <div class="entries-heading">
+
+        <div>
+          <p class="eyebrow">YOUR STORY</p>
+          <h2>Previous entries.</h2>
+        </div>
+
+        <span id="entryCount">0 entries</span>
+
+      </div>
+
+      <div id="journalEntries">
+        <p class="empty-message">Loading your journal...</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="journal-footer">
+    <p>EVERY PAGE IS PART OF YOUR STORY.</p>
+  </footer>
+
+</body>
+</html>
+
