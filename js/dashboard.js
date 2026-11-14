@@ -1,5 +1,7 @@
 
-// SUPABASE CONNECTION
+// ========================================
+// DASHBOARD — SUPABASE CONNECTION
+// ========================================
 
 const SUPABASE_URL =
   "https://fqbcfuduinjdumozfbja.supabase.co";
@@ -13,7 +15,9 @@ const supabaseClient = window.supabase.createClient(
 );
 
 
+// ========================================
 // AUTHENTICATION CHECK
+// ========================================
 
 async function startDashboard() {
   const { data, error } = await supabaseClient.auth.getSession();
@@ -23,13 +27,13 @@ async function startDashboard() {
     return;
   }
 
-  // Only initialize dashboard features after login is confirmed.
-
   console.log("Welcome to your personal dashboard.");
   console.log("Your little digital universe is growing.");
 
 
+// ========================================
 // 1. DISPLAY TODAY'S DATE
+// ========================================
 
   const todayElement = document.getElementById("today");
 
@@ -50,12 +54,23 @@ async function startDashboard() {
   }
 
 
-// 2. MAKE ROOM CARDS INTERACTIVE
+// ========================================
+// 2. ROOM CARD NAVIGATION
+// ========================================
 
   const roomCards = document.querySelectorAll(".room-card");
 
   roomCards.forEach((card) => {
     card.addEventListener("click", (event) => {
+
+      const link = card.getAttribute("href");
+
+      // Allow existing pages to open
+      if (link && link !== "#") {
+        return;
+      }
+
+      // Unfinished rooms show Coming Soon
       event.preventDefault();
 
       const roomName = card.querySelector("h3").textContent;
@@ -65,7 +80,9 @@ async function startDashboard() {
   });
 
 
+// ========================================
 // 3. LIVE CLOCK
+// ========================================
 
   const clockElement = document.createElement("p");
 
@@ -92,14 +109,23 @@ async function startDashboard() {
   setInterval(updateClock, 1000);
 
 
+// ========================================
 // 4. QUICK NOTES
+// ========================================
 
   const noteInput = document.getElementById("noteInput");
   const saveNoteButton = document.getElementById("saveNote");
   const savedNotes = document.getElementById("savedNotes");
   const noteStatus = document.getElementById("noteStatus");
 
-  let notes = JSON.parse(localStorage.getItem("myNotes")) || [];
+  let notes = [];
+
+  try {
+    notes = JSON.parse(localStorage.getItem("myNotes")) || [];
+  } catch (error) {
+    console.error("Could not load saved notes:", error);
+    notes = [];
+  }
 
   function displayNotes() {
     if (!savedNotes) return;
@@ -134,7 +160,7 @@ async function startDashboard() {
     });
   }
 
-  if (saveNoteButton) {
+  if (saveNoteButton && noteInput && noteStatus) {
     saveNoteButton.addEventListener("click", () => {
       const note = noteInput.value.trim();
 
@@ -160,7 +186,9 @@ async function startDashboard() {
   displayNotes();
 
 
+// ========================================
 // 5. LOG OUT
+// ========================================
 
   const logoutButton = document.getElementById("logoutButton");
 
@@ -173,8 +201,10 @@ async function startDashboard() {
 
       if (error) {
         alert("Logout failed: " + error.message);
+
         logoutButton.disabled = false;
         logoutButton.textContent = "LOG OUT";
+
         return;
       }
 
@@ -185,6 +215,8 @@ async function startDashboard() {
 }
 
 
+// ========================================
 // START DASHBOARD
+// ========================================
 
 startDashboard();
