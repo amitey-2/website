@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>My Digital Space</title>
 
   <link rel="stylesheet" href="css/dashboard.css">
@@ -14,45 +15,66 @@
 
 <body>
 
+  <!-- HEADER -->
+
   <header class="topbar">
     <a href="index.html" class="logo">AN.</a>
+
     <span>PERSONAL CONTROL CENTRE</span>
+
     <button id="logoutButton" type="button">LOG OUT</button>
+
     <span class="status">● YOUR SPACE</span>
   </header>
 
+
   <main class="container">
+
+    <!-- WELCOME -->
 
     <section class="welcome">
       <p class="eyebrow">WELCOME TO YOUR WORLD</p>
+
       <h1>Welcome back.</h1>
+
       <p class="subtitle">
         A little corner of the internet that belongs to you.
       </p>
+
       <p id="today"></p>
+
+      <p id="liveClock" class="live-clock"></p>
     </section>
+
 
     <!-- CHEF'S LAB SUMMARY -->
 
     <section class="chef-summary">
 
       <p class="eyebrow">FROM YOUR KITCHEN</p>
+
       <h2>Chef's Lab.</h2>
 
       <div class="chef-stats">
-        <p>Total recipes saved</p>
-        <h3 id="recipeCount">Loading...</h3>
+        <div>
+          <p>Total recipes saved</p>
+          <h3 id="recipeCount">Loading...</h3>
+        </div>
       </div>
 
       <div class="latest-recipe">
         <p class="eyebrow">LATEST CREATION</p>
+
         <h3 id="latestRecipe">Loading your latest recipe...</h3>
+
         <p id="latestRecipeDate"></p>
       </div>
 
-      <a href="chef-lab.html" class="room-card">
+      <a href="chef-lab.html" class="room-card chef-link">
         <span class="room-icon">👨🏽‍🍳</span>
+
         <h3>OPEN CHEF'S LAB →</h3>
+
         <p>Your creative kitchen and cooking journal.</p>
       </a>
 
@@ -62,7 +84,8 @@
     <!-- YOUR ROOMS -->
 
     <section class="rooms">
-      <h2>Your rooms</h2>
+
+      <h2 class="section-heading">Your rooms.</h2>
 
       <div class="room-grid">
 
@@ -72,11 +95,13 @@
           <p>Thoughts, feelings and daily entries.</p>
         </a>
 
+
         <a href="#" class="room-card">
           <span class="room-icon">🍝</span>
           <h3>Recipe Archive</h3>
           <p>My dishes, ingredients and experiments.</p>
         </a>
+
 
         <a href="chef-lab.html" class="room-card">
           <span class="room-icon">👨🏽‍🍳</span>
@@ -84,11 +109,15 @@
           <p>My creative kitchen and cooking journal.</p>
         </a>
 
-        <a href="#" class="room-card">
+
+        <!-- CONNECTED MEMORY GALLERY -->
+
+        <a href="memory-gallery.html" class="room-card">
           <span class="room-icon">📷</span>
           <h3>Memory Gallery</h3>
           <p>Photos and videos worth keeping.</p>
         </a>
+
 
         <a href="#" class="room-card">
           <span class="room-icon">💭</span>
@@ -96,11 +125,13 @@
           <p>Words and thoughts I don't want to lose.</p>
         </a>
 
+
         <a href="#" class="room-card">
           <span class="room-icon">🎯</span>
           <h3>My Life</h3>
           <p>Goals, habits and personal plans.</p>
         </a>
+
 
         <a href="#" class="room-card">
           <span class="room-icon">💻</span>
@@ -109,6 +140,7 @@
         </a>
 
       </div>
+
     </section>
 
 
@@ -117,6 +149,7 @@
     <section class="quick-notes">
 
       <p class="eyebrow">YOUR PERSONAL NOTEBOOK</p>
+
       <h2>Quick Notes.</h2>
 
       <textarea
@@ -124,17 +157,20 @@
         placeholder="What's on your mind today?"
       ></textarea>
 
-      <button id="saveNote">SAVE NOTE</button>
+      <button id="saveNote" type="button">SAVE NOTE</button>
 
-      <p id="noteStatus"></p>
+      <p id="noteStatus" aria-live="polite"></p>
 
       <div id="savedNotes"></div>
 
     </section>
 
 
-    <footer>
+    <!-- FOOTER -->
+
+    <footer class="dashboard-footer">
       <p>STILL BECOMING. STILL BUILDING.</p>
+
       <a href="index.html">← Back to my public website</a>
     </footer>
 
