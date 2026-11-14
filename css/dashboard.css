@@ -331,3 +331,10 @@ body {
     font-size: 22px;
   }
 }
+
+.room-card:focus-visible,
+#logoutBtn:focus-visible,
+#saveNoteBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
