@@ -1,1 +1,64 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Gallery</title>
+  <link rel="stylesheet" href="css/memory-gallery.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/memory-gallery.js" defer></script>
+</head>
+<body>
+  <header class="gallery-header">
+    <a href="dashboard.html" class="back-link">← Dashboard</a>
+    <p class="eyebrow">MY PERSONAL COLLECTION</p>
+    <h1>Memory Gallery<span>.</span></h1>
+    <p class="intro">Little moments, beautiful memories, and pieces of life worth keeping.</p>
+  </header>
+
+  <main class="gallery-container">
+    <section class="upload-section">
+      <div class="section-heading">
+        <p class="eyebrow">SAVE A MOMENT</p>
+        <h2>Add a memory</h2>
+      </div>
+
+      <form id="memoryForm">
+        <label for="memoryCaption">Caption</label>
+        <input type="text" id="memoryCaption" maxlength="150"
+          placeholder="A little description of this memory...">
+
+        <label for="memoryFiles">Choose photos or videos</label>
+        <input type="file" id="memoryFiles"
+          accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime,video/webm"
+          multiple required>
+
+        <p class="upload-hint">Maximum 20 MB per file. You can select multiple files.</p>
+
+        <button type="submit" id="uploadBtn">Save memories</button>
+        <p id="uploadStatus" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="memories-section">
+      <div class="gallery-title">
+        <div>
+          <p class="eyebrow">THE COLLECTION</p>
+          <h2>My memories</h2>
+        </div>
+        <span id="memoryCount">0 memories</span>
+      </div>
+
+      <div id="memoryGallery" class="memory-grid">
+        <p class="empty-message">Loading memories...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Made of moments worth remembering.</p>
+  </footer>
+</body>
+</html>
