@@ -758,53 +758,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 9. PAYSLIP OCR — PDF AND IMAGE
-  // =========================================
-
   
   // =========================================
-  // 9. PAYSLIP OCR — PDF AND IMAGE
+  // 9. PAYSLIP OCR — PNG ONLY
   // =========================================
-
-  function extractPDFPageText(items) {
-    const positioned = items
-      .filter(item => item.str && item.str.trim())
-      .map(item => ({
-        x: item.transform ? item.transform[4] : 0,
-        y: item.transform ? item.transform[5] : 0,
-        text: item.str.trim()
-      }))
-      .sort((a, b) => b.y - a.y || a.x - b.x);
-
-    const lines = [];
-
-    positioned.forEach(item => {
-      let line = lines.find(
-        existing => Math.abs(existing.y - item.y) < 3
-      );
-
-      if (!line) {
-        line = {
-          y: item.y,
-          items: []
-        };
-
-        lines.push(line);
-      }
-
-      line.items.push(item);
-    });
-
-    return lines
-      .sort((a, b) => b.y - a.y)
-      .map(line =>
-        line.items
-          .sort((a, b) => a.x - b.x)
-          .map(item => item.text)
-          .join(" ")
-      )
-      .join("\n");
-  }
 
   async function readPayslip() {
     const file = elements.payslipFile.files[0];
@@ -812,7 +769,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!file) {
       setMessage(
         elements.payslipStatus,
-        "Please choose your payslip first.",
+        "Please choose your PNG payslip first.",
+        "error"
+      );
+      return;
+    }
+
+    if (
+      file.type !== "image/png" &&
+      !file.name.toLowerCase().endsWith(".png")
+    ) {
+      setMessage(
+        elements.payslipStatus,
+        "Please upload a PNG image.",
         "error"
       );
       return;
@@ -821,24 +790,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (file.size > 10 * 1024 * 1024) {
       setMessage(
         elements.payslipStatus,
-        "Please choose a file smaller than 10 MB.",
+        "Please choose a PNG smaller than 10 MB.",
         "error"
       );
       return;
     }
 
-    const isPDF =
-      file.type === "application/pdf" ||
-      file.name.toLowerCase().endsWith(".pdf");
-
-    const isImage =
-      file.type.startsWith("image/") ||
-      /\.(png|jpe?g)$/i.test(file.name);
-
-    if (!isPDF && !isImage) {
+    if (!window.Tesseract) {
       setMessage(
         elements.payslipStatus,
-        "Please upload a PDF, PNG or JPG image.",
+        "Image reader could not load. Please refresh and try again.",
         "error"
       );
       return;
@@ -852,69 +813,35 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     try {
-      let extractedText = "";
+      const result = await window.Tesseract.recognize(
+        file,
+        "eng",
+        {
+          logger: message => {
+            if (message.status === "recognizing text") {
+              const progress = Math.round(
+                (message.progress || 0) * 100
+              );
 
-      if (isPDF) {
-        if (!window.pdfjsLib) {
-          throw new Error(
-            "PDF reader could not load. Refresh and try again."
-          );
+              elements.payslipStatus.textContent =
+                `Reading payslip... ${progress}%`;
+            }
+          }
         }
+      );
 
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-          "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/legacy/build/pdf.worker.min.js";
-
-        const buffer = await file.arrayBuffer();
-
-        const pdf = await window.pdfjsLib
-          .getDocument({ data: buffer })
-          .promise;
-
-        const pageCount = Math.min(pdf.numPages, 5);
-
-        for (
-          let pageNumber = 1;
-          pageNumber <= pageCount;
-          pageNumber++
-        ) {
-          const page = await pdf.getPage(pageNumber);
-          const content = await page.getTextContent();
-
-          extractedText +=
-            extractPDFPageText(content.items) + "\n";
-        }
-
-        if (!extractedText.trim()) {
-          throw new Error(
-            "This PDF contains no selectable text. Try a clear PNG or JPG image."
-          );
-        }
-
-      } else {
-        if (!window.Tesseract) {
-          throw new Error(
-            "Image reader could not load. Refresh and try again."
-          );
-        }
-
-        const result = await window.Tesseract.recognize(
-          file,
-          "eng"
-        );
-
-        extractedText = result.data.text || "";
-      }
+      const extractedText = result.data.text || "";
 
       if (!extractedText.trim()) {
         throw new Error(
-          "No readable text found. Try a clearer payslip image."
+          "No readable text found. Please use a clearer PNG."
         );
       }
 
       elements.payslipText.value = extractedText;
       elements.payslipTextSection.hidden = false;
 
-      suggestPayslipFields(extractedText);
+      suggestPayslipFields(extractedText, result.data);
 
     } catch (error) {
       console.error("Payslip OCR error:", error);
@@ -940,58 +867,40 @@ document.addEventListener("DOMContentLoaded", () => {
   // 10. EXTRACT THE FIVE SALARY FIGURES
   // =========================================
 
-  
-  // =========================================
-  // 10. EXTRACT THE FIVE SALARY FIGURES
-  // =========================================
-
   function normalizePayslipText(text) {
     return String(text || "")
       .replace(/\u00a0/g, " ")
       .replace(/[|¦]/g, " ")
       .replace(/[–—]/g, "-")
-      .replace(/\s+/g, " ")
+      .replace(/[ \t]+/g, " ")
       .trim();
   }
 
-  function getTextSection(text, startRegex, endRegex) {
-    const startMatch = startRegex.exec(text);
+  function parseSalaryNumber(value) {
+    if (!value) return null;
 
-    if (!startMatch) return "";
+    const cleaned = String(value)
+      .replace(/,/g, "")
+      .replace(/[^\d.]/g, "");
 
-    const start = startMatch.index + startMatch[0].length;
+    const number = Number(cleaned);
 
-    const remaining = text.slice(start);
-    const endMatch = endRegex.exec(remaining);
-
-    return endMatch
-      ? remaining.slice(0, endMatch.index)
-      : remaining;
+    return Number.isFinite(number) ? number : null;
   }
 
-  function extractMoneyValues(text) {
+  function findMoneyInText(text) {
     const matches = String(text || "").match(
-      /\b\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?\b|\b\d+(?:\.\d{1,2})?\b/g
+      /\b\d{1,3}(?:,\d{3})+\.\d{2}\b|\b\d+\.\d{2}\b/g
     ) || [];
 
     return matches
-      .map(value => Number(value.replace(/,/g, "")))
-      .filter(value => Number.isFinite(value));
+      .map(parseSalaryNumber)
+      .filter(value => value !== null);
   }
 
-  function extractAmountsAfterHeader(section, header) {
-    const match = header.exec(section);
+  function findLabelAmount(text, labels) {
+    const normalized = normalizePayslipText(text);
 
-    if (!match) return [];
-
-    const remaining = section.slice(
-      match.index + match[0].length
-    );
-
-    return extractMoneyValues(remaining);
-  }
-
-  function extractAmountNearLabel(text, labels) {
     for (const label of labels) {
       const escaped = label.replace(
         /[.*+?^${}()|[\]\\]/g,
@@ -999,27 +908,102 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       const regex = new RegExp(
-        escaped + "\\s*[:\\-]?\\s*(?:AED|د\\.إ)?\\s*([\\d,]+(?:\\.\\d{1,2})?)",
+        escaped +
+        "[\\s\\S]{0,100}?" +
+        "(\\d{1,3}(?:,\\d{3})+\\.\\d{2}|\\d+\\.\\d{2})",
         "i"
       );
 
-      const match = text.match(regex);
+      const match = normalized.match(regex);
 
       if (match) {
-        const amount = Number(
-          match[1].replace(/,/g, "")
-        );
-
-        if (Number.isFinite(amount)) {
-          return amount;
-        }
+        return parseSalaryNumber(match[1]);
       }
     }
 
     return null;
   }
 
-  function suggestPayslipFields(text) {
+  function findLabelPosition(text, labels) {
+    const positions = labels
+      .map(label => {
+        const escaped = label.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          "\\$&"
+        );
+
+        const match = new RegExp(escaped, "i").exec(text);
+
+        return match ? match.index : -1;
+      })
+      .filter(position => position >= 0);
+
+    return positions.length
+      ? Math.min(...positions)
+      : -1;
+  }
+
+  function extractTableAmounts(text, startLabels, endLabels) {
+    const start = findLabelPosition(text, startLabels);
+
+    if (start < 0) return [];
+
+    const afterStart = text.slice(start);
+
+    const endPositions = endLabels
+      .map(label => {
+        const escaped = label.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          "\\$&"
+        );
+
+        const match = new RegExp(escaped, "i")
+          .exec(afterStart.slice(1));
+
+        return match ? match.index + 1 : -1;
+      })
+      .filter(position => position > 0);
+
+    const end = endPositions.length
+      ? Math.min(...endPositions)
+      : afterStart.length;
+
+    return findMoneyInText(
+      afterStart.slice(0, end)
+    );
+  }
+
+  function extractAmountsFromLines(text) {
+    return String(text || "")
+      .split(/\r?\n/)
+      .map(line => ({
+        text: normalizePayslipText(line),
+        amounts: findMoneyInText(line)
+      }))
+      .filter(line => line.text && line.amounts.length);
+  }
+
+  function getAmountAfterHeader(text, header) {
+    const escaped = header.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+
+    const regex = new RegExp(escaped, "i");
+    const match = regex.exec(text);
+
+    if (!match) return [];
+
+    const remaining = text.slice(
+      match.index + match[0].length
+    );
+
+    return findMoneyInText(
+      remaining.slice(0, 250)
+    );
+  }
+
+  function suggestPayslipFields(text, ocrData) {
     const normalized = normalizePayslipText(text);
 
     const fields = {
@@ -1034,130 +1018,140 @@ document.addEventListener("DOMContentLoaded", () => {
     // BASIC SALARY
     // -----------------------------------------
 
-    const basicSection = getTextSection(
+    fields.basicSalary = findLabelAmount(
       normalized,
-      /\bBasic\s+Salary\b/i,
-      /\bAllowance\b/i
+      [
+        "Basic Salary",
+        "Basic Pay"
+      ]
     );
 
-    const basicAmounts = extractAmountsAfterHeader(
-      basicSection,
-      /\bAmount\b/i
+    // -----------------------------------------
+    // SERVICE CHARGE
+    // -----------------------------------------
+
+    fields.serviceCharge = findLabelAmount(
+      normalized,
+      [
+        "Service Charge",
+        "Service Charges"
+      ]
     );
 
-    if (basicAmounts.length) {
+    // -----------------------------------------
+    // TIPS
+    // -----------------------------------------
+
+    fields.tips = findLabelAmount(
+      normalized,
+      [
+        "Outlet Tips",
+        "Tips",
+        "Tip"
+      ]
+    );
+
+    // -----------------------------------------
+    // GROSS SALARY
+    // -----------------------------------------
+
+    fields.grossSalary = findLabelAmount(
+      normalized,
+      [
+        "Gross Salary",
+        "Gross Pay"
+      ]
+    );
+
+    // -----------------------------------------
+    // NET SALARY
+    // -----------------------------------------
+
+    fields.netPay = findLabelAmount(
+      normalized,
+      [
+        "Net Salary",
+        "Net Pay",
+        "Take Home Salary",
+        "Take Home Pay"
+      ]
+    );
+
+    // -----------------------------------------
+    // TABLE-BASED FALLBACKS
+    // -----------------------------------------
+
+    const basicAmounts = extractTableAmounts(
+      normalized,
+      ["Basic Salary"],
+      ["Allowance", "Declaration"]
+    );
+
+    if (
+      fields.basicSalary === null &&
+      basicAmounts.length
+    ) {
       fields.basicSalary = basicAmounts[0];
     }
 
-    // -----------------------------------------
-    // SERVICE CHARGE AND TIPS
-    // -----------------------------------------
-
-    const allowanceSection = getTextSection(
+    const allowanceAmounts = extractTableAmounts(
       normalized,
-      /\bAllowance\b/i,
-      /\b(?:Leave\s+Details|Gross\s+Salary|Declaration)\b/i
+      ["Allowance"],
+      ["Leave Details", "Gross Salary", "Declaration"]
     );
 
-    const allowanceAmounts = extractAmountsAfterHeader(
-      allowanceSection,
-      /\bAmount\b/i
-    );
+    if (
+      fields.serviceCharge === null &&
+      allowanceAmounts.length >= 1
+    ) {
+      fields.serviceCharge = allowanceAmounts[0];
+    }
 
-    const componentLabels = [
-      {
-        key: "serviceCharge",
-        regex: /\bService\s+Charges?\b/i
-      },
-      {
-        key: "tips",
-        regex: /\b(?:Outlet\s+Tips|Tips?)\b/i
-      }
-    ]
-      .map(item => ({
-        ...item,
-        position: allowanceSection.search(item.regex)
-      }))
-      .filter(item => item.position >= 0)
-      .sort((a, b) => a.position - b.position);
-
-    componentLabels.forEach((item, index) => {
-      if (allowanceAmounts[index] !== undefined) {
-        fields[item.key] = allowanceAmounts[index];
-      }
-    });
+    if (
+      fields.tips === null &&
+      allowanceAmounts.length >= 2
+    ) {
+      fields.tips = allowanceAmounts[1];
+    }
 
     // -----------------------------------------
-    // GROSS SALARY AND NET SALARY
+    // GROSS / NET FALLBACK
     // -----------------------------------------
 
-    const salaryTotalSection = getTextSection(
+    const salaryAmounts = extractTableAmounts(
       normalized,
-      /\bGross\s+Salary\b/i,
-      /\bDeclaration\b/i
+      ["Gross Salary"],
+      ["Declaration"]
     );
 
-    const totalAmounts = extractMoneyValues(
-      salaryTotalSection
-    );
+    if (
+      fields.grossSalary === null &&
+      salaryAmounts.length
+    ) {
+      fields.grossSalary = salaryAmounts[0];
+    }
 
-    if (totalAmounts.length >= 2) {
-      fields.grossSalary = totalAmounts[0];
-      fields.netPay = totalAmounts[1];
-
-    } else if (totalAmounts.length === 1) {
-      // Some payslips print both labels but only
-      // one amount in the extracted text.
-      fields.grossSalary = totalAmounts[0];
-      fields.netPay = totalAmounts[0];
+    if (
+      fields.netPay === null &&
+      salaryAmounts.length >= 2
+    ) {
+      fields.netPay = salaryAmounts[1];
     }
 
     // -----------------------------------------
-    // FALLBACK FOR DIFFERENT PAYSLIP LAYOUTS
+    // USE OCR LINE DATA WHEN AVAILABLE
     // -----------------------------------------
 
-    if (fields.basicSalary === null) {
-      fields.basicSalary = extractAmountNearLabel(
-        normalized,
-        ["Basic Salary", "Basic Pay"]
+    if (ocrData && Array.isArray(ocrData.lines)) {
+      const lines = extractAmountsFromLines(
+        ocrData.text || text
       );
-    }
 
-    if (fields.serviceCharge === null) {
-      fields.serviceCharge = extractAmountNearLabel(
-        normalized,
-        ["Service Charge", "Service Charges"]
-      );
-    }
-
-    if (fields.tips === null) {
-      fields.tips = extractAmountNearLabel(
-        normalized,
-        ["Outlet Tips", "Tips", "Tip"]
-      );
-    }
-
-    if (fields.grossSalary === null) {
-      fields.grossSalary = extractAmountNearLabel(
-        normalized,
-        ["Gross Salary", "Gross Pay", "Total Gross"]
-      );
-    }
-
-    if (fields.netPay === null) {
-      fields.netPay = extractAmountNearLabel(
-        normalized,
-        [
-          "Net Salary",
-          "Net Pay",
-          "Take Home Salary",
-          "Take Home Pay"
-        ]
-      );
+      console.log("Payslip OCR lines:", lines);
     }
 
     // -----------------------------------------
-    // FILL THE FIVE FORM FIELDS
+    // FILL FORM FIELDS
     // -----------------------------------------
 
     const inputFields = {
@@ -1187,12 +1181,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setMessage(
       elements.payslipStatus,
-      `${recognised} of 5 salary fields recognised. Please verify every amount against your original payslip.`,
+      `${recognised} of 5 salary fields recognised. Check all five figures against your payslip before saving.`,
       recognised === 5 ? "success" : "error"
     );
 
-    console.log("MONETA payslip extraction:", fields);
+    console.log(
+      "MONETA extracted salary fields:",
+      fields
+    );
   }
+
 
 
   // =========================================
