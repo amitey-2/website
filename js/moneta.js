@@ -1069,6 +1069,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ? `${Math.round(progress)}% of your take-home pay has been allocated.`
         : "Save a payslip to calculate your monthly budget.";
 
+    updateCompactDashboard(getMonthTotals());
+
     if (!budgetItems.length) {
       elements.budgetList.innerHTML =
         '<p class="empty-message">Generate a budget or load a saved budget.</p>';
