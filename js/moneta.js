@@ -1397,8 +1397,7 @@ document.addEventListener("DOMContentLoaded", () => {
         !backup ||
         backup.app !== "MONETA" ||
         ![4, 5].includes(Number(backup.version)) ||
-        !Array.isArray(backup.transactions) ||
-        !backup.transactions.length
+        !Array.isArray(backup.transactions)
       ) {
         throw new Error("Invalid MONETA backup file.");
       }
