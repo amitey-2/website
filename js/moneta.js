@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "Food", "Groceries", "Transport", "Shopping",
     "Bills", "Housing", "Health", "Gym", "Personal",
     "Entertainment", "Education", "Debt repayment",
-    "Savings", "Emergency fund", "Other"
+    "Savings", "Emergency fund", "Mobile", "Wife",
+    "Health & Gym", "Financial Goals / Debt", "Other"
   ];
 
   const INCOME_CATEGORIES = [
@@ -32,21 +33,14 @@ document.addEventListener("DOMContentLoaded", () => {
     "Business", "Investment", "Other"
   ];
 
-  const BUDGET_DEFAULTS = [
-    { category: "Housing", percent: 8 },
-    { category: "Food", percent: 18 },
-    { category: "Groceries", percent: 10 },
-    { category: "Transport", percent: 5 },
-    { category: "Bills", percent: 5 },
-    { category: "Health", percent: 3 },
-    { category: "Gym", percent: 3 },
-    { category: "Personal", percent: 8 },
-    { category: "Entertainment", percent: 3 },
-    { category: "Education", percent: 2 },
-    { category: "Debt repayment", percent: 15 },
-    { category: "Savings", percent: 15 },
-    { category: "Emergency fund", percent: 5 }
+  const BUDGET_FIXED_AMOUNTS = [
+    { category: "Food", amount: 300 },
+    { category: "Mobile", amount: 10 },
+    { category: "Health & Gym", amount: 100 }
   ];
+  const WIFE_BUDGET_PERCENT = 10;
+  const FINANCIAL_GOALS_PERCENT = 65;
+  const FINANCIAL_GOALS_MINIMUM = 1100;
 
   const BASIC_SALARY = 1450;
 
@@ -961,7 +955,67 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  async function generateBudget() {
+  function roundBudgetAmount(amount) {
+    return Math.round((Number(amount) + Number.EPSILON) * 100) / 100;
+  }
+
+  function createBudgetForIncome(income) {
+    const wifeAmount = roundBudgetAmount(income * WIFE_BUDGET_PERCENT / 100);
+    const financialGoalsAmount = Math.max(
+      roundBudgetAmount(income * FINANCIAL_GOALS_PERCENT / 100),
+      FINANCIAL_GOALS_MINIMUM
+    );
+
+    const fixedTotal = BUDGET_FIXED_AMOUNTS.reduce(
+      (sum, item) => sum + item.amount,
+      0
+    );
+    const savingsAmount = Math.max(
+      0,
+      roundBudgetAmount(income - fixedTotal - wifeAmount - financialGoalsAmount)
+    );
+
+    return [
+      ...BUDGET_FIXED_AMOUNTS.map(item => ({
+        category: item.category,
+        planned: item.amount
+      })),
+      { category: "Wife", planned: wifeAmount },
+      { category: "Financial Goals / Debt", planned: financialGoalsAmount },
+      { category: "Savings", planned: savingsAmount }
+    ];
+  }
+
+  function applyDynamicBudgetRules(items, income) {
+    const hasDynamicCategories = ["Wife", "Financial Goals / Debt", "Savings"]
+      .every(category => items.some(item => item.category === category));
+
+    if (!hasDynamicCategories) return items;
+
+    const wifeAmount = roundBudgetAmount(income * WIFE_BUDGET_PERCENT / 100);
+    const financialGoalsAmount = Math.max(
+      roundBudgetAmount(income * FINANCIAL_GOALS_PERCENT / 100),
+      FINANCIAL_GOALS_MINIMUM
+    );
+    const otherPlanned = items
+      .filter(item => !["Wife", "Financial Goals / Debt", "Savings"].includes(item.category))
+      .reduce((sum, item) => sum + Number(item.planned || 0), 0);
+    const savingsAmount = Math.max(
+      0,
+      roundBudgetAmount(income - otherPlanned - wifeAmount - financialGoalsAmount)
+    );
+
+    return items.map(item => {
+      if (item.category === "Wife") return { ...item, planned: wifeAmount };
+      if (item.category === "Financial Goals / Debt") {
+        return { ...item, planned: financialGoalsAmount };
+      }
+      if (item.category === "Savings") return { ...item, planned: savingsAmount };
+      return item;
+    });
+  }
+
+  function generateBudget() {
     const month = getSelectedBudgetMonth();
     const paycheck = getPaycheckForMonth(month);
 
@@ -974,30 +1028,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const income = Number(paycheck.net_pay);
-
-    budgetItems = BUDGET_DEFAULTS.map(item => ({
-      category: item.category,
-      planned: Math.round(income * item.percent) / 100
-    }));
-
-    const allocated = budgetItems.reduce(
-      (sum, item) => sum + item.planned,
-      0
-    );
-
-    const difference =
-      Math.round((income - allocated) * 100) / 100;
-
-    if (budgetItems.length) {
-      budgetItems[budgetItems.length - 1].planned += difference;
-    }
-
+    budgetItems = createBudgetForIncome(Number(paycheck.net_pay));
     renderBudget();
 
     setMessage(
       elements.budgetMessage,
-      "Suggested budget created. Adjust the amounts before saving."
+      "Budget created: Wife receives 10%, Financial Goals / Debt receives at least AED 1,100, and Savings gets the remainder."
     );
   }
 
@@ -1016,6 +1052,14 @@ document.addEventListener("DOMContentLoaded", () => {
       category: item.category,
       planned: Number(item.planned_amount)
     }));
+
+    const paycheck = getPaycheckForMonth(month);
+    if (paycheck && budgetItems.length) {
+      budgetItems = applyDynamicBudgetRules(
+        budgetItems,
+        Number(paycheck.net_pay)
+      );
+    }
 
     renderBudget();
   }
@@ -1064,10 +1108,11 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.budgetProgress.style.width =
       `${progress}%`;
 
-    elements.budgetProgressMessage.textContent =
-      income
-        ? `${Math.round(progress)}% of your take-home pay has been allocated.`
-        : "Save a payslip to calculate your monthly budget.";
+    elements.budgetProgressMessage.textContent = !income
+      ? "Save a payslip to calculate your monthly budget."
+      : remaining < 0
+        ? `Budget exceeds income by ${formatCurrency(Math.abs(remaining))}; your AED 1,100 financial-goals minimum is protected.`
+        : `${Math.round(progress)}% of your take-home pay has been allocated.`;
 
     updateCompactDashboard(getMonthTotals());
 
