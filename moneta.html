@@ -35,42 +35,22 @@
 </header>
 
 <main class="container">
-
-  <!-- WELCOME -->
-  <section class="welcome">
-    <div>
-      <p class="eyebrow">YOUR MONEY, YOUR CONTROL</p>
-      <h1>Financial <em>overview.</em></h1>
-      <p class="muted">A clearer picture of where your money goes.</p>
-      <p class="muted cloud-status" id="cloudStatus" aria-live="polite">
-        Connecting to your secure account...
-      </p>
-    </div>
-
-    <button class="button button-primary" id="addTransactionBtn" type="button">
-      + Add transaction
-    </button>
+  <button id="addTransactionBtn" type="button" hidden></button>
+  <section class="welcome compact-welcome">
+    <div><p class="eyebrow">YOUR MONEY, YOUR CONTROL</p><h1>MONETA<span class="welcome-dot">.</span></h1><p class="muted cloud-status" id="cloudStatus" aria-live="polite">Connecting to your secure account...</p></div>
+    <div class="month-toolbar"><label for="monthFilter">Month</label><input type="month" id="monthFilter"></div>
   </section>
-
-  <!-- MONTH -->
-  <section class="month-toolbar">
-    <label for="monthFilter">Viewing month</label>
-    <input type="month" id="monthFilter">
-  </section>
-
-  <!-- SUMMARY -->
-  <section class="summary-grid">
-
-    <article class="summary-card balance-card">
+  <section class="hero-panel">
+    <div class="hero-balance"><article class="summary-card balance-card">
       <div class="card-top">
         <span>Total balance this month</span>
         <span class="card-icon">◈</span>
       </div>
       <h2 id="balanceValue">AED 0.00</h2>
       <p>Income minus expenses</p>
-    </article>
-
-    <article class="summary-card">
+    </article></div>
+    <div class="hero-stats">
+      <article class="summary-card">
       <div class="card-top">
         <span>Income</span>
         <span class="card-icon income-icon">↗</span>
@@ -78,8 +58,7 @@
       <h2 id="incomeValue">AED 0.00</h2>
       <p>Salary + other income this month</p>
     </article>
-
-    <article class="summary-card">
+      <article class="summary-card">
       <div class="card-top">
         <span>Expenses</span>
         <span class="card-icon expense-icon">↘</span>
@@ -87,12 +66,20 @@
       <h2 id="expenseValue">AED 0.00</h2>
       <p>Money spent this month</p>
     </article>
-
+      <div class="hero-spending"><div class="hero-spending-label"><span>Monthly spending</span><strong id="heroSpendPct">0%</strong></div><div class="progress-track"><div class="progress-fill" id="heroSpendBar"></div></div></div>
+    </div>
   </section>
-
-  <!-- MANUAL PAYSLIP -->
- 
-<!-- MANUAL PAYSLIP -->
+  <section class="quick-goals">
+    <article class="quick-card"><div class="quick-card-icon">◎</div><div class="quick-card-main"><span>Monthly budget</span><strong id="quickBudgetValue">AED 0 / 0</strong><div class="progress-track"><div class="progress-fill" id="quickBudgetBar"></div></div></div><span class="quick-percent" id="quickBudgetPct">0%</span></article>
+    <article class="quick-card"><div class="quick-card-icon">♡</div><div class="quick-card-main"><span>Savings goal</span><strong id="quickSavingsValue">AED 0 / 1,000</strong><div class="progress-track"><div class="progress-fill" id="quickSavingsBar"></div></div></div><span class="quick-percent" id="quickSavingsPct">0%</span></article>
+  </section>
+  <section class="quick-actions">
+    <button class="quick-action primary-action" id="quickAddExpense" type="button">＋ <span>Add Expense</span></button>
+    <button class="quick-action secondary-action" id="quickAddIncome" type="button">＋ <span>Add Income</span></button>
+  </section>
+  <section class="panel recent-panel"><div class="panel-heading"><h2>Recent Activity</h2><a href="#moreTools" class="see-all">See all →</a></div><div id="recentActivityList"><p class="empty-message">No transactions yet. Start tracking your finances.</p></div></section>
+  <details class="more-tools" id="moreTools"><summary><span>▥ &nbsp; More Tools</span><span class="tools-chevron">⌄</span></summary><div class="more-tools-content">
+    <!-- MANUAL PAYSLIP -->
 <section class="panel payslip-panel">
 
   <div class="panel-heading">
@@ -450,6 +437,8 @@
 
   </section>
 
+
+  </div></details>
 </main>
 
 <footer class="footer">
