@@ -1063,11 +1063,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
 
     const paycheck = getPaycheckForMonth(month);
-    if (paycheck && budgetItems.length) {
-      budgetItems = applyDynamicBudgetRules(
-        budgetItems,
-        Number(paycheck.net_pay)
-      );
+    if (paycheck) {
+      if (budgetItems.length) {
+        budgetItems = applyDynamicBudgetRules(
+          budgetItems,
+          Number(paycheck.net_pay)
+        );
+      } else {
+        // Build a first-time monthly budget from the saved payslip.
+        // This stays in memory until the user chooses to save it.
+        budgetItems = createBudgetForIncome(Number(paycheck.net_pay));
+      }
     }
 
     renderBudget();
