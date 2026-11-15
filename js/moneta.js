@@ -344,10 +344,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getMonthTotals() {
     const items = getMonthTransactions();
+    const selectedMonth = getSelectedMonth();
+    const paycheck = paychecks.find(item =>
+      item.pay_month === monthStart(selectedMonth)
+    );
 
-    const income = items
-      .filter(item => item.type === "income")
+    const salaryIncome = paycheck
+      ? Number(paycheck.net_pay) || 0
+      : 0;
+
+    // Payslip total already includes salary, tips and service charge.
+    // Exclude those transaction categories to avoid counting them twice.
+    const otherIncome = items
+      .filter(item =>
+        item.type === "income" &&
+        !["Salary", "Tips", "Service charge"].includes(item.category)
+      )
       .reduce((sum, item) => sum + Number(item.amount), 0);
+
+    const income = salaryIncome + otherIncome;
 
     const expenses = items
       .filter(item => item.type === "expense")
