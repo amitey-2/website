@@ -1412,7 +1412,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const budgetMonth = backup.budget_month ||
         getSelectedBudgetMonth();
 
-      if (!/^\\d{4}-\\d{2}$/.test(budgetMonth)) {
+      if (!/^\d{4}-\d{2}$/.test(budgetMonth)) {
         throw new Error("Backup contains an invalid budget month.");
       }
 
@@ -1437,7 +1437,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "",
         "Restore will only proceed if all MONETA cloud tables are empty.",
         "All sections will be saved together or none will be saved."
-      ].join("\\n");
+      ].join("\n");
 
       if (!confirm(summary)) return;
 
