@@ -188,6 +188,52 @@ document.addEventListener("DOMContentLoaded", () => {
     return elements.budgetMonth.value || currentMonthString();
   }
 
+  // The expense form opens in a focused dialog instead of living at the
+  // bottom of the page. The existing form and save logic stay unchanged.
+  let transactionDialog = null;
+
+  function setupTransactionDialog() {
+    const section = $("transactionSection");
+    if (!section || transactionDialog) return;
+
+    transactionDialog = document.createElement("dialog");
+    transactionDialog.id = "transactionDialog";
+    transactionDialog.className = "transaction-dialog";
+
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "dialog-close";
+    closeButton.setAttribute("aria-label", "Close expense form");
+    closeButton.textContent = "×";
+    closeButton.addEventListener("click", () => {
+      resetTransactionForm();
+      transactionDialog.close();
+    });
+
+    transactionDialog.appendChild(closeButton);
+    transactionDialog.appendChild(section);
+    document.body.appendChild(transactionDialog);
+
+    transactionDialog.addEventListener("click", event => {
+      if (event.target === transactionDialog) {
+        resetTransactionForm();
+        transactionDialog.close();
+      }
+    });
+
+    transactionDialog.addEventListener("cancel", () => {
+      resetTransactionForm();
+    });
+  }
+
+  function openTransactionDialog() {
+    if (!transactionDialog) setupTransactionDialog();
+    if (transactionDialog && !transactionDialog.open) {
+      transactionDialog.showModal();
+    }
+    elements.titleInput.focus({ preventScroll: true });
+  }
+
   // =========================================
   // 3. CATEGORY SELECTORS
   // =========================================
@@ -642,10 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.submitBtn.textContent = "Update transaction";
     elements.cancelEditBtn.hidden = false;
 
-    $("transactionSection").scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
+    openTransactionDialog();
   }
 
   async function deleteTransaction(id) {
@@ -678,6 +721,10 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.cancelEditBtn.hidden = true;
 
     populateCategories();
+
+    if (transactionDialog && transactionDialog.open) {
+      transactionDialog.close();
+    }
   }
 
   // =========================================
@@ -1631,9 +1678,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  setupTransactionDialog();
+
   $("quickAddExpense").addEventListener("click", () => {
-    elements.typeInput.value = "expense"; populateCategories(); $("moreTools").open = true;
-    $("transactionSection").scrollIntoView({behavior:"smooth",block:"start"});
+    resetTransactionForm();
+    elements.typeInput.value = "expense";
+    populateCategories();
+    openTransactionDialog();
   });
 
   elements.addTransactionBtn.addEventListener("click", () => {
