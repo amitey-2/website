@@ -1388,6 +1388,8 @@ document.addEventListener("DOMContentLoaded", () => {
   async function importBackup(file) {
     if (!file) return;
 
+    let restoreCommitted = false;
+
     try {
       const backup = JSON.parse(await file.text());
 
@@ -1450,6 +1452,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (error) throw error;
 
+      restoreCommitted = true;
       elements.budgetMonth.value = budgetMonth;
 
       await Promise.all([
@@ -1470,9 +1473,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("MONETA restore error:", error);
 
-      elements.importMessage.textContent =
-        "Restore failed: " + error.message +
-        " No partial restore was saved.";
+      elements.importMessage.textContent = restoreCommitted
+        ? "Backup was restored, but the dashboard could not refresh: " + error.message
+        : "Restore failed: " + error.message +
+          " No partial restore was saved.";
 
     } finally {
       elements.importFile.value = "";
