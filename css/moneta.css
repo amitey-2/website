@@ -1237,3 +1237,7 @@ body{background:radial-gradient(ellipse at 4% 0%,rgba(126,48,79,.34),transparent
 
 /* Single primary action: expenses are the only manual transaction entry. */
 .quick-actions{grid-template-columns:1fr}
+
+
+/* Savings is a calculated remainder, not a manually editable budget amount. */
+.budget-calculated-amount{display:block;width:100%;padding:12px 14px;margin-top:6px;border:1px solid var(--border);border-radius:12px;background:rgba(215,126,158,.09);color:var(--text);font-weight:700;}
