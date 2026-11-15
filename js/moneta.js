@@ -1590,10 +1590,6 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.typeInput.value = "expense"; populateCategories(); $("moreTools").open = true;
     $("transactionSection").scrollIntoView({behavior:"smooth",block:"start"});
   });
-  $("quickAddIncome").addEventListener("click", () => {
-    elements.typeInput.value = "income"; populateCategories(); $("moreTools").open = true;
-    $("transactionSection").scrollIntoView({behavior:"smooth",block:"start"});
-  });
 
   elements.addTransactionBtn.addEventListener("click", () => {
     $("transactionSection").scrollIntoView({
