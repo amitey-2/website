@@ -21,11 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let savingsGoal = 1000;
 
   const EXPENSE_CATEGORIES = [
-    "Food", "Groceries", "Transport", "Shopping",
-    "Bills", "Housing", "Health", "Gym", "Personal",
-    "Entertainment", "Education", "Debt repayment",
-    "Savings", "Emergency fund", "Mobile", "Wife",
-    "Health & Gym", "Financial Goals / Debt", "Other"
+    "Food",
+    "Mobile",
+    "Wife",
+    "Health & Gym",
+    "Financial Goals / Debt",
+    "Savings"
   ];
 
   const INCOME_CATEGORIES = [
