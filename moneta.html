@@ -71,7 +71,7 @@
   </section>
   <section class="quick-goals">
     <article class="quick-card"><div class="quick-card-icon">◎</div><div class="quick-card-main"><span>Monthly budget</span><strong id="quickBudgetValue">AED 0 / 0</strong><div class="progress-track"><div class="progress-fill" id="quickBudgetBar"></div></div></div><span class="quick-percent" id="quickBudgetPct">0%</span></article>
-    <article class="quick-card"><div class="quick-card-icon">♡</div><div class="quick-card-main"><span>Savings goal</span><strong id="quickSavingsValue">AED 0 / 1,000</strong><div class="progress-track"><div class="progress-fill" id="quickSavingsBar"></div></div></div><span class="quick-percent" id="quickSavingsPct">0%</span></article>
+    <article class="quick-card"><div class="quick-card-icon">♡</div><div class="quick-card-main"><span>Savings this month</span><strong id="quickSavingsValue">AED 0.00</strong><div class="progress-track"><div class="progress-fill" id="quickSavingsBar"></div></div></div><span class="quick-percent" id="quickSavingsPct">0%</span></article>
   </section>
   <section class="quick-actions">
     <button class="quick-action primary-action" id="quickAddExpense" type="button">＋ <span>Add Expense</span></button>
@@ -239,33 +239,6 @@
     </button>
 
     <p id="budgetMessage" class="form-message" aria-live="polite"></p>
-
-  </section>
-
-  <!-- SAVINGS GOAL -->
-  <section class="panel savings-panel">
-
-    <div class="panel-heading">
-      <div>
-        <p class="eyebrow">BUILD YOUR FUTURE</p>
-        <h2>Monthly savings goal</h2>
-      </div>
-      <span class="goal-percent" id="goalPercent">0%</span>
-    </div>
-
-    <div class="goal-input-row">
-      <label for="goalInput">Your savings target (AED)</label>
-      <input type="number" id="goalInput" min="0" step="1" value="1000">
-      <button class="button button-small" id="saveGoalBtn" type="button">
-        Save goal
-      </button>
-    </div>
-
-    <div class="progress-track">
-      <div class="progress-fill" id="goalProgress"></div>
-    </div>
-
-    <p class="muted" id="goalMessage">Set a goal and start saving.</p>
 
   </section>
 
