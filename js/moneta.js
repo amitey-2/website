@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let transactions = [];
   let paychecks = [];
+  let editingPayMonth = null;
   let budgetItems = [];
   let savingsGoal = 1000;
 
@@ -109,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     totalSalary: $("totalSalary"),
     payNotes: $("payNotes"),
     savePayslipBtn: $("savePayslipBtn"),
+    cancelPayslipEditBtn: $("cancelPayslipEditBtn"),
     payslipFormMessage: $("payslipFormMessage"),
     payslipHistory: $("payslipHistory"),
 
@@ -762,8 +764,14 @@ document.addEventListener("DOMContentLoaded", () => {
             </span>
           </div>
 
-          <div class="transaction-amount income-text">
-            Total: ${formatCurrency(BASIC_SALARY + paycheck.service_charge + paycheck.tips)}
+          <div class="payslip-history-right">
+            <div class="transaction-amount income-text">
+              Total: ${formatCurrency(BASIC_SALARY + paycheck.service_charge + paycheck.tips)}
+            </div>
+            <div class="payslip-history-actions">
+              <button class="button payslip-edit-btn" type="button" data-action="edit" data-month="${escapeHTML(paycheck.pay_month)}">Edit</button>
+              <button class="button payslip-delete-btn" type="button" data-action="delete" data-month="${escapeHTML(paycheck.pay_month)}">Delete</button>
+            </div>
           </div>
         </article>
       `).join("");
@@ -777,10 +785,76 @@ document.addEventListener("DOMContentLoaded", () => {
     return total;
   }
 
+  function resetPayslipEdit() {
+    editingPayMonth = null;
+    elements.payMonth.disabled = false;
+    elements.payslipForm.reset();
+    elements.payMonth.value = currentMonthString();
+    elements.serviceCharge.value = "0";
+    elements.tips.value = "0";
+    elements.payDate.value = "";
+    elements.payNotes.value = "";
+    elements.cancelPayslipEditBtn.hidden = true;
+    elements.savePayslipBtn.textContent = "Save confirmed payslip";
+    updateTotalSalary();
+  }
+
+  function startPayslipEdit(month) {
+    const paycheck = paychecks.find(item => item.pay_month === month);
+    if (!paycheck) return;
+
+    editingPayMonth = paycheck.pay_month;
+    elements.payMonth.value = paycheck.pay_month.slice(0, 7);
+    elements.payMonth.disabled = true;
+    elements.payDate.value = paycheck.pay_date
+      ? String(paycheck.pay_date).slice(0, 10)
+      : "";
+    elements.serviceCharge.value = String(paycheck.service_charge);
+    elements.tips.value = String(paycheck.tips);
+    elements.payNotes.value = paycheck.notes || "";
+    elements.cancelPayslipEditBtn.hidden = false;
+    elements.savePayslipBtn.textContent = "Update payslip";
+    updateTotalSalary();
+    setMessage(elements.payslipFormMessage,
+      "Editing " + paycheck.pay_month.slice(0, 7) + ". Update the figures and save.");
+    elements.payslipForm.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  async function deletePayslip(month) {
+    const paycheck = paychecks.find(item => item.pay_month === month);
+    if (!paycheck) return;
+
+    if (!confirm("Delete the salary record for " + month.slice(0, 7) +
+      "? This will also remove that month's salary from its budget calculation.")) {
+      return;
+    }
+
+    try {
+      const { error } = await supabaseClient
+        .from("moneta_payslips")
+        .delete()
+        .eq("user_id", currentUser.id)
+        .eq("pay_month", month);
+
+      if (error) throw error;
+
+      if (editingPayMonth === month) resetPayslipEdit();
+      await loadPaychecks();
+      await loadBudget();
+      setCloudStatus("Salary record deleted", "success");
+    } catch (error) {
+      console.error("Payslip delete error:", error);
+      setMessage(elements.payslipFormMessage,
+        "Could not delete salary record: " + error.message, "error");
+    }
+  }
+
   async function savePayslip(event) {
     event.preventDefault();
 
-    const month = elements.payMonth.value;
+    const month = editingPayMonth
+      ? editingPayMonth.slice(0, 7)
+      : elements.payMonth.value;
     const payDate = elements.payDate.value || null;
     const serviceRaw = elements.serviceCharge.value.trim();
     const tipsRaw = elements.tips.value.trim();
@@ -844,17 +918,30 @@ document.addEventListener("DOMContentLoaded", () => {
         updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabaseClient
-        .from("moneta_payslips")
-        .upsert(payload, { onConflict: "user_id,pay_month" });
+      let saveQuery = supabaseClient.from("moneta_payslips");
 
-      if (error) throw error;
+      if (editingPayMonth) {
+        const { error } = await saveQuery
+          .update(payload)
+          .eq("user_id", currentUser.id)
+          .eq("pay_month", editingPayMonth);
+        if (error) throw error;
+      } else {
+        const { error } = await saveQuery
+          .upsert(payload, { onConflict: "user_id,pay_month" });
+        if (error) throw error;
+      }
 
+      const wasEditing = Boolean(editingPayMonth);
       await loadPaychecks();
       await loadBudget();
 
+      if (wasEditing) resetPayslipEdit();
+
       setMessage(elements.payslipFormMessage,
-        "Your total salary has been saved successfully.");
+        wasEditing
+          ? "Your salary record has been updated successfully."
+          : "Your total salary has been saved successfully.");
       setCloudStatus("Payslip saved to your cloud account", "success");
 
     } catch (error) {
@@ -1556,6 +1643,20 @@ document.addEventListener("DOMContentLoaded", () => {
     "submit",
     savePayslip
   );
+
+  elements.cancelPayslipEditBtn.addEventListener(
+    "click",
+    resetPayslipEdit
+  );
+
+  elements.payslipHistory.addEventListener("click", event => {
+    const actionButton = event.target.closest("button[data-action][data-month]");
+    if (!actionButton) return;
+
+    const { action, month } = actionButton.dataset;
+    if (action === "edit") startPayslipEdit(month);
+    if (action === "delete") deletePayslip(month);
+  });
 
   elements.generateBudgetBtn.addEventListener(
     "click",
