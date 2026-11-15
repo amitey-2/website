@@ -48,6 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { category: "Emergency fund", percent: 5 }
   ];
 
+  const BASIC_SALARY = 1450;
+
   const $ = id => document.getElementById(id);
 
   const elements = {
@@ -107,11 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
     payslipForm: $("payslipForm"),
     payMonth: $("payMonth"),
     payDate: $("payDate"),
-    basicSalary: $("basicSalary"),
     serviceCharge: $("serviceCharge"),
     tips: $("tips"),
-    grossSalary: $("grossSalary"),
-    netPay: $("netPay"),
+    totalSalary: $("totalSalary"),
     payNotes: $("payNotes"),
     savePayslipBtn: $("savePayslipBtn"),
     payslipFormMessage: $("payslipFormMessage"),
@@ -767,11 +767,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     paychecks = (data || []).map(item => ({
       ...item,
-      basic_salary: Number(item.basic_salary),
-      service_charge: Number(item.service_charge),
-      tips: Number(item.tips),
-      gross_salary: Number(item.gross_salary),
-      net_pay: Number(item.net_salary)
+      basic_salary: BASIC_SALARY,
+      service_charge: Number(item.service_charge) || 0,
+      tips: Number(item.tips) || 0,
+      gross_salary: BASIC_SALARY + (Number(item.service_charge) || 0) + (Number(item.tips) || 0),
+      net_pay: BASIC_SALARY + (Number(item.service_charge) || 0) + (Number(item.tips) || 0)
     }));
 
     renderPaycheckHistory();
@@ -793,7 +793,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </strong>
 
             <span>
-              Basic: ${formatCurrency(paycheck.basic_salary)}
+              Basic salary: ${formatCurrency(BASIC_SALARY)}
             </span>
 
             <span>
@@ -803,17 +803,21 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>
               Tips: ${formatCurrency(paycheck.tips)}
             </span>
-
-            <span>
-              Gross: ${formatCurrency(paycheck.gross_salary)}
-            </span>
           </div>
 
           <div class="transaction-amount income-text">
-            ${formatCurrency(paycheck.net_pay)}
+            Total: ${formatCurrency(BASIC_SALARY + paycheck.service_charge + paycheck.tips)}
           </div>
         </article>
       `).join("");
+  }
+
+  function updateTotalSalary() {
+    const serviceCharge = Number(elements.serviceCharge.value) || 0;
+    const tipsAmount = Number(elements.tips.value) || 0;
+    const total = BASIC_SALARY + serviceCharge + tipsAmount;
+    elements.totalSalary.value = formatCurrency(total);
+    return total;
   }
 
   async function savePayslip(event) {
@@ -821,93 +825,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const month = elements.payMonth.value;
     const payDate = elements.payDate.value || null;
+    const serviceRaw = elements.serviceCharge.value.trim();
+    const tipsRaw = elements.tips.value.trim();
 
-    const rawFigures = [
-      elements.basicSalary.value.trim(),
-      elements.serviceCharge.value.trim(),
-      elements.tips.value.trim(),
-      elements.grossSalary.value.trim(),
-      elements.netPay.value.trim()
-    ];
-
-    // Empty fields must not silently become zero.
-    if (rawFigures.some(value => value === "")) {
-      setMessage(
-        elements.payslipFormMessage,
-        "Please enter all five salary figures before saving.",
-        "error"
-      );
+    if (serviceRaw === "" || tipsRaw === "") {
+      setMessage(elements.payslipFormMessage,
+        "Please enter the service charge and tips.", "error");
       return;
     }
 
-    const [
-      basic,
-      serviceCharge,
-      tipsAmount,
-      gross,
-      net
-    ] = rawFigures.map(Number);
-
-    const figures = [
-      basic,
-      serviceCharge,
-      tipsAmount,
-      gross,
-      net
-    ];
+    const serviceCharge = Number(serviceRaw);
+    const tipsAmount = Number(tipsRaw);
+    const total = BASIC_SALARY + serviceCharge + tipsAmount;
 
     if (
-      !month ||
-      !/^\d{4}-\d{2}$/.test(month) ||
-      figures.some(value =>
-        !Number.isFinite(value) || value < 0
-      ) ||
-      gross <= 0 ||
-      net <= 0
+      !month || !/^\d{4}-\d{2}$/.test(month) ||
+      !Number.isFinite(serviceCharge) || serviceCharge < 0 ||
+      !Number.isFinite(tipsAmount) || tipsAmount < 0
     ) {
-      setMessage(
-        elements.payslipFormMessage,
-        "Please check the month and all five salary figures.",
-        "error"
-      );
+      setMessage(elements.payslipFormMessage,
+        "Please check the month, service charge and tips.", "error");
       return;
     }
 
     const confirmationMessage = [
-      "Please confirm these figures match your payslip:",
+      "Please confirm your salary:",
       "",
-      `Basic salary: ${formatCurrency(basic)}`,
+      `Basic salary: ${formatCurrency(BASIC_SALARY)}`,
       `Service charge: ${formatCurrency(serviceCharge)}`,
       `Tips: ${formatCurrency(tipsAmount)}`,
-      `Gross salary: ${formatCurrency(gross)}`,
-      `Net salary: ${formatCurrency(net)}`,
+      `Total salary: ${formatCurrency(total)}`,
       "",
-      "Save these figures?"
+      "Save this payslip?"
     ].join("\n");
 
     if (!confirm(confirmationMessage)) {
-      setMessage(
-        elements.payslipFormMessage,
-        "Not saved. Check or correct the figures, then try again.",
-        "error"
-      );
+      setMessage(elements.payslipFormMessage,
+        "Not saved. Check the figures, then try again.", "error");
       return;
     }
 
-    if (net > gross) {
-      const confirmed = confirm(
-        "Your net salary is higher than your gross salary. Are you certain these figures are correct?"
-      );
-
-      if (!confirmed) return;
-    }
-
-    setBusy(
-      elements.savePayslipBtn,
-      true,
-      "Saving...",
-      "Save confirmed payslip"
-    );
+    setBusy(elements.savePayslipBtn, true, "Saving...", "Save confirmed payslip");
 
     try {
       const payload = {
@@ -915,63 +873,40 @@ document.addEventListener("DOMContentLoaded", () => {
         pay_month: monthStart(month),
         pay_date: payDate,
         currency: "AED",
-
-        basic_salary: basic,
+        basic_salary: BASIC_SALARY,
         service_charge: serviceCharge,
         tips: tipsAmount,
-        gross_salary: gross,
-        net_salary: net,
-
-        // Retained legacy database columns.
+        gross_salary: total,
+        net_salary: total,
         allowances: 0,
         overtime: 0,
         other_income: 0,
         deductions: 0,
-
-        // No payslip image is uploaded or stored.
         file_name: "",
-
         notes: elements.payNotes.value.trim(),
         updated_at: new Date().toISOString()
       };
 
       const { error } = await supabaseClient
         .from("moneta_payslips")
-        .upsert(payload, {
-          onConflict: "user_id,pay_month"
-        });
+        .upsert(payload, { onConflict: "user_id,pay_month" });
 
       if (error) throw error;
 
       await loadPaychecks();
       await loadBudget();
 
-      setMessage(
-        elements.payslipFormMessage,
-        "Your confirmed salary figures have been saved successfully."
-      );
-
-      setCloudStatus(
-        "Payslip saved to your cloud account",
-        "success"
-      );
+      setMessage(elements.payslipFormMessage,
+        "Your total salary has been saved successfully.");
+      setCloudStatus("Payslip saved to your cloud account", "success");
 
     } catch (error) {
       console.error("Payslip save error:", error);
-
-      setMessage(
-        elements.payslipFormMessage,
-        "Could not save payslip: " + error.message,
-        "error"
-      );
+      setMessage(elements.payslipFormMessage,
+        "Could not save payslip: " + error.message, "error");
 
     } finally {
-      setBusy(
-        elements.savePayslipBtn,
-        false,
-        "Saving...",
-        "Save confirmed payslip"
-      );
+      setBusy(elements.savePayslipBtn, false, "Saving...", "Save confirmed payslip");
     }
   }
 
@@ -1359,11 +1294,11 @@ document.addEventListener("DOMContentLoaded", () => {
         pay_month: item.pay_month,
         pay_date: item.pay_date || null,
         currency: item.currency || "AED",
-        basic_salary: Number(item.basic_salary) || 0,
+        basic_salary: BASIC_SALARY,
         service_charge: Number(item.service_charge) || 0,
         tips: Number(item.tips) || 0,
-        gross_salary: Number(item.gross_salary) || 0,
-        net_salary: Number(item.net_salary ?? item.net_pay) || 0,
+        gross_salary: BASIC_SALARY + (Number(item.service_charge) || 0) + (Number(item.tips) || 0),
+        net_salary: BASIC_SALARY + (Number(item.service_charge) || 0) + (Number(item.tips) || 0),
         allowances: Number(item.allowances) || 0,
         overtime: Number(item.overtime) || 0,
         other_income: Number(item.other_income) || 0,
@@ -1444,9 +1379,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       elements.importMessage.textContent = "Restoring backup...";
 
+      const normalizedBackup = {
+        ...backup,
+        paychecks: (backup.paychecks || []).map(item => {
+          const total = BASIC_SALARY +
+            (Number(item.service_charge) || 0) +
+            (Number(item.tips) || 0);
+          return {
+            ...item,
+            basic_salary: BASIC_SALARY,
+            gross_salary: total,
+            net_salary: total
+          };
+        })
+      };
+
       const { data, error } = await supabaseClient.rpc(
         "restore_moneta_backup",
-        { p_backup: backup }
+        { p_backup: normalizedBackup }
       );
 
       if (error) throw error;
@@ -1595,6 +1545,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // No OCR or image-reading event listener.
   // Payslips are entered manually.
 
+  elements.serviceCharge.addEventListener("input", updateTotalSalary);
+  elements.tips.addEventListener("input", updateTotalSalary);
+
   elements.payslipForm.addEventListener(
     "submit",
     savePayslip
@@ -1667,6 +1620,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     elements.payMonth.value =
       currentMonthString();
+
+    updateTotalSalary();
 
     elements.budgetMonth.value =
       currentMonthString();
