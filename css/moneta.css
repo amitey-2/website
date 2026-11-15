@@ -23,7 +23,7 @@
   --muted: #AC999D;
   --border: rgba(243, 233, 233, 0.09);
 
-  --income: #83B69C;
+  --income: #aebbd5;
   --expense: #D47D89;
 
   --radius: 18px;
@@ -356,8 +356,8 @@ textarea::placeholder {
 }
 
 .income-icon {
-  color: #426F5A;
-  background: rgba(66, 111, 90, 0.12);
+  color: #aebbd5;
+  background: rgba(174, 187, 213, 0.18);
 }
 
 .expense-icon {
