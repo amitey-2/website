@@ -75,7 +75,7 @@
   </section>
   <section class="quick-actions">
     <button class="quick-action primary-action" id="quickAddExpense" type="button">＋ <span>Add Expense</span></button>
-    <button class="quick-action secondary-action" id="quickAddIncome" type="button">＋ <span>Add Income</span></button>
+    
   </section>
   <section class="panel recent-panel"><div class="panel-heading"><h2>Recent Activity</h2><a href="#moreTools" class="see-all">See all →</a></div><div id="recentActivityList"><p class="empty-message">No transactions yet. Start tracking your finances.</p></div></section>
   <details class="more-tools" id="moreTools"><summary><span>▥ &nbsp; More Tools</span><span class="tools-chevron">⌄</span></summary><div class="more-tools-content">
@@ -346,7 +346,7 @@
           Transaction type
           <select id="typeInput" required>
             <option value="expense">Expense</option>
-            <option value="income">Income</option>
+            <option value="income" hidden>Income</option>
           </select>
         </label>
 
