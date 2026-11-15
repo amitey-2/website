@@ -1152,15 +1152,17 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <label>
-              Planned amount (AED)
-              <input
-                type="number"
-                class="budget-amount-input"
-                data-budget-index="${index}"
-                min="0"
-                step="0.01"
-                value="${Number(item.planned).toFixed(2)}"
-              >
+              ${item.category === "Savings" ? "Calculated automatically" : "Planned amount (AED)"}
+              ${item.category === "Savings"
+                ? `<output class="budget-calculated-amount">${formatCurrency(item.planned)}</output>`
+                : `<input
+                    type="number"
+                    class="budget-amount-input"
+                    data-budget-index="${index}"
+                    min="0"
+                    step="0.01"
+                    value="${Number(item.planned).toFixed(2)}"
+                  >`}
             </label>
 
             <div class="progress-track">
@@ -1191,35 +1193,22 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (budgetItems[index].category === "Savings") {
+      renderBudget();
+      return;
+    }
+
     budgetItems[index].planned = amount;
 
     const month = getSelectedBudgetMonth();
     const paycheck = getPaycheckForMonth(month);
+    const income = paycheck ? Number(paycheck.net_pay) : 0;
 
-    const income = paycheck
-      ? Number(paycheck.net_pay)
-      : 0;
+    if (income > 0) {
+      budgetItems = applyDynamicBudgetRules(budgetItems, income);
+    }
 
-    const planned = budgetItems.reduce(
-      (sum, item) => sum + Number(item.planned),
-      0
-    );
-
-    elements.budgetIncome.textContent =
-      formatCurrency(income);
-
-    elements.budgetPlanned.textContent =
-      formatCurrency(planned);
-
-    const progress = income > 0
-      ? Math.min(planned / income * 100, 100)
-      : 0;
-
-    elements.budgetProgress.style.width =
-      `${progress}%`;
-
-    elements.budgetProgressMessage.textContent =
-      `${Math.round(progress)}% of your take-home pay has been allocated.`;
+    renderBudget();
   }
 
   async function saveBudget() {
