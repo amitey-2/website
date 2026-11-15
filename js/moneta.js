@@ -1336,13 +1336,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
+  
+
+  // =========================================
   // 13. JSON BACKUP AND RESTORE
   // =========================================
 
   function backupData() {
     const backup = {
       app: "MONETA",
-      version: 4,
+      version: 5,
       exportedAt: new Date().toISOString(),
       savingsGoal,
       transactions: transactions.map(item => ({
@@ -1352,8 +1355,27 @@ document.addEventListener("DOMContentLoaded", () => {
         amount: item.amount,
         date: item.date
       })),
-      paychecks,
-      budgets: budgetItems
+      paychecks: paychecks.map(item => ({
+        pay_month: item.pay_month,
+        pay_date: item.pay_date || null,
+        currency: item.currency || "AED",
+        basic_salary: Number(item.basic_salary) || 0,
+        service_charge: Number(item.service_charge) || 0,
+        tips: Number(item.tips) || 0,
+        gross_salary: Number(item.gross_salary) || 0,
+        net_salary: Number(item.net_salary ?? item.net_pay) || 0,
+        allowances: Number(item.allowances) || 0,
+        overtime: Number(item.overtime) || 0,
+        other_income: Number(item.other_income) || 0,
+        deductions: Number(item.deductions) || 0,
+        file_name: item.file_name || "",
+        notes: item.notes || ""
+      })),
+      budget_month: getSelectedBudgetMonth(),
+      budgets: budgetItems.map(item => ({
+        category: item.category,
+        planned: Number(item.planned)
+      }))
     };
 
     downloadFile(
@@ -1371,65 +1393,252 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         !backup ||
+        backup.app !== "MONETA" ||
+        ![4, 5].includes(Number(backup.version)) ||
         !Array.isArray(backup.transactions)
       ) {
-        throw new Error("This is not a valid MONETA backup.");
+        throw new Error("Invalid MONETA backup file.");
       }
 
+      // Validate all sections before writing anything.
       if (transactions.length > 0) {
         throw new Error(
-          "Import is only allowed when your cloud transaction list is empty."
+          "Restore is allowed only when your cloud transaction list is empty."
         );
       }
 
-      const imported = backup.transactions.map(item => {
+      const importedTransactions = backup.transactions.map(item => {
         const amount = Number(item.amount);
 
         if (
-          !item.title ||
+          typeof item.title !== "string" ||
+          !item.title.trim() ||
           !["income", "expense"].includes(item.type) ||
-          !item.category ||
+          typeof item.category !== "string" ||
+          !item.category.trim() ||
           !Number.isFinite(amount) ||
           amount <= 0 ||
-          !/^\d{4}-\d{2}-\d{2}$/.test(item.date)
+          typeof item.date !== "string" ||
+          !/^\d{4}-\d{2}-\d{2}$/.test(item.date) ||
+          Number.isNaN(Date.parse(item.date))
         ) {
-          throw new Error(
-            "The backup contains an invalid transaction."
-          );
+          throw new Error("Backup contains an invalid transaction.");
         }
 
         return {
-          title: String(item.title).trim().slice(0, 60),
+          title: item.title.trim().slice(0, 60),
           type: item.type,
-          category: String(item.category),
+          category: item.category.trim(),
           amount,
           transaction_date: item.date,
           note: ""
         };
       });
 
-      if (!imported.length) {
+      if (!importedTransactions.length) {
         throw new Error("The backup contains no transactions.");
       }
 
-      if (!confirm(
-        `Import ${imported.length} transactions into your cloud account?`
-      )) {
-        return;
+      const importedPaychecks = (backup.paychecks || []).map(item => {
+        const month = String(item.pay_month || "");
+        const figures = [
+          item.basic_salary,
+          item.service_charge,
+          item.tips,
+          item.gross_salary,
+          item.net_salary ?? item.net_pay,
+          item.allowances ?? 0,
+          item.overtime ?? 0,
+          item.other_income ?? 0,
+          item.deductions ?? 0
+        ].map(Number);
+
+        if (
+          !/^\d{4}-\d{2}-01$/.test(month) ||
+          figures.some(value =>
+            !Number.isFinite(value) || value < 0
+          ) ||
+          figures[3] <= 0 ||
+          figures[4] <= 0
+        ) {
+          throw new Error("Backup contains an invalid payslip.");
+        }
+
+        return {
+          user_id: currentUser.id,
+          pay_month: month,
+          pay_date: item.pay_date || null,
+          currency: "AED",
+          basic_salary: figures[0],
+          service_charge: figures[1],
+          tips: figures[2],
+          gross_salary: figures[3],
+          net_salary: figures[4],
+          allowances: figures[5],
+          overtime: figures[6],
+          other_income: figures[7],
+          deductions: figures[8],
+          file_name: "",
+          notes: String(item.notes || "").slice(0, 1000),
+          updated_at: new Date().toISOString()
+        };
+      });
+
+      const budgetMonth = backup.budget_month ||
+        getSelectedBudgetMonth();
+
+      if (!/^\d{4}-\d{2}$/.test(budgetMonth)) {
+        throw new Error("Backup contains an invalid budget month.");
       }
 
-      elements.importMessage.textContent = "Importing...";
+      const importedBudgets = (backup.budgets || []).map(item => {
+        const planned = Number(item.planned);
 
-      const { error } = await supabaseClient
-        .from("moneta_transactions")
-        .insert(imported);
+        if (
+          typeof item.category !== "string" ||
+          !item.category.trim() ||
+          !Number.isFinite(planned) ||
+          planned < 0
+        ) {
+          throw new Error("Backup contains an invalid budget.");
+        }
 
-      if (error) throw error;
+        return {
+          user_id: currentUser.id,
+          budget_month: monthStart(budgetMonth),
+          category: item.category.trim(),
+          planned_amount: planned,
+          updated_at: new Date().toISOString()
+        };
+      });
 
       const goal = Number(backup.savingsGoal);
 
-      if (Number.isFinite(goal) && goal >= 0) {
-        const { error: goalError } = await supabaseClient
+      if (
+        backup.savingsGoal !== undefined &&
+        (!Number.isFinite(goal) || goal < 0)
+      ) {
+        throw new Error("Backup contains an invalid savings goal.");
+      }
+
+      if (
+        new Set(importedPaychecks.map(item => item.pay_month)).size !==
+        importedPaychecks.length
+      ) {
+        throw new Error("Backup contains duplicate payslip months.");
+      }
+
+      if (
+        new Set(importedBudgets.map(item => item.category)).size !==
+        importedBudgets.length
+      ) {
+        throw new Error("Backup contains duplicate budget categories.");
+      }
+
+      // Check that the account has no existing data in sections
+      // that this restore could overwrite.
+      const [transactionCheck, paycheckCheck, budgetCheck, settingsCheck] =
+        await Promise.all([
+          supabaseClient
+            .from("moneta_transactions")
+            .select("id")
+            .eq("user_id", currentUser.id)
+            .limit(1),
+
+          supabaseClient
+            .from("moneta_payslips")
+            .select("pay_month")
+            .eq("user_id", currentUser.id)
+            .limit(1),
+
+          supabaseClient
+            .from("moneta_budgets")
+            .select("budget_month")
+            .eq("user_id", currentUser.id)
+            .limit(1),
+
+          supabaseClient
+            .from("moneta_settings")
+            .select("user_id")
+            .eq("user_id", currentUser.id)
+            .limit(1)
+        ]);
+
+      const checks = [
+        transactionCheck,
+        paycheckCheck,
+        budgetCheck,
+        settingsCheck
+      ];
+
+      const failedCheck = checks.find(result => result.error);
+
+      if (failedCheck) {
+        throw failedCheck.error;
+      }
+
+      if (
+        transactionCheck.data?.length ||
+        paycheckCheck.data?.length ||
+        budgetCheck.data?.length ||
+        settingsCheck.data?.length
+      ) {
+        throw new Error(
+          "Your cloud account already contains data. Restore stopped to protect it from being overwritten."
+        );
+      }
+
+      const summary = [
+        "Restore this MONETA backup?",
+        "",
+        `Transactions: ${importedTransactions.length}`,
+        `Payslips: ${importedPaychecks.length}`,
+        `Budget categories: ${importedBudgets.length}`,
+        `Savings goal: ${
+          backup.savingsGoal !== undefined
+            ? formatCurrency(goal)
+            : "Not included"
+        }`,
+        "",
+        "This should be used with an empty cloud account."
+      ].join("\n");
+
+      if (!confirm(summary)) return;
+
+      elements.importMessage.textContent = "Restoring backup...";
+
+      // Restore transactions.
+      const { error: transactionError } = await supabaseClient
+        .from("moneta_transactions")
+        .insert(importedTransactions);
+
+      if (transactionError) throw transactionError;
+
+      // Restore payslips.
+      if (importedPaychecks.length) {
+        const { error } = await supabaseClient
+          .from("moneta_payslips")
+          .upsert(importedPaychecks, {
+            onConflict: "user_id,pay_month"
+          });
+
+        if (error) throw error;
+      }
+
+      // Restore budgets.
+      if (importedBudgets.length) {
+        const { error } = await supabaseClient
+          .from("moneta_budgets")
+          .upsert(importedBudgets, {
+            onConflict: "user_id,budget_month,category"
+          });
+
+        if (error) throw error;
+      }
+
+      // Restore savings goal.
+      if (backup.savingsGoal !== undefined) {
+        const { error } = await supabaseClient
           .from("moneta_settings")
           .upsert({
             user_id: currentUser.id,
@@ -1439,25 +1648,38 @@ document.addEventListener("DOMContentLoaded", () => {
             onConflict: "user_id"
           });
 
-        if (goalError) throw goalError;
+        if (error) throw error;
       }
 
-      await loadTransactions();
-      await loadSavingsGoal();
+      await Promise.all([
+        loadTransactions(),
+        loadSavingsGoal(),
+        loadPaychecks()
+      ]);
+
+      elements.budgetMonth.value = budgetMonth;
+      await loadBudget();
+
+      renderDashboard();
+      renderBudget();
 
       elements.importMessage.textContent =
-        `Successfully imported ${imported.length} transactions.`;
+        "Backup restored successfully. Your MONETA data has been loaded.";
+
+      setCloudStatus("Backup restored successfully", "success");
 
     } catch (error) {
-      console.error(error);
+      console.error("MONETA restore error:", error);
 
       elements.importMessage.textContent =
-        error.message || "Import failed.";
+        "Restore failed: " + error.message +
+        " If some sections were already written, check your cloud data before trying again.";
 
     } finally {
       elements.importFile.value = "";
     }
   }
+
 
   // =========================================
   // 14. LOGOUT
