@@ -157,3 +157,70 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
   .transaction-item{gap:8px;padding:10px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Focused Add Expense dialog */
+.transaction-dialog{
+  width:min(560px,calc(100% - 28px));
+  max-width:560px;
+  max-height:min(88dvh,760px);
+  overflow-y:auto;
+  padding:0;
+  border:1px solid rgba(197,139,155,.28);
+  border-radius:20px;
+  color:var(--text);
+  background:var(--surface);
+  box-shadow:0 28px 90px rgba(0,0,0,.48);
+}
+.transaction-dialog::backdrop{
+  background:rgba(12,9,11,.72);
+  backdrop-filter:blur(5px);
+}
+.transaction-dialog[open]{
+  animation:moneta-dialog-in .18s ease-out;
+}
+.transaction-dialog .form-panel{
+  margin:0;
+  padding:25px;
+  border:0;
+  box-shadow:none;
+  background:transparent;
+}
+.transaction-dialog .panel-heading{padding-right:38px}
+.transaction-dialog .dialog-close{
+  position:sticky;
+  float:right;
+  top:10px;
+  z-index:2;
+  margin:10px 10px -42px 0;
+  width:34px;
+  height:34px;
+  border:1px solid var(--border);
+  border-radius:50%;
+  background:var(--surface-2);
+  color:var(--text);
+  font-size:23px;
+  line-height:1;
+  cursor:pointer;
+}
+.transaction-dialog .form-grid{grid-template-columns:1fr 1fr}
+.transaction-dialog .form-grid .full-width{grid-column:1/-1}
+.transaction-dialog #submitBtn{width:100%;margin-top:5px}
+@keyframes moneta-dialog-in{
+  from{opacity:0;transform:translateY(9px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:700px){
+  .transaction-dialog{
+    width:calc(100% - 22px);
+    max-height:88dvh;
+    margin:auto;
+    border-radius:18px;
+  }
+  .transaction-dialog .form-panel{padding:20px 16px}
+  .transaction-dialog .form-grid{grid-template-columns:1fr}
+  .transaction-dialog .form-grid .full-width{grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .transaction-dialog[open]{animation:none}
+}
