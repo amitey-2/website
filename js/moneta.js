@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let paychecks = [];
   let editingPayMonth = null;
   let budgetItems = [];
+  let dashboardBudgetItems = [];
   let savingsGoal = 1000;
 
   const EXPENSE_CATEGORIES = [
@@ -327,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const spendPct = totals.income > 0 ? Math.min(totals.expenses / totals.income * 100, 100) : 0;
     if ($("heroSpendBar")) $("heroSpendBar").style.width = spendPct + "%";
     if ($("heroSpendPct")) $("heroSpendPct").textContent = Math.round(spendPct) + "%";
-    const planned = budgetItems.reduce((sum, item) => sum + Number(item.planned || 0), 0);
+    const planned = dashboardBudgetItems.reduce((sum, item) => sum + Number(item.planned || 0), 0);
     const budgetPct = totals.income > 0 ? Math.min(planned / totals.income * 100, 100) : 0;
     if ($("quickBudgetValue")) $("quickBudgetValue").textContent = formatCurrency(planned) + " / " + formatCurrency(totals.income);
     if ($("quickBudgetBar")) $("quickBudgetBar").style.width = budgetPct + "%";
@@ -1080,6 +1081,30 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBudget();
   }
 
+  async function loadDashboardBudget(month) {
+    const { data, error } = await supabaseClient
+      .from("moneta_budgets")
+      .select("category, planned_amount")
+      .eq("budget_month", monthStart(month))
+      .order("category");
+
+    if (error) throw error;
+
+    let items = (data || []).map(item => ({
+      category: item.category,
+      planned: Number(item.planned_amount)
+    }));
+
+    const paycheck = getPaycheckForMonth(month);
+    if (paycheck) {
+      items = items.length
+        ? applyDynamicBudgetRules(items, Number(paycheck.net_pay))
+        : createBudgetForIncome(Number(paycheck.net_pay));
+    }
+
+    dashboardBudgetItems = items;
+  }
+
   function getActualExpensesForCategory(category, month) {
     return transactions
       .filter(item =>
@@ -1126,6 +1151,10 @@ document.addEventListener("DOMContentLoaded", () => {
       : remaining < 0
         ? `Budget exceeds income by ${formatCurrency(Math.abs(remaining))}; your AED 1,100 financial-goals minimum is protected.`
         : `${Math.round(progress)}% of your take-home pay has been allocated.`;
+
+    if (month === getSelectedMonth()) {
+      dashboardBudgetItems = budgetItems.map(item => ({ ...item }));
+    }
 
     updateCompactDashboard(getMonthTotals());
 
@@ -1560,10 +1589,16 @@ document.addEventListener("DOMContentLoaded", () => {
     resetTransactionForm
   );
 
-  elements.monthFilter.addEventListener(
-    "change",
-    renderDashboard
-  );
+  elements.monthFilter.addEventListener("change", async () => {
+    try {
+      await loadDashboardBudget(getSelectedMonth());
+      renderDashboard();
+    } catch (error) {
+      console.error("Dashboard month refresh error:", error);
+      setCloudStatus("Could not refresh this month's budget summary: " + error.message, "error");
+      renderDashboard();
+    }
+  });
 
   elements.searchInput.addEventListener(
     "input",
@@ -1763,6 +1798,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]);
 
     await loadBudget();
+    await loadDashboardBudget(getSelectedMonth());
 
     renderDashboard();
     renderBudget();
