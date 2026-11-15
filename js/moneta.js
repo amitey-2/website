@@ -26,8 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Mobile",
     "Wife",
     "Health & Gym",
-    "Financial Goals / Debt",
-    "Savings"
+    "Financial Goals / Debt"
   ];
 
   const INCOME_CATEGORIES = [
@@ -537,6 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (
       !title ||
       !category ||
+      (type === "expense" && category === "Savings") ||
       !date ||
       !Number.isFinite(amount) ||
       amount <= 0
