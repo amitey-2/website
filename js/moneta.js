@@ -273,55 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ? Number(data.savings_goal)
       : 1000;
 
-    elements.goalInput.value = savingsGoal;
 
-    renderDashboard();
-  }
-
-  async function saveSavingsGoal() {
-    const goal = Number(elements.goalInput.value);
-
-    if (!Number.isFinite(goal) || goal < 0) {
-      alert("Please enter a valid savings goal.");
-      return;
-    }
-
-    setBusy(
-      elements.saveGoalBtn,
-      true,
-      "Saving...",
-      "Save goal"
-    );
-
-    try {
-      const { error } = await supabaseClient
-        .from("moneta_settings")
-        .upsert({
-          user_id: currentUser.id,
-          savings_goal: goal,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: "user_id"
-        });
-
-      if (error) throw error;
-
-      savingsGoal = goal;
-      renderDashboard();
-
-      setCloudStatus("Savings goal saved", "success");
-
-    } catch (error) {
-      alert("Could not save your goal: " + error.message);
-
-    } finally {
-      setBusy(
-        elements.saveGoalBtn,
-        false,
-        "Saving...",
-        "Save goal"
-      );
-    }
   }
 
   // =========================================
@@ -379,11 +331,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if ($("quickBudgetValue")) $("quickBudgetValue").textContent = formatCurrency(planned) + " / " + formatCurrency(totals.income);
     if ($("quickBudgetBar")) $("quickBudgetBar").style.width = budgetPct + "%";
     if ($("quickBudgetPct")) $("quickBudgetPct").textContent = Math.round(budgetPct) + "%";
-    const saved = Math.max(0, totals.balance);
-    const goalPct = savingsGoal > 0 ? Math.min(saved / savingsGoal * 100, 100) : 0;
-    if ($("quickSavingsValue")) $("quickSavingsValue").textContent = formatCurrency(saved) + " / " + formatCurrency(savingsGoal);
-    if ($("quickSavingsBar")) $("quickSavingsBar").style.width = goalPct + "%";
-    if ($("quickSavingsPct")) $("quickSavingsPct").textContent = Math.round(goalPct) + "%";
+    const saved = Math.max(0, Number(budgetItems.find(item => item.category === "Savings")?.planned || 0));
+    const savingsPct = totals.income > 0 ? Math.min(saved / totals.income * 100, 100) : 0;
+    if ($("quickSavingsValue")) $("quickSavingsValue").textContent = formatCurrency(saved);
+    if ($("quickSavingsBar")) $("quickSavingsBar").style.width = savingsPct + "%";
+    if ($("quickSavingsPct")) $("quickSavingsPct").textContent = Math.round(savingsPct) + "%";
   }
 
   function renderDashboard() {
@@ -399,39 +351,9 @@ document.addEventListener("DOMContentLoaded", () => {
       formatCurrency(totals.expenses);
 
     updateCompactDashboard(totals);
-    renderSavingsGoal(totals.balance);
     renderComparisonChart(totals);
     renderCategoryChart();
     renderTransactions();
-  }
-
-  function renderSavingsGoal(balance) {
-    const progress = savingsGoal > 0
-      ? Math.max(0, balance / savingsGoal * 100)
-      : 0;
-
-    elements.goalPercent.textContent =
-      `${Math.round(progress)}%`;
-
-    elements.goalProgress.style.width =
-      `${Math.min(progress, 100)}%`;
-
-    if (savingsGoal === 0) {
-      elements.goalMessage.textContent =
-        "Set a savings target above zero.";
-
-    } else if (balance < 0) {
-      elements.goalMessage.textContent =
-        "Your expenses are higher than your income this month.";
-
-    } else if (balance >= savingsGoal) {
-      elements.goalMessage.textContent =
-        "Congratulations! You've reached your savings goal.";
-
-    } else {
-      elements.goalMessage.textContent =
-        `${formatCurrency(savingsGoal - balance)} left to reach your goal.`;
-    }
   }
 
   function renderComparisonChart(totals) {
@@ -1559,11 +1481,6 @@ document.addEventListener("DOMContentLoaded", () => {
   elements.cancelEditBtn.addEventListener(
     "click",
     resetTransactionForm
-  );
-
-  elements.saveGoalBtn.addEventListener(
-    "click",
-    saveSavingsGoal
   );
 
   elements.monthFilter.addEventListener(
