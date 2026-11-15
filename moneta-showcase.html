@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#21171b">
+  <meta name="description" content="MONETA is a personal finance workspace for salary tracking, expenses, budgets and savings. Explore the public showcase and interactive demo.">
+  <title>MONETA — Personal Finance, Made Clear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#171316;--panel:#241b20;--panel2:#2b2228;--rose:#c58b9b;--rose2:#e0b2bf;--blue:#9aa9ba;--text:#f4edf0;--muted:#b8aab0;--line:#ffffff18;--serif:"Playfair Display",Georgia,serif;--sans:"DM Sans",Arial,sans-serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 12% 0%,#492b374d,transparent 42%),radial-gradient(ellipse at 95% 25%,#303b4b38,transparent 35%),var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6}
+    a{color:inherit;text-decoration:none}.wrap{width:min(1120px,90%);margin:auto}.nav{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{font-weight:700;letter-spacing:.2em;font-size:17px}.brand span{color:var(--rose)}.navlinks{display:flex;gap:25px;color:var(--muted);font-size:12px}.navlinks a:hover{color:var(--rose2)}
+    .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--rose2);font-weight:700}.hero{display:grid;grid-template-columns:1.02fr .98fr;gap:55px;align-items:center;padding:86px 0 72px}.hero h1{font:600 clamp(48px,7vw,82px)/1.04 var(--serif);letter-spacing:-.04em;margin:18px 0}.hero h1 em{font-style:normal;color:var(--rose2)}.hero p{max-width:510px;color:var(--muted);font-size:16px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 19px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.06em;border:1px solid var(--line);transition:.2s}.btn.primary{background:linear-gradient(130deg,#d6a2b0,#b9788c);color:#21171b;border:0}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.tiny-note{font-size:11px!important;margin-top:17px;color:#9f9097!important}
+    .preview{border:1px solid #ffffff20;border-radius:26px;padding:20px;background:linear-gradient(145deg,#30232a,#1e1a20 72%);box-shadow:0 28px 70px #0006;transform:rotate(1deg)}.preview-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);margin-bottom:18px}.live-dot{width:7px;height:7px;background:var(--rose);border-radius:50%;display:inline-block;margin-right:6px}.preview-balance{padding:20px;border-radius:19px;background:linear-gradient(135deg,#533340,#30242c 75%,#29313d);border:1px solid #ffffff12}.preview-balance small,.metric small{display:block;color:#c5b5bd;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.preview-balance strong{display:block;font:600 32px var(--serif);margin:7px 0}.preview-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.metric{background:#ffffff08;border:1px solid var(--line);border-radius:15px;padding:14px}.metric strong{display:block;margin-top:5px;font-size:15px}.meter{height:7px;background:#ffffff17;border-radius:10px;overflow:hidden;margin-top:11px}.meter i{display:block;width:58%;height:100%;background:var(--rose);border-radius:10px}.preview-foot{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:14px}
+    section.content{padding:65px 0;border-top:1px solid var(--line)}.section-head{max-width:620px;margin-bottom:28px}.section-head h2{font:600 clamp(30px,4vw,43px)/1.15 var(--serif);margin:10px 0}.section-head p{color:var(--muted);margin:0}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{padding:22px;border:1px solid var(--line);border-radius:19px;background:#ffffff06;min-height:155px}.feature .symbol{font-size:20px;color:var(--rose2)}.feature h3{font-size:14px;margin:10px 0 5px}.feature p{font-size:12px;color:var(--muted);margin:0}.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}.info-card{border:1px solid var(--line);background:var(--panel);padding:24px;border-radius:20px}.info-card h3{font:600 23px var(--serif);margin:0 0 10px}.info-card p,.info-card li{color:var(--muted);font-size:13px}.info-card ul{padding-left:18px;margin-bottom:0}.stack{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.stack span{font-size:10px;letter-spacing:.06em;border:1px solid var(--line);border-radius:99px;padding:6px 10px;color:var(--blue)}
+    .privacy{border:1px solid #c58b9b55;background:#c58b9b0c;padding:20px 22px;border-radius:18px;display:flex;gap:14px;align-items:flex-start}.privacy b{display:block;font-size:13px}.privacy p{margin:4px 0 0;color:var(--muted);font-size:12px}.lock{font-size:19px;color:var(--rose2)}
+    footer{padding:28px 0 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:15px;color:#9d9096;font-size:11px}.footerlinks{display:flex;gap:18px}
+    @media(max-width:760px){.nav{height:65px}.navlinks{gap:13px;font-size:10px}.hero{grid-template-columns:1fr;gap:30px;padding:60px 0 50px}.hero p{font-size:14px}.preview{transform:none}.features{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}.content{padding:48px 0!important}}
+    @media(max-width:440px){.navlinks a:nth-child(2){display:none}.features{grid-template-columns:1fr}.hero h1{font-size:52px}.actions .btn{width:100%}.preview{padding:13px}.preview-balance strong{font-size:27px}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav"><a class="brand" href="moneta-showcase.html">MONETA<span>.</span></a><div class="navlinks"><a href="#features">FEATURES</a><a href="#about">ABOUT</a><a href="index.html#projects">PORTFOLIO</a></div></nav>
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">A clearer view of your money</div>
+          <h1>Make money<br><em>make sense.</em></h1>
+          <p>MONETA is a personal finance workspace designed to bring salary, everyday spending, monthly budgets and savings into one calm, practical view.</p>
+          <div class="actions"><a class="btn primary" href="moneta-demo.html">EXPLORE INTERACTIVE DEMO ↗</a><a class="btn" href="https://amitneupane.com.np/moneta.html" target="_blank" rel="noopener noreferrer">VISIT PRIVATE APP ↗</a></div>
+          <p class="tiny-note">The private application requires account sign-in. The demo is open to everyone.</p>
+        </div>
+        <div class="preview" aria-label="Illustrative dashboard preview using fictional values">
+          <div class="preview-top"><strong style="letter-spacing:.18em;color:#f4edf0">MONETA</strong><span><i class="live-dot"></i>DEMO PREVIEW</span></div>
+          <div class="preview-balance"><small>Available balance · sample</small><strong>AED 6,164.50</strong><small>Income minus expenses</small></div>
+          <div class="preview-stats"><div class="metric"><small>Monthly income</small><strong>AED 8,500.00</strong></div><div class="metric"><small>Expenses</small><strong>AED 2,335.50</strong></div></div>
+          <div class="metric" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:11px"><span>Monthly budget used</span><strong>47%</strong></div><div class="meter"><i></i></div></div>
+          <div class="preview-foot"><span>Illustrative sample figures</span><span>November 2026</span></div>
+        </div>
+      </section>
+      <section class="content" id="features">
+        <div class="section-head"><div class="eyebrow">Everything in one place</div><h2>Less scattered. More in control.</h2><p>A focused set of tools for understanding where your money comes from and where it goes.</p></div>
+        <div class="features">
+          <article class="feature"><div class="symbol">↗</div><h3>Salary & income</h3><p>Keep monthly income details and salary history together.</p></article>
+          <article class="feature"><div class="symbol">↘</div><h3>Expense tracking</h3><p>Record spending and understand it by category.</p></article>
+          <article class="feature"><div class="symbol">◎</div><h3>Monthly budgets</h3><p>Compare planned budgets with actual spending.</p></article>
+          <article class="feature"><div class="symbol">♡</div><h3>Savings overview</h3><p>See what remains after expenses, without extra manual calculations.</p></article>
+          <article class="feature"><div class="symbol">◈</div><h3>Dashboard insights</h3><p>Bring balances, income and expenses into one clear snapshot.</p></article>
+          <article class="feature"><div class="symbol">▤</div><h3>Reports & exports</h3><p>Review activity and take a copy of your financial records.</p></article>
+        </div>
+      </section>
+      <section class="content" id="about">
+        <div class="section-head"><div class="eyebrow">The project</div><h2>Built to be useful, not overwhelming.</h2></div>
+        <div class="split">
+          <article class="info-card"><h3>A personal finance workspace</h3><p>MONETA started as a practical tool for tracking salary, expenses, monthly budgets and the money left over. The interface focuses on compact summaries, clear progress indicators and a straightforward monthly view.</p><div class="stack"><span>HTML</span><span>CSS</span><span>JAVASCRIPT</span><span>SUPABASE</span></div></article>
+          <article class="info-card"><h3>Try it without an account</h3><p>Explore a separate sandbox with fictional sample figures. Add and remove expenses, change the sample budget, switch months and export the demo data. Changes stay in this browser session and reset when you refresh.</p><ul><li>No registration required</li><li>No connection to personal records</li><li>Designed for desktop and mobile</li></ul></article>
+        </div>
+      </section>
+      <section class="content">
+        <div class="privacy"><div class="lock">⌑</div><div><b>Your privacy comes first</b><p>This public demo uses fictional sample data only. It does not connect to the private MONETA account, its Supabase database or any personal financial records. The real application remains protected by its existing sign-in.</p></div></div>
+        <div class="actions" style="justify-content:center;margin-top:28px"><a class="btn primary" href="moneta-demo.html">TRY THE INTERACTIVE DEMO ↗</a></div>
+      </section>
+    </main>
+    <footer><span>MONETA · A personal finance project</span><div class="footerlinks"><a href="index.html#projects">Portfolio</a><a href="https://github.com/amitey-2/website" target="_blank" rel="noopener noreferrer">Source ↗</a></div></footer>
+  </div>
+</body>
+</html>
