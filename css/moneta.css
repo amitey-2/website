@@ -489,6 +489,29 @@ textarea::placeholder {
   border-radius: 12px;
 }
 
+.payslip-history-right {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.payslip-history-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.payslip-history-actions .button {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.payslip-delete-btn {
+  border-color: rgba(215, 126, 158, .45);
+  color: var(--accent);
+}
+
 /* BUDGET */
 
 .budget-panel {
@@ -1079,6 +1102,15 @@ a:focus-visible {
 
   .transaction-item {
     align-items: flex-start;
+  }
+
+  .payslip-history-right {
+    align-items: end;
+  }
+
+  .payslip-history-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .transaction-right {
