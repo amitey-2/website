@@ -116,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
     generateBudgetBtn: $("generateBudgetBtn"),
     budgetIncome: $("budgetIncome"),
     budgetPlanned: $("budgetPlanned"),
-    budgetRemaining: $("budgetRemaining"),
     budgetProgress: $("budgetProgress"),
     budgetProgressMessage: $("budgetProgressMessage"),
     budgetList: $("budgetList"),
@@ -1021,9 +1020,6 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.budgetPlanned.textContent =
       formatCurrency(planned);
 
-    elements.budgetRemaining.textContent =
-      formatCurrency(remaining);
-
     const progress = income > 0
       ? Math.min(planned / income * 100, 100)
       : 0;
@@ -1127,9 +1123,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     elements.budgetPlanned.textContent =
       formatCurrency(planned);
-
-    elements.budgetRemaining.textContent =
-      formatCurrency(income - planned);
 
     const progress = income > 0
       ? Math.min(planned / income * 100, 100)
