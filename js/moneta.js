@@ -375,6 +375,23 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+
+  function updateCompactDashboard(totals) {
+    const spendPct = totals.income > 0 ? Math.min(totals.expenses / totals.income * 100, 100) : 0;
+    if ($("heroSpendBar")) $("heroSpendBar").style.width = spendPct + "%";
+    if ($("heroSpendPct")) $("heroSpendPct").textContent = Math.round(spendPct) + "%";
+    const planned = budgetItems.reduce((sum, item) => sum + Number(item.planned || 0), 0);
+    const budgetPct = totals.income > 0 ? Math.min(planned / totals.income * 100, 100) : 0;
+    if ($("quickBudgetValue")) $("quickBudgetValue").textContent = formatCurrency(planned) + " / " + formatCurrency(totals.income);
+    if ($("quickBudgetBar")) $("quickBudgetBar").style.width = budgetPct + "%";
+    if ($("quickBudgetPct")) $("quickBudgetPct").textContent = Math.round(budgetPct) + "%";
+    const saved = Math.max(0, totals.balance);
+    const goalPct = savingsGoal > 0 ? Math.min(saved / savingsGoal * 100, 100) : 0;
+    if ($("quickSavingsValue")) $("quickSavingsValue").textContent = formatCurrency(saved) + " / " + formatCurrency(savingsGoal);
+    if ($("quickSavingsBar")) $("quickSavingsBar").style.width = goalPct + "%";
+    if ($("quickSavingsPct")) $("quickSavingsPct").textContent = Math.round(goalPct) + "%";
+  }
+
   function renderDashboard() {
     const totals = getMonthTotals();
 
@@ -387,6 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
     elements.expenseValue.textContent =
       formatCurrency(totals.expenses);
 
+    updateCompactDashboard(totals);
     renderSavingsGoal(totals.balance);
     renderComparisonChart(totals);
     renderCategoryChart();
@@ -515,6 +533,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderTransactions() {
     const filtered = getFilteredTransactions();
+    const recent = $("recentActivityList");
+    if (recent) {
+      const latest = filtered.slice(0, 3);
+      recent.innerHTML = latest.length ? latest.map(item => {
+        const isIncome = item.type === "income";
+        return `<article class="transaction-item"><div class="transaction-info"><strong>${escapeHTML(item.title)}</strong><span>${escapeHTML(item.category)} · ${escapeHTML(item.date)}</span></div><div class="transaction-amount ${isIncome ? "income-text" : "expense-text"}">${isIncome ? "+" : "−"}${formatCurrency(item.amount)}</div></article>`;
+      }).join("") : '<p class="empty-message">No transactions yet. Start tracking your finances.</p>';
+    }
 
     if (!filtered.length) {
       elements.transactionList.innerHTML =
@@ -1512,6 +1538,15 @@ document.addEventListener("DOMContentLoaded", () => {
     "change",
     renderTransactions
   );
+
+  $("quickAddExpense").addEventListener("click", () => {
+    elements.typeInput.value = "expense"; populateCategories(); $("moreTools").open = true;
+    $("transactionSection").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  $("quickAddIncome").addEventListener("click", () => {
+    elements.typeInput.value = "income"; populateCategories(); $("moreTools").open = true;
+    $("transactionSection").scrollIntoView({behavior:"smooth",block:"start"});
+  });
 
   elements.addTransactionBtn.addEventListener("click", () => {
     $("transactionSection").scrollIntoView({
