@@ -1579,6 +1579,22 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTransactions
   );
 
+  const seeAllActivity = $("seeAllActivity");
+  if (seeAllActivity) {
+    seeAllActivity.addEventListener("click", event => {
+      event.preventDefault();
+      const moreTools = $("moreTools");
+      if (moreTools) moreTools.open = true;
+      const transactionsSection = $("transactionsSection");
+      if (transactionsSection) {
+        transactionsSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    });
+  }
+
   $("quickAddExpense").addEventListener("click", () => {
     elements.typeInput.value = "expense"; populateCategories(); $("moreTools").open = true;
     $("transactionSection").scrollIntoView({behavior:"smooth",block:"start"});
