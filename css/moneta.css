@@ -1201,3 +1201,7 @@ body{background:radial-gradient(ellipse at 4% 0%,rgba(126,48,79,.34),transparent
 .hero-balance .summary-card{position:relative;isolation:isolate}
 .hero-balance .summary-card::before{content:"";position:absolute;width:205px;height:205px;border-radius:50%;border:12px solid var(--accent);opacity:.88;z-index:-1;box-shadow:0 0 24px rgba(215,126,158,.12)}
 @media(max-width:700px){.hero-balance .summary-card::before{width:140px;height:140px;border-width:9px}}
+
+
+/* Single primary action: expenses are the only manual transaction entry. */
+.quick-actions{grid-template-columns:1fr}
