@@ -332,7 +332,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if ($("quickBudgetValue")) $("quickBudgetValue").textContent = formatCurrency(planned) + " / " + formatCurrency(totals.income);
     if ($("quickBudgetBar")) $("quickBudgetBar").style.width = budgetPct + "%";
     if ($("quickBudgetPct")) $("quickBudgetPct").textContent = Math.round(budgetPct) + "%";
-    const saved = Math.max(0, Number(budgetItems.find(item => item.category === "Savings")?.planned || 0));
+    // Savings this month is the actual money left after recorded expenses.
+    const saved = Math.max(0, Number(totals.balance || 0));
     const savingsPct = totals.income > 0 ? Math.min(saved / totals.income * 100, 100) : 0;
     if ($("quickSavingsValue")) $("quickSavingsValue").textContent = formatCurrency(saved);
     if ($("quickSavingsBar")) $("quickSavingsBar").style.width = savingsPct + "%";
