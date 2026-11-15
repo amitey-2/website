@@ -1426,14 +1426,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         return {
-          title: item.title.trim().slice(0, 60),
-          type: item.type,
-          category: item.category.trim(),
-          amount,
-          transaction_date: item.date,
-          note: ""
-        };
-      });
+  user_id: currentUser.id,
+  title: item.title.trim().slice(0, 60),
+  type: item.type,
+  category: item.category.trim(),
+  amount,
+  transaction_date: item.date,
+  note: ""
+};
 
       if (!importedTransactions.length) {
         throw new Error("The backup contains no transactions.");
