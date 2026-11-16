@@ -24,7 +24,13 @@ function updateDailyGreeting() {
       "You make every morning feel a little more beautiful.",
       "Waking up to a world where you exist is already a wonderful start.",
       "I hope your day is as lovely as the happiness you bring into my life.",
-      "You are my favourite thought to wake up to."
+      "You are my favourite thought to wake up to.",
+      "You deserve a morning that feels as lovely as your heart.",
+      "I hope the first thing you feel today is how loved you are.",
+      "Sending sunshine, a forehead kiss and a little reminder that I'm yours.",
+      "May your morning be slow, your coffee be perfect and your smile be endless.",
+      "The world gets another beautiful day because you're in it.",
+      "I wish I could wake up beside you and steal the blankets."
     ];
   } else if (hour >= 12 && hour < 17) {
     greeting = "Good afternoon, my love ♡";
@@ -32,7 +38,13 @@ function updateDailyGreeting() {
       "I hope your day is going wonderfully. You deserve every bit of happiness.",
       "Even in the middle of a busy day, you are my sweetest thought.",
       "You make ordinary moments feel special just by being you.",
-      "A little reminder: someone is thinking of you and smiling."
+      "A little reminder: someone is thinking of you and smiling.",
+      "A little pause in your day for a very big thought: I adore you.",
+      "I hope the afternoon brings you a tiny win and a reason to smile.",
+      "If I could pop by, I'd bring your favourite snack and a hug.",
+      "You're doing wonderfully, even if today feels a little messy.",
+      "Just a reminder that someone is cheering for you from the heart.",
+      "I hope the rest of today is gentle with my favourite girl."
     ];
   } else if (hour >= 17 && hour < 21) {
     greeting = "Good evening, my love ♡";
@@ -40,7 +52,13 @@ function updateDailyGreeting() {
       "I hope today was kind to you. You deserve the gentlest evenings.",
       "No matter how the day went, you will always be my favourite part.",
       "May your evening be as peaceful and lovely as your smile.",
-      "The day is ending, but there is no end to how much you mean to me."
+      "The day is ending, but there is no end to how much you mean to me.",
+      "I hope the evening gives you time to breathe and feel proud of yourself.",
+      "The best part of my day is always finding my way back to thoughts of you.",
+      "If I could plan tonight, it would be dinner, laughter and you.",
+      "May your evening be cosy and your worries feel far away.",
+      "You deserve a night that feels like a warm blanket for your heart.",
+      "I hope I get to hear all about your day soon."
     ];
   } else {
     greeting = "Good night, my love ♡";
@@ -48,7 +66,13 @@ function updateDailyGreeting() {
       "Close your eyes, my love. I hope your dreams are as beautiful as you are.",
       "If I could, I would send you a thousand hugs to keep you warm tonight.",
       "Rest well, sweetheart. You are the last thought in my heart tonight.",
-      "May the stars watch over you and bring you the sweetest dreams. ♡"
+      "May the stars watch over you and bring you the sweetest dreams. ♡",
+      "May your dreams be sweet and your sleep be deep, my love.",
+      "If I could, I'd tuck you in and leave a kiss on your forehead.",
+      "Rest your beautiful mind; tomorrow is another chance to shine.",
+      "I hope you fall asleep feeling safe, treasured and adored.",
+      "I'll be sending a little love your way until morning.",
+      "Good night, sweetheart. You are loved in every time zone."
     ];
   }
 
@@ -824,3 +848,68 @@ appTabLinks.forEach((link) => {
 });
 
 activateAppTab("story", false);
+
+
+// ========================================
+// EXPANDED MESSAGE LIBRARY — EXTRA VARIETY
+// Each interactive collection shuffles and exhausts its messages before repeating.
+function makeMessagePicker(items) {
+  let bag = [], last = null;
+  return () => {
+    if (!bag.length) {
+      bag = [...items];
+      for (let i=bag.length-1;i>0;i--) {
+        const j=Math.floor(Math.random()*(i+1));
+        [bag[i],bag[j]]=[bag[j],bag[i]];
+      }
+      if (bag.length>1 && bag[bag.length-1]===last) [bag[0],bag[bag.length-1]]=[bag[bag.length-1],bag[bag.length-1]];
+    }
+    last=bag.pop();
+    return last;
+  };
+}
+
+const expandedJarNotes = ["Your smile is my favourite little plot twist in any day.","I hope you know you are someone's favourite person. Very much someone's.","If I could send a hug through this jar, it would be the kind that lasts forever.","You make my heart feel like it has found its favourite home.","I love the way even the smallest things remind me of you.","One day we'll have a thousand stories that begin with 'remember when…'","You are allowed to take up space, rest, dream big and be completely yourself.","I'd choose a quiet hour with you over a perfect day without you.","Your happiness matters to me, even when it's about the tiniest thing.","I hope you never forget how easy you are to adore.","If kisses were stars, your sky would never get dark.","You're my favourite person to do absolutely nothing with.","I want to keep discovering new reasons to fall for you.","You make my ordinary world feel a little more magical.","Thank you for being the you that I get to love.","Somewhere between hello and now, you became my favourite thought.","I hope today gives you the same warmth you bring into my life.","You're worth every extra minute, every thoughtful detail and every hug.","I wish I could save the sound of your laugh in a little bottle.","Even on a quiet day, my heart has plenty to say about you.","You deserve a love that feels like a deep breath and a safe place.","I love that our story still has so many blank pages.","If I could make one wish right now, it would be more time beside you.","You're a beautiful part of my life, not just a pretty moment in it.","I hope you feel chosen, appreciated and adored today.","You're my favourite reason to believe in little miracles.","Your dreams are important, and I want to hear every one of them.","I'd find a way to make you laugh, even from the other side of the world.","Being with you makes the simplest plans feel special.","Here's a reminder wrapped in a tiny note: I choose you."];
+const jarPicker = makeMessagePicker(expandedJarNotes);
+const jarButton = document.getElementById("loveJar");
+const jarOutput = document.getElementById("loveNoteMessage");
+if (jarButton && jarOutput) jarButton.addEventListener("click", () => {
+  jarOutput.textContent = jarPicker();
+  jarOutput.classList.remove("note-pop"); void jarOutput.offsetWidth; jarOutput.classList.add("note-pop");
+});
+
+const extraOpenLetters = {
+ miss: ["Imagine me pulling you into a hug and telling you that I miss you just as much. Until we're together again, keep a little piece of my heart with you. ♡","If I could teleport, I'd already be beside you, probably stealing your hand and asking for a kiss.","Missing you is just my heart reminding me how happy it is when you're near. Our next hello is coming.","Think of this as a pocket-sized cuddle. Keep it close until I can give you the real one."],
+ sad: ["You don't have to turn a difficult day into a good one straight away. Be gentle with yourself. I'm here, and you are loved.","Whatever you're feeling is allowed. You never have to pretend with me. I'd rather sit with you through it than have you feel alone.","You are not behind, not failing and not a burden. You're human, and you deserve softness today.","If I were beside you, I'd hold your hand first and ask questions later. Sending you all my love."],
+ sleep: ["Let the day settle. You have done enough, you are enough, and you deserve a peaceful night. Sweet dreams. 🌙","Imagine a goodnight kiss on your forehead and my arms around you. That's where I wish I was.","Tomorrow can wait. Let your thoughts rest and let the stars keep you company tonight.","I hope sleep finds you gently and brings you the sweetest dreams. I love you, sweetheart."],
+ confidence: ["You are capable of more than you give yourself credit for. Keep going at your pace; I'm proud of you.","Don't let one difficult moment make you forget all the wonderful things you are.","You deserve to take up space, speak your mind and chase every dream that matters to you.","Look at how far you've come. I hope you celebrate your effort as much as your achievements."],
+ laugh: ["Emergency notice: your boyfriend has once again forgotten how to act normal because you're too cute. 🤭","If being adorable was an Olympic sport, you'd win gold and I'd be in the crowd embarrassing you.","I was going to write a serious letter, but then I remembered I am hopelessly distracted by you. 😂","Your official mission: smile. Failure to comply may result in surprise hugs and excessive kisses."]
+};
+const extraOpenPickers = Object.fromEntries(Object.entries(extraOpenLetters).map(([k,v])=>[k,makeMessagePicker(v)]));
+document.querySelectorAll(".open-when-option").forEach(button => button.addEventListener("click", () => {
+  const picker=extraOpenPickers[button.dataset.letter], box=document.getElementById("openWhenLetter");
+  if(!picker||!box)return;
+  const p=box.querySelector("p");
+  if(p){p.textContent=picker();box.classList.remove("letter-pop");void box.offsetWidth;box.classList.add("letter-pop");}
+}));
+
+const expandedWishes = [["I wish I could be beside you for every little and ordinary moment. ♡","I wish I could turn a long day into a warm hug.","I wish we could collect a thousand ordinary afternoons together.","I wish every goodbye came with a countdown to our next hello.","I wish I could hold your hand through every new adventure.","I wish you could borrow my eyes and see how special you are."],["I wish every dream you carry finds its way to you.","I wish your plans surprise you in the loveliest ways.","I wish you always find courage to chase what makes you happy.","I wish beautiful doors open for you at just the right time.","I wish you never stop believing in the things that light you up.","I wish your hard work brings you the happiness you deserve."],["I wish I could make you see yourself through my eyes.","I wish you knew how often a tiny thought of you makes me smile.","I wish I could bottle the feeling I get when you laugh.","I wish you never questioned how beautiful you are to me.","I wish you could feel how much warmth your messages bring me.","I wish you could hear how softly I say your name when I miss you."],["I wish we keep choosing each other through every season.","I wish we always make room for laughter, even on busy days.","I wish we keep learning new things about each other.","I wish our story is full of spontaneous plans and favourite traditions.","I wish we never stop making little memories out of ordinary days.","I wish every year gives us more reasons to celebrate us."],["I wish your heart always feels safe, loved and understood.","I wish you are gentle with yourself when life feels difficult.","I wish you never feel you have to hide your feelings from me.","I wish peace finds you even on the noisiest days.","I wish you feel appreciated for who you are, not just what you do.","I wish you always have someone to lean on when you need rest."],["I wish for a thousand more memories, laughs and little adventures.","I wish our next date becomes one of those stories we retell.","I wish we get lost somewhere new and find our own favourite place.","I wish for late-night talks, silly photos and one more dessert.","I wish our camera roll fills up with moments that feel like us.","I wish we keep finding reasons to celebrate tiny victories."],["I wish that even on hard days, you never forget how much you mean to me.","I wish you always know you are someone's favourite person.","I wish you feel loved before you even have to ask.","I wish you remember one difficult day can never define you.","I wish your heart never runs short of hope.","I wish you always know that I'm cheering for you."]];
+const starPickers=expandedWishes.map(items=>makeMessagePicker(items));
+document.querySelectorAll(".wish-star").forEach((star,i)=>star.addEventListener("click",()=>{
+ const box=document.getElementById("wishMessage"),picker=starPickers[i];
+ if(box&&picker){box.textContent=picker();box.classList.remove("note-pop");void box.offsetWidth;box.classList.add("note-pop");}
+}));
+
+const extraMoodReplies = {"happy":["I hope your happiness stays for ages. You deserve a day as lovely as you are.","If I could, I'd bottle this happy feeling and save it for a rainy day.","Please tell me what made you smile so I can celebrate it with you. 💗","Keep glowing, sweetheart. Your joy looks beautiful on you."],"loved":["I hope you feel wrapped in love today, even from a little distance.","You deserve to feel adored in the big moments and the tiny ones.","Sending extra kisses to make sure that loved feeling sticks around. 😘","As you should be, sweetheart. I'm very lucky to love you."],"tired":["Permission to slow down granted. Your worth isn't measured by your to-do list.","I wish I could bring you a blanket and your favourite drink. Rest, sweetheart.","The world can wait while you look after yourself.","Sending you a soft hug and absolutely no expectations. Just rest. ♡"],"sad":["You don't have to explain it perfectly to deserve comfort. I'm on your side.","One breath at a time, my love. I'm here for the easy days and the hard ones.","You are not a burden. Your feelings matter, and so do you. 💗","If I were there, I'd sit beside you and hold your hand until things felt lighter."],"missing":["Missing you too. Here's a long-distance hug with an extra squeeze.","If I could teleport, I would already be there asking for a cuddle.","Consider this a little kiss delivered straight to your screen. Muah! 💋","Let's turn that missing feeling into a countdown to our next hello. ♡"]};
+const moodPickersExtra=Object.fromEntries(Object.entries(extraMoodReplies).map(([k,v])=>[k,makeMessagePicker(v)]));
+document.querySelectorAll(".mood-option").forEach(button=>button.addEventListener("click",()=>{
+ const box=document.getElementById("moodReply"),picker=moodPickersExtra[button.dataset.mood];
+ if(box&&picker)box.textContent=picker();
+}));
+
+const expandedEnvelopeNotes = [["If today had a favourite scene, I hope it would be one with you in it.","I keep little memories of us tucked away like treasures. This is one more.","My favourite place isn't on a map. It's wherever I get to be with you.","I hope we never run out of silly things to laugh about together."],["You are doing better than you think. I hope you give yourself credit today.","You deserve kindness, especially from yourself. Please don't forget that.","No matter what today looks like, you are enough exactly as you are.","You are someone's favourite person, and that someone is very lucky."],["Here's to a future full of new places, favourite meals and stories that are ours.","May we always find time for little dates and big dreams.","One day we'll look back at all these tiny moments and realise they were everything.","I wish our next memory arrives when we least expect it and makes us smile for years."]];
+const envelopePickersExtra=expandedEnvelopeNotes.map(items=>makeMessagePicker(items));
+document.querySelectorAll(".envelope-option").forEach(button=>button.addEventListener("click",()=>{
+ const box=document.getElementById("envelopeMessage"),picker=envelopePickersExtra[Number(button.dataset.envelope)];
+ if(box&&picker){box.textContent=picker();box.classList.remove("note-pop");void box.offsetWidth;box.classList.add("note-pop");}
+}));
