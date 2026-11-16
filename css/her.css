@@ -1332,6 +1332,43 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--pink); outline-
 }
 
 
+/* DAILY REASON + OPEN-WHEN LETTERS */
+.daily-reason-card {
+  max-width: 560px; margin: 26px auto 0; padding: 28px 22px; text-align: center;
+  border: 1px solid #e8b4c633; border-radius: 22px;
+  background: linear-gradient(145deg, #e8b4c612, #ffffff08);
+}
+.daily-reason-heart { display: block; color: var(--pink); font-size: 38px; line-height: 1; animation: reasonHeartbeat 2.2s ease-in-out infinite; }
+.daily-reason-date { margin: 13px 0 8px; color: var(--muted); font: 11px 'DM Sans', sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.daily-reason-message { min-height: 54px; max-width: 430px; margin: 0 auto 18px; color: var(--text); font: italic 19px 'Playfair Display', serif; line-height: 1.55; }
+.daily-reason-card .cute-action-button { margin: 0 auto; }
+@keyframes reasonHeartbeat { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.12); } 24% { transform: scale(1); } }
+.open-when-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-width: 620px; margin: 24px auto 0; }
+.open-when-option {
+  display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 12px 14px;
+  border: 1px solid #e8b4c633; border-radius: 15px; background: #ffffff08;
+  color: var(--text); font: 20px 'DM Sans', sans-serif; text-align: left;
+  cursor: pointer; transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.open-when-option span { font-size: 13px; }
+.open-when-option:hover, .open-when-option.selected { border-color: var(--pink); background: #e8b4c61a; }
+.open-when-option:active { transform: scale(.98); }
+.open-when-letter {
+  max-width: 620px; min-height: 145px; margin: 16px auto 0; padding: 24px 22px;
+  border: 1px solid #e8b4c633; border-radius: 20px; background: #ffffff08;
+  text-align: center; color: var(--text);
+}
+.open-when-letter-icon { display: block; margin-bottom: 10px; font-size: 25px; }
+.open-when-letter p { margin: 0; font: italic 17px 'Playfair Display', serif; line-height: 1.7; white-space: pre-line; }
+.open-when-letter.letter-pop { animation: notePop .38s ease both; }
+@media (max-width: 480px) {
+  .open-when-options { grid-template-columns: 1fr; }
+  .open-when-option { min-height: 48px; }
+  .daily-reason-card { padding: 24px 17px; }
+  .daily-reason-message { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { .daily-reason-heart { animation: none; } }
+
 /* FOUR-SCREEN MINI APP NAVIGATION */
 body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 .app-tab-panel { display: none; min-height: 55vh; animation: appPanelIn .28s ease both; }
