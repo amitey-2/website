@@ -1421,3 +1421,156 @@ body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 @media (prefers-reduced-motion: reduce) {
   .app-tab-panel { animation: none; }
 }
+
+
+/* A LITTLE MOOD GARDEN */
+.mood-garden-section {
+  background:
+    radial-gradient(ellipse at 12% 18%, #b85e7b20, transparent 42%),
+    radial-gradient(ellipse at 88% 78%, #8d6aa31c, transparent 45%),
+    linear-gradient(180deg, #1c101c, #160d16);
+}
+.mood-garden-section > h2 i { font-style: normal; }
+.garden-mood-options {
+  width: min(100%, 760px);
+  margin: 34px auto 24px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.garden-mood-button {
+  min-width: 0;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #70465f;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #302033, #211522);
+  color: var(--text);
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.garden-mood-button span { font-size: 29px; }
+.garden-mood-button small { color: var(--muted); font-size: 11px; }
+.garden-mood-button:hover, .garden-mood-button.selected {
+  transform: translateY(-3px);
+  border-color: #e8a8c2;
+  background: linear-gradient(145deg, #63334d, #382239);
+  box-shadow: 0 10px 25px #0003;
+}
+.garden-mood-unsure { grid-column: 2 / span 2; min-height: 72px; flex-direction: row; }
+.garden-mood-result {
+  width: min(100%, 760px);
+  margin: 0 auto 42px;
+  padding: 28px;
+  border: 1px solid #70465f;
+  border-radius: 20px;
+  background: #241624;
+  box-shadow: 0 15px 35px #0003;
+}
+.garden-result-flower { font-size: 30px; }
+.garden-mood-result h3 {
+  margin: 12px 0 8px;
+  font: 400 24px 'Playfair Display', serif;
+  color: #f1c5d5;
+}
+.garden-mood-result > p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+.garden-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.garden-suggestion {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #9b607b;
+  border-radius: 999px;
+  background: #3a2034;
+  color: #f5dce7;
+  font-size: 12px;
+  transition: transform .2s ease, background .2s ease;
+}
+.garden-suggestion:hover { transform: translateY(-2px); background: #67364f; }
+.puppy-card {
+  position: relative;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 34px 28px;
+  overflow: hidden;
+  border: 1px solid #79536a;
+  border-radius: 25px;
+  background:
+    radial-gradient(ellipse at 50% 0%, #d58ba522, transparent 55%),
+    linear-gradient(145deg, #302033, #1b121e);
+  box-shadow: 0 18px 45px #0004;
+}
+.puppy-sparkles { color: #e9b5ca; letter-spacing: 8px; opacity: .8; }
+.puppy-card h3 { margin: 10px 0 0; font: 400 25px 'Playfair Display', serif; }
+.puppy-scene {
+  position: relative;
+  width: 190px;
+  height: 165px;
+  margin: 20px auto 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, #eab8cb27, #eab8cb00 70%);
+}
+.puppy-emoji {
+  position: relative;
+  z-index: 1;
+  display: block;
+  font-size: 104px;
+  line-height: 1;
+  filter: drop-shadow(0 12px 12px #0004);
+  transform-origin: 50% 85%;
+}
+.puppy-accessory { position: absolute; z-index: 2; top: 18px; right: 35px; font-size: 29px; transform: rotate(18deg); }
+.puppy-ground-heart { position: absolute; bottom: 0; color: #f0a8c4; font-size: 25px; opacity: .8; }
+.puppy-name-display { margin-top: 5px; color: #f1c5d5; font: italic 25px 'Playfair Display', serif; }
+.puppy-message { min-height: 44px; max-width: 470px; margin: 8px auto 20px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.puppy-name-form { max-width: 440px; margin: 0 auto 20px; text-align: left; }
+.puppy-name-form label { display: block; margin-bottom: 8px; color: #e9bfd0; font-size: 12px; }
+.puppy-name-fields { display: flex; gap: 8px; }
+.puppy-name-fields input {
+  flex: 1; min-width: 0; min-height: 46px; padding: 10px 13px;
+  border: 1px solid #79536a; border-radius: 12px; background: #170f19; color: var(--text);
+  font: inherit; font-size: 14px;
+}
+.puppy-name-fields button, .puppy-actions button {
+  min-height: 46px; padding: 10px 14px; border: 1px solid #9b607b; border-radius: 12px;
+  background: #4a2940; color: #f8e6ee; font-size: 12px;
+}
+.puppy-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
+.puppy-actions button:hover, .puppy-name-fields button:hover { background: #713d59; }
+.puppy-fetch-game { margin-top: 18px; padding: 15px; border-radius: 15px; background: #1a111c; }
+.puppy-fetch-game p { color: var(--muted); font-size: 12px; }
+#puppyBall { display: block; margin: 8px auto 0; min-width: 54px; min-height: 54px; border: 1px solid #a96c87; border-radius: 50%; background: #382238; font-size: 27px; }
+.mood-garden-footnote { margin: 25px auto 0; color: var(--muted); font-size: 11px; }
+.puppy-scene.puppy-petting .puppy-emoji { animation: puppyWiggle .55s ease; }
+.puppy-scene.puppy-hugging .puppy-emoji { animation: puppyHug .7s ease; }
+.puppy-scene.puppy-happy .puppy-emoji { animation: puppyBounce .65s ease; }
+@keyframes puppyWiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+@keyframes puppyHug { 0%,100% { transform: scale(1); } 45% { transform: scale(1.18,.88); } }
+@keyframes puppyBounce { 0%,100% { transform: translateY(0); } 35% { transform: translateY(-17px) rotate(-7deg); } 70% { transform: translateY(0) rotate(7deg); } }
+
+@media (max-width: 600px) {
+  .garden-mood-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .garden-mood-button { min-height: 88px; }
+  .garden-mood-unsure { grid-column: 1 / -1; min-height: 65px; }
+  .garden-mood-result { padding: 23px 17px; }
+  .puppy-card { padding: 28px 16px; }
+  .puppy-name-fields { flex-direction: column; }
+  .puppy-name-fields button { width: 100%; }
+  .puppy-actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .puppy-actions button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .puppy-scene.puppy-petting .puppy-emoji,
+  .puppy-scene.puppy-hugging .puppy-emoji,
+  .puppy-scene.puppy-happy .puppy-emoji { animation: none; }
+}
