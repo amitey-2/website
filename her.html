@@ -207,6 +207,65 @@
       <p id="wishMessage" class="wish-message" aria-live="polite">Choose a star, my love. ✨</p>
     </section>
 
+    <!-- OUR LITTLE PLAYGROUND -->
+    <section id="littlePlayground" class="interactive-section playground-section">
+      <p class="eyebrow">A LITTLE PLAYTIME</p>
+      <h2>Our tiny corner of fun.</h2>
+      <p class="section-description">A few little things to make you smile. Pick whatever your heart feels like today. ♡</p>
+
+      <div class="playground-grid">
+        <article class="play-card mood-card">
+          <span class="play-card-icon">☁️</span>
+          <p class="play-card-kicker">FIRST, TELL ME</p>
+          <h3>How's your heart today?</h3>
+          <p class="play-card-copy">Choose the little face that feels most like you.</p>
+          <div class="mood-options" role="group" aria-label="Choose how you feel">
+            <button class="mood-option" type="button" data-mood="happy" aria-label="Happy">🥰</button>
+            <button class="mood-option" type="button" data-mood="loved" aria-label="Loved">💗</button>
+            <button class="mood-option" type="button" data-mood="tired" aria-label="Tired">🥺</button>
+            <button class="mood-option" type="button" data-mood="sad" aria-label="A little sad">🌧️</button>
+            <button class="mood-option" type="button" data-mood="missing" aria-label="Missing you">😘</button>
+          </div>
+          <p id="moodReply" class="play-reply" aria-live="polite">Whatever you're feeling, you can always bring it here. ♡</p>
+        </article>
+
+        <article class="play-card hug-card">
+          <span class="play-card-icon">🧸</span>
+          <p class="play-card-kicker">A HUG, DELIVERED</p>
+          <h3>Need a little squeeze?</h3>
+          <p class="play-card-copy">Press this whenever you need me close.</p>
+          <button id="hugButton" class="cute-action-button" type="button">Send me a hug ♡</button>
+          <p id="hugReply" class="play-reply" aria-live="polite">Wrapping you in the biggest virtual hug.</p>
+        </article>
+
+        <article class="play-card heart-game-card">
+          <span class="play-card-icon">💘</span>
+          <p class="play-card-kicker">A TINY MINI-GAME</p>
+          <h3>Catch five hearts!</h3>
+          <p class="play-card-copy">Catch all five before they float away. Ready, sweetheart?</p>
+          <div class="heart-game-score" aria-live="polite"><span id="heartScore">0</span> <span>/ 5 hearts</span></div>
+          <div id="heartGameArena" class="heart-game-arena" aria-label="Heart catching game area">
+            <span class="arena-hint">Your hearts will appear here ♡</span>
+          </div>
+          <button id="heartGameStart" class="cute-action-button" type="button">Let's play! ♡</button>
+          <p id="heartGameMessage" class="play-reply" aria-live="polite">A little game, with lots of love.</p>
+        </article>
+
+        <article class="play-card envelope-card">
+          <span class="play-card-icon">💌</span>
+          <p class="play-card-kicker">SEALED WITH A KISS</p>
+          <h3>Pick a secret envelope.</h3>
+          <p class="play-card-copy">Three tiny secrets. Choose whichever one calls your name.</p>
+          <div class="envelope-options">
+            <button class="envelope-option" type="button" data-envelope="0" aria-label="Open pink envelope one">💌<span>01</span></button>
+            <button class="envelope-option" type="button" data-envelope="1" aria-label="Open pink envelope two">💌<span>02</span></button>
+            <button class="envelope-option" type="button" data-envelope="2" aria-label="Open pink envelope three">💌<span>03</span></button>
+          </div>
+          <p id="envelopeMessage" class="play-reply" aria-live="polite">Psst… each one is hiding something sweet.</p>
+        </article>
+      </div>
+    </section>
+
     <!-- MONTHLY ANNIVERSARY COUNTDOWN -->
     <section id="ourCountdown" class="countdown-section">
       <p class="eyebrow">THE 17TH IS OURS</p>
