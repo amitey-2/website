@@ -910,3 +910,17 @@ footer span {
     padding: 12px 2px;
   }
 }
+
+
+.birthday-countdown-card {
+  margin-top: 22px;
+  background: linear-gradient(145deg, #321b2c, #1b101c);
+  border-color: #a86b83;
+}
+
+.birthday-title {
+  margin: -12px 0 25px;
+  color: var(--pink);
+  font-family: 'Playfair Display', serif;
+  font-size: 25px;
+}
