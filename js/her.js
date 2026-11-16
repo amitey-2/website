@@ -546,7 +546,7 @@ function renderMealMenu(meal) {
     choose.setAttribute("aria-pressed", selectedDish === dish.name ? "true" : "false");
     choose.addEventListener("click", () => {
       selectedDish = dish.name;
-      mealSelection.textContent = dish.name + " it is! I'll remember this little choice for our date. 💗";
+      mealSelection.textContent = dish.name + " it is! That sounds perfect for our next meal together. 💗";
       renderMealMenu(activeMeal);
     });
     card.append(icon, title, description, choose);
