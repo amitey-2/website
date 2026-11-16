@@ -281,6 +281,92 @@ if (loveJar && loveNoteMessage) {
   });
 }
 
+// Today's reason is stable for the visitor's local calendar day.
+const dailyReasons = [
+  "Because your smile can turn an ordinary moment into my favourite memory. ♡",
+  "Because you make me want to be a kinder, better version of myself.",
+  "Because even a little message from you can make my whole day.",
+  "Because I love the way you see the world, in your own beautiful way.",
+  "Because you make silence feel comfortable and conversations feel endless.",
+  "Because your happiness matters to me, even in the smallest things.",
+  "Because you are wonderfully, unapologetically you.",
+  "Because I can be silly around you and still feel completely loved.",
+  "Because you make the future feel like something I get to look forward to.",
+  "Because your little habits have become some of my favourite things.",
+  "Because you make distance feel smaller and love feel bigger.",
+  "Because I admire the way you keep going, even on difficult days.",
+  "Because being loved by you is a gift I never want to take for granted.",
+  "Because you make the simplest plans feel exciting when they're with you.",
+  "Because your laugh is a sound I could never get tired of.",
+  "Because you remind me that the best things are often the little things.",
+  "Because I love learning something new about you every day.",
+  "Because you make my heart feel at home.",
+  "Because you deserve to be celebrated, not just on special days, but always.",
+  "Because choosing you is one of my favourite decisions.",
+  "Because you bring warmth into places you don't even realise.",
+  "Because you are strong, soft, thoughtful, and so much more than you know.",
+  "Because I love making memories with you, even the silly ones.",
+  "Because you make me smile at my phone like a complete fool. 🤭",
+  "Because no one else could ever be exactly you, and that's my favourite thing.",
+  "Because I want to hear about your day, even the ordinary bits.",
+  "Because you make me believe in all the little adventures still waiting for us.",
+  "Because I love the person I get to be when I'm with you.",
+  "Because your dreams matter to me, and I want to cheer you on.",
+  "Because every day gives me another reason to be grateful you're in my life. ♡"
+];
+
+const dailyReasonButton = document.getElementById("dailyReasonButton");
+const dailyReasonMessage = document.getElementById("dailyReasonMessage");
+const dailyReasonDate = document.getElementById("dailyReasonDate");
+const localNowForReason = new Date();
+const localDayNumber = Math.floor(new Date(localNowForReason.getFullYear(), localNowForReason.getMonth(), localNowForReason.getDate()).getTime() / 86400000);
+const todaysReason = dailyReasons[((localDayNumber % dailyReasons.length) + dailyReasons.length) % dailyReasons.length];
+if (dailyReasonDate) {
+  dailyReasonDate.textContent = localNowForReason.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+}
+if (dailyReasonButton && dailyReasonMessage) {
+  dailyReasonButton.addEventListener("click", () => {
+    dailyReasonMessage.textContent = todaysReason;
+    dailyReasonMessage.classList.remove("note-pop");
+    void dailyReasonMessage.offsetWidth;
+    dailyReasonMessage.classList.add("note-pop");
+    dailyReasonButton.textContent = "A little reminder, just for today ♡";
+    dailyReasonButton.disabled = true;
+  });
+}
+
+// Open-when letters are kept in this page's code; choosing one reveals its note.
+const openWhenLetters = {
+  miss: "If you miss me right now, imagine me reaching for your hand and pulling you into the longest hug. I wish I could be there for every little moment, but until then, remember that you're always close to my heart. I miss you too, my love. ♡",
+  sad: "Hey sweetheart. You don't have to pretend to be okay with me. Take a breath, be gentle with yourself, and remember that one difficult day doesn't change how wonderful you are. I'm on your side, always. If I were there, I'd hold you until things felt a little lighter. 💗",
+  sleep: "Close your eyes, love. Let today be finished; you don't have to solve everything tonight. I hope your pillow is soft, your dreams are kind, and you wake up feeling lighter. Imagine a goodnight kiss on your forehead from me. Sleep well. 🌙",
+  confidence: "Read this twice: you are capable, beautiful, and stronger than you give yourself credit for. You don't need to be perfect to make me proud. Keep going at your own pace. I believe in you, and I hope you never forget to believe in yourself too. ✨",
+  laugh: "Official reminder: somewhere out there is a person who is completely obsessed with you, smiles at their phone because of you, and would absolutely lose an argument just to see you laugh. That person is me. 😂💕"
+};
+const openWhenLetter = document.getElementById("openWhenLetter");
+document.querySelectorAll(".open-when-option").forEach((button) => {
+  button.addEventListener("click", () => {
+    const letter = openWhenLetters[button.dataset.letter];
+    if (!letter || !openWhenLetter) return;
+    document.querySelectorAll(".open-when-option").forEach((item) => {
+      const selected = item === button;
+      item.classList.toggle("selected", selected);
+      item.setAttribute("aria-pressed", selected ? "true" : "false");
+    });
+    openWhenLetter.replaceChildren();
+    const icon = document.createElement("span");
+    icon.className = "open-when-letter-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.textContent = "💌";
+    const message = document.createElement("p");
+    message.textContent = letter;
+    openWhenLetter.append(icon, message);
+    openWhenLetter.classList.remove("letter-pop");
+    void openWhenLetter.offsetWidth;
+    openWhenLetter.classList.add("letter-pop");
+  });
+});
+
 // Tap a star to reveal one of the wishes hidden in the night sky.
 document.querySelectorAll(".wish-star").forEach((star) => {
   star.addEventListener("click", () => {
