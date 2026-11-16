@@ -1574,3 +1574,91 @@ body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
   .puppy-scene.puppy-hugging .puppy-emoji,
   .puppy-scene.puppy-happy .puppy-emoji { animation: none; }
 }
+
+
+/* TEMPORARY WHOLE-PAGE ANGRY WEATHER MODE */
+body,
+body .stars,
+body .love-page,
+body .phone-dock {
+  transition: background-color .55s ease, color .55s ease, border-color .55s ease, box-shadow .55s ease;
+}
+body.angry-mode {
+  --background: #090d16;
+  --surface: #171d2b;
+  --burgundy: #414b68;
+  --pink: #b9c5df;
+  --text: #e8edf7;
+  --muted: #a3aec2;
+  --gold: #aeb8cc;
+  background: var(--background);
+}
+body.angry-mode .stars {
+  opacity: .34;
+  background-image:
+    radial-gradient(#c9d5ec 1px, transparent 1px),
+    radial-gradient(#8998b8 1px, transparent 1px);
+  background-size: 90px 90px, 140px 140px;
+}
+body.angry-mode::after {
+  content: "";
+  position: fixed;
+  inset: -120px 0 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .17;
+  background-image: repeating-linear-gradient(108deg, transparent 0 17px, #c3d0e8 18px, transparent 19px 43px);
+  background-size: 90px 150px;
+  animation: angryRain 1.15s linear infinite;
+}
+@keyframes angryRain {
+  from { background-position: 0 0; }
+  to { background-position: -24px 150px; }
+}
+body.angry-mode .hero,
+body.angry-mode .interactive-section,
+body.angry-mode .countdown-section,
+body.angry-mode .playground-section,
+body.angry-mode .date-request-section,
+body.angry-mode .final-section,
+body.angry-mode .mood-garden-section {
+  background: linear-gradient(155deg, #171e2d, #0d121e 72%) !important;
+}
+body.angry-mode .garden-mood-result,
+body.angry-mode .puppy-card,
+body.angry-mode .playground-card,
+body.angry-mode .date-request-card,
+body.angry-mode .meal-item,
+body.angry-mode .countdown-card {
+  background: linear-gradient(145deg, #202a3d, #141b2a) !important;
+  border-color: #53617d !important;
+}
+body.angry-mode .garden-mood-button,
+body.angry-mode .garden-suggestion,
+body.angry-mode .meal-tab,
+body.angry-mode .phone-dock {
+  background: #1b2435 !important;
+  border-color: #53617d !important;
+}
+body.angry-mode .garden-mood-button.selected,
+body.angry-mode .garden-suggestion:hover,
+body.angry-mode .meal-tab.active {
+  background: linear-gradient(145deg, #46536f, #303b55) !important;
+  border-color: #b9c5df !important;
+}
+body.angry-mode .phone-dock {
+  background: rgba(15, 21, 34, .94) !important;
+  border-color: #71809d !important;
+}
+body.angry-mode .phone-dock a.active,
+body.angry-mode .phone-dock a span,
+body.angry-mode .eyebrow,
+body.angry-mode .garden-result-flower {
+  color: #c5d0e6 !important;
+}
+body.angry-mode button {
+  transition: background .35s ease, border-color .35s ease, color .35s ease, transform .2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.angry-mode::after { animation: none; }
+}
