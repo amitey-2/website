@@ -1058,3 +1058,219 @@ footer span {
   .surprise-choice { min-height: 105px; }
   .choice-heart { font-size: 34px; }
 }
+
+
+/* CUTE LITTLE PLAYGROUND */
+.playground-section {
+  background:
+    radial-gradient(ellipse at 15% 20%, #7130472b, transparent 45%),
+    radial-gradient(ellipse at 85% 80%, #55345a2b, transparent 45%),
+    #160d16;
+}
+
+.playground-grid {
+  width: min(100%, 1000px);
+  margin: 48px auto 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  text-align: left;
+}
+
+.play-card {
+  position: relative;
+  min-width: 0;
+  padding: 30px;
+  overflow: hidden;
+  border: 1px solid #674054;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #2b1928, #1b111d);
+  box-shadow: 0 16px 38px #0004;
+}
+
+.play-card::after {
+  content: "♡";
+  position: absolute;
+  right: 18px;
+  top: 8px;
+  color: #e8b4c6;
+  opacity: .09;
+  font-size: 76px;
+  pointer-events: none;
+}
+
+.play-card-icon {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 28px;
+}
+
+.play-card-kicker {
+  color: var(--pink);
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  margin-bottom: 10px;
+}
+
+.play-card h3 {
+  position: relative;
+  z-index: 1;
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 25px;
+  margin-bottom: 9px;
+}
+
+.play-card-copy {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  min-height: 44px;
+}
+
+.mood-options, .envelope-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.mood-option, .envelope-option {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #75465e;
+  border-radius: 14px;
+  background: #160d18;
+  font-size: 23px;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.mood-option:hover, .mood-option.selected,
+.envelope-option:hover, .envelope-option.opened {
+  transform: translateY(-4px) scale(1.06);
+  border-color: var(--pink);
+  background: #713047;
+}
+
+.play-reply {
+  position: relative;
+  z-index: 1;
+  min-height: 48px;
+  margin-top: 20px;
+  color: var(--pink);
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.cute-action-button {
+  margin-top: 20px;
+  padding: 13px 20px;
+  border: 1px solid #a56b83;
+  border-radius: 999px;
+  color: #fff4f8;
+  background: linear-gradient(110deg, #713047, #9b526d);
+  font-size: 12px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.cute-action-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 24px #e8b4c633;
+}
+
+.hug-card.hugging .play-card-icon {
+  animation: hugBounce .55s ease-in-out 2;
+}
+
+@keyframes hugBounce {
+  50% { transform: scale(1.35) rotate(-8deg); }
+}
+
+.heart-game-score {
+  margin-top: 18px;
+  color: var(--pink);
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+}
+
+.heart-game-score span + span {
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+}
+
+.heart-game-arena {
+  position: relative;
+  height: 145px;
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px dashed #86546e;
+  border-radius: 13px;
+  background: radial-gradient(ellipse, #71304733, #160d18);
+}
+
+.arena-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.catch-heart {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #f4b8d0;
+  font-size: 34px;
+  text-shadow: 0 0 16px #f4b8d0;
+  animation: catchHeartFloat 1.8s ease-in-out infinite alternate;
+}
+
+.catch-heart:hover { transform: scale(1.25); }
+
+@keyframes catchHeartFloat {
+  to { translate: 0 -7px; rotate: 9deg; }
+}
+
+.envelope-option {
+  position: relative;
+  width: 58px;
+  height: 54px;
+  font-size: 27px;
+}
+
+.envelope-option span {
+  position: absolute;
+  right: -4px;
+  bottom: -7px;
+  padding: 2px 5px;
+  border-radius: 8px;
+  color: var(--text);
+  background: #573047;
+  font-size: 8px;
+}
+
+@media (max-width: 750px) {
+  .playground-grid { grid-template-columns: 1fr; gap: 14px; }
+  .play-card { padding: 25px 22px; }
+  .play-card h3 { font-size: 23px; }
+  .heart-game-arena { height: 135px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-card *, .play-card *::before, .play-card *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
