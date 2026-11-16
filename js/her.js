@@ -213,3 +213,106 @@ function displayLovePage(content) {
   };
 
 }
+
+
+
+// ========================================
+// LITTLE INTERACTIVE LOVE MOMENTS
+// ========================================
+
+// Pick a note from the jar. Notes cycle without repeating until all have appeared.
+const loveNotes = [
+  "If I could choose one place to be right now, it would be wherever you are. ♡",
+  "You make my world softer, brighter, and so much more beautiful.",
+  "Just in case you forgot today: you are my favourite person.",
+  "I hope you are as proud of yourself as I am of you.",
+  "Even the quietest moments are special when I get to share them with you.",
+  "You are loved on your best days, your difficult days, and every day in between.",
+  "I still get lucky just thinking about the fact that I get to call you mine.",
+  "If today feels heavy, let this little note remind you that you never have to be perfect to be loved.",
+  "Your smile has a way of making everything feel alright.",
+  "I would find you in every lifetime, in every version of this universe.",
+  "Thank you for being you. That is already more than enough.",
+  "No matter how far apart we are, you are always close to my heart.",
+  "I hope something lovely happens to you today. You deserve lovely things.",
+  "One day, we'll look back at all these little moments and smile at how far we've come."
+];
+
+const loveJar = document.getElementById("loveJar");
+const loveNoteMessage = document.getElementById("loveNoteMessage");
+let remainingLoveNotes = [];
+
+if (loveJar && loveNoteMessage) {
+  loveJar.addEventListener("click", () => {
+    if (remainingLoveNotes.length === 0) {
+      remainingLoveNotes = [...loveNotes];
+    }
+
+    const randomIndex = Math.floor(Math.random() * remainingLoveNotes.length);
+    const [note] = remainingLoveNotes.splice(randomIndex, 1);
+
+    loveNoteMessage.textContent = note;
+    loveNoteMessage.classList.remove("note-pop");
+    void loveNoteMessage.offsetWidth;
+    loveNoteMessage.classList.add("note-pop");
+  });
+}
+
+// Tap a star to reveal one of the wishes hidden in the night sky.
+document.querySelectorAll(".wish-star").forEach((star) => {
+  star.addEventListener("click", () => {
+    const wishMessage = document.getElementById("wishMessage");
+    if (wishMessage) {
+      wishMessage.textContent = star.dataset.wish || "A little wish, sent with all my love. ♡";
+    }
+  });
+});
+
+// Every 17th is a monthly anniversary, beginning on May 17.
+// The countdown uses the visitor's local time and rolls forward every month.
+function updateMonthlyCountdown() {
+  const now = new Date();
+  const anniversaryDay = 17;
+  const isAnniversaryToday = now.getDate() === anniversaryDay;
+
+  let target;
+  if (now.getDate() < anniversaryDay) {
+    target = new Date(now.getFullYear(), now.getMonth(), anniversaryDay, 0, 0, 0);
+  } else {
+    target = new Date(now.getFullYear(), now.getMonth() + 1, anniversaryDay, 0, 0, 0);
+  }
+
+  const remaining = Math.max(0, target.getTime() - now.getTime());
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor((remaining % 86400000) / 3600000);
+  const minutes = Math.floor((remaining % 3600000) / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+
+  const setValue = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = String(value).padStart(2, "0");
+  };
+
+  setValue("countDays", days);
+  setValue("countHours", hours);
+  setValue("countMinutes", minutes);
+  setValue("countSeconds", seconds);
+
+  const heading = document.getElementById("countdownHeading");
+  const footnote = document.getElementById("countdownFootnote");
+
+  if (heading) {
+    heading.textContent = isAnniversaryToday
+      ? "Happy monthly anniversary, my love! ♡"
+      : "Counting down to our little day ♡";
+  }
+
+  if (footnote) {
+    footnote.textContent = isAnniversaryToday
+      ? "Today is our little day. Here's to another beautiful month of us. ♡"
+      : "May 17 — the day our story became ours. Every 17th, another little celebration.";
+  }
+}
+
+updateMonthlyCountdown();
+setInterval(updateMonthlyCountdown, 1000);
