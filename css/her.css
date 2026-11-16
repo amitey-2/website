@@ -1274,3 +1274,20 @@ footer span {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* A TABLE FOR HER */
+.her-menu-section { text-align: center; }
+.meal-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 30px auto 24px; }
+.meal-tab { border: 1px solid #704052; border-radius: 999px; padding: 12px 19px; color: var(--muted); background: #21121d; font-size: 13px; transition: .25s ease; }
+.meal-tab:hover, .meal-tab.active { color: var(--text); border-color: var(--pink); background: #713047; transform: translateY(-2px); }
+.meal-menu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; max-width: 980px; margin: 0 auto; text-align: left; }
+.meal-item { padding: 22px 20px; border: 1px solid #573047; border-radius: 16px; background: linear-gradient(145deg, #291725, #180e17); }
+.meal-item-icon { display: block; font-size: 27px; margin-bottom: 12px; }
+.meal-item h3 { color: var(--text); font: 400 20px 'Playfair Display', serif; margin-bottom: 8px; }
+.meal-item p { color: var(--muted); font-size: 12px; line-height: 1.7; min-height: 42px; }
+.meal-item button { margin-top: 16px; width: 100%; padding: 10px 12px; border: 1px solid #86546e; border-radius: 9px; background: #71304755; color: var(--pink); font-size: 12px; transition: .2s ease; }
+.meal-item button:hover, .meal-item button.selected { background: var(--burgundy); color: white; border-color: var(--pink); }
+.meal-selection { max-width: 650px; margin: 22px auto 0; min-height: 26px; color: var(--pink); font: italic 17px 'Playfair Display', serif; }
+.menu-footnote { color: var(--muted); font-size: 11px; margin-top: 14px; }
+@media (max-width: 750px) { .meal-menu { grid-template-columns: 1fr; max-width: 480px; } .meal-item { padding: 20px; } .meal-item p { min-height: 0; } .meal-tabs { gap: 7px; } .meal-tab { padding: 11px 14px; font-size: 12px; } }
