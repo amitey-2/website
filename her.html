@@ -282,6 +282,29 @@
       <p class="menu-footnote">The menu is just a little idea for our next meal together. You can change your mind anytime. 💗</p>
     </section>
 
+    <!-- ASK ME ON A DATE -->
+    <section id="dateRequest" class="interactive-section date-request-section">
+      <p class="eyebrow">A LITTLE INVITATION</p>
+      <h2>Tell me when you want a date.</h2>
+      <p class="section-description">Pick your day, choose the kind of date you are dreaming of, and send me your little invitation. I will be waiting. ♡</p>
+      <form id="dateRequestForm" class="date-request-card">
+        <label for="dateRequestDate">When should I take you out?</label>
+        <input id="dateRequestDate" name="date" type="date" required>
+        <label for="dateRequestType">What kind of date are you in the mood for?</label>
+        <select id="dateRequestType" name="dateType" required>
+          <option value="Breakfast date ☀️">Breakfast date ☀️</option>
+          <option value="Lunch date 🌷">Lunch date 🌷</option>
+          <option value="Dinner date 🌙" selected>Dinner date 🌙</option>
+          <option value="A surprise date 🎀">A surprise date 🎀</option>
+        </select>
+        <label for="dateRequestNote">A little note for me (optional)</label>
+        <textarea id="dateRequestNote" name="note" rows="3" placeholder="Anywhere you would love to go, or anything you are craving…"></textarea>
+        <button class="date-request-button" type="submit">Ask me on a date 💌</button>
+        <p class="date-request-footnote">This opens WhatsApp with your message ready. Just press Send to invite me. ♡</p>
+      </form>
+      <p id="dateRequestFeedback" class="date-request-feedback" aria-live="polite"></p>
+    </section>
+
     <!-- MONTHLY ANNIVERSARY COUNTDOWN -->
     <section id="ourCountdown" class="countdown-section">
       <p class="eyebrow">THE 17TH IS OURS</p>
