@@ -604,3 +604,39 @@ if ("serviceWorker" in navigator && location.protocol === "https:") {
     });
   });
 }
+
+
+// ========================================
+// FOUR-SCREEN MINI APP NAVIGATION
+// ========================================
+const appTabLinks = document.querySelectorAll(".phone-dock [data-tab]");
+const appTabPanels = document.querySelectorAll(".app-tab-panel");
+
+function activateAppTab(tabName, shouldScroll = true) {
+  let found = false;
+  appTabPanels.forEach((panel) => {
+    const active = panel.dataset.panel === tabName;
+    panel.classList.toggle("active", active);
+    panel.setAttribute("aria-hidden", active ? "false" : "true");
+    if (active) found = true;
+  });
+  if (!found) return;
+
+  appTabLinks.forEach((link) => {
+    const active = link.dataset.tab === tabName;
+    link.classList.toggle("active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+
+  if (shouldScroll) window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+appTabLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    activateAppTab(link.dataset.tab);
+  });
+});
+
+activateAppTab("story", false);
