@@ -374,3 +374,113 @@ function updateBirthdayCountdown() {
 
 updateBirthdayCountdown();
 setInterval(updateBirthdayCountdown, 1000);
+
+
+
+// ========================================
+// OUR LITTLE PLAYGROUND
+// ========================================
+
+// A gentle reply for every kind of day.
+const moodReplies = {
+  happy: "That smile of yours is my favourite thing. Keep shining, sweetheart! 🥰♡",
+  loved: "Good. Because you are loved more than this little screen could ever tell you. 💗",
+  tired: "Come rest for a while, my love. You don't have to do everything today. 🥺",
+  sad: "Sending you the softest hug. Whatever it is, you don't have to face it alone. 🌧️♡",
+  missing: "I'm sending a kiss right back. Imagine me stealing one more. 😘"
+};
+
+const moodReply = document.getElementById("moodReply");
+document.querySelectorAll(".mood-option").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".mood-option").forEach((item) => {
+      item.classList.toggle("selected", item === button);
+      item.setAttribute("aria-pressed", item === button ? "true" : "false");
+    });
+    if (moodReply) moodReply.textContent = moodReplies[button.dataset.mood] || "Sending you a little love. ♡";
+  });
+});
+
+// A virtual hug, available whenever she wants one.
+const hugButton = document.getElementById("hugButton");
+const hugReply = document.getElementById("hugReply");
+const hugCard = document.querySelector(".hug-card");
+if (hugButton && hugReply && hugCard) {
+  hugButton.addEventListener("click", () => {
+    hugReply.textContent = "HUG DELIVERED! Arms around you, a kiss on your forehead, and all my love. 🧸♡";
+    hugCard.classList.remove("hugging");
+    void hugCard.offsetWidth;
+    hugCard.classList.add("hugging");
+  });
+}
+
+// Catch five hearts. One heart appears at a time, so the game stays easy on mobile.
+const heartGameStart = document.getElementById("heartGameStart");
+const heartGameArena = document.getElementById("heartGameArena");
+const heartScore = document.getElementById("heartScore");
+const heartGameMessage = document.getElementById("heartGameMessage");
+let caughtHearts = 0;
+
+function showCatchHeart() {
+  if (!heartGameArena) return;
+  heartGameArena.replaceChildren();
+
+  const heart = document.createElement("button");
+  heart.type = "button";
+  heart.className = "catch-heart";
+  heart.textContent = "♥";
+  heart.setAttribute("aria-label", "Catch this heart");
+  heart.style.left = `${8 + Math.random() * 76}%`;
+  heart.style.top = `${8 + Math.random() * 58}%`;
+  heart.addEventListener("click", () => {
+    caughtHearts += 1;
+    if (heartScore) heartScore.textContent = String(caughtHearts);
+    if (caughtHearts >= 5) {
+      heartGameArena.replaceChildren();
+      const finish = document.createElement("span");
+      finish.className = "arena-hint";
+      finish.textContent = "All caught! You're my heart-catcher. ♡";
+      heartGameArena.appendChild(finish);
+      if (heartGameMessage) heartGameMessage.textContent = "You caught all five! Your prize: one very big kiss from me. 😘";
+      if (heartGameStart) heartGameStart.textContent = "Play again ♡";
+    } else {
+      if (heartGameMessage) heartGameMessage.textContent = "Yay! One more little heart. 💗";
+      showCatchHeart();
+    }
+  }, { once: true });
+  heartGameArena.appendChild(heart);
+}
+
+if (heartGameStart && heartGameArena) {
+  heartGameStart.addEventListener("click", () => {
+    caughtHearts = 0;
+    if (heartScore) heartScore.textContent = "0";
+    if (heartGameMessage) heartGameMessage.textContent = "Here comes your first heart… catch it! ♡";
+    heartGameStart.textContent = "Catch the heart!";
+    showCatchHeart();
+  });
+}
+
+// Little sealed notes: every envelope has its own message and can be opened again.
+const envelopeNotes = [
+  "A tiny secret: if I could pause time, I'd keep one of our happiest moments forever. ♡",
+  "Your reminder for today: you are beautiful, capable, and so very loved. 💌",
+  "One wish from me: more silly laughs, spontaneous hugs, and adventures with you. ✨"
+];
+
+const envelopeMessage = document.getElementById("envelopeMessage");
+document.querySelectorAll(".envelope-option").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".envelope-option").forEach((item) => {
+      item.classList.toggle("opened", item === button);
+      item.setAttribute("aria-pressed", item === button ? "true" : "false");
+    });
+    const note = envelopeNotes[Number(button.dataset.envelope)];
+    if (envelopeMessage && note) {
+      envelopeMessage.textContent = note;
+      envelopeMessage.classList.remove("note-pop");
+      void envelopeMessage.offsetWidth;
+      envelopeMessage.classList.add("note-pop");
+    }
+  });
+});
