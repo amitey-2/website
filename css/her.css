@@ -620,3 +620,293 @@ footer span {
     padding: 35px 20px;
   }
 }
+
+
+/* INTERACTIVE LOVE MOMENTS */
+.interactive-section {
+  position: relative;
+  padding: 105px 8%;
+  text-align: center;
+  background: radial-gradient(ellipse at center, #5120392b, transparent 72%);
+}
+
+.love-jar-button {
+  position: relative;
+  display: block;
+  width: 174px;
+  height: 220px;
+  margin: 48px auto 25px;
+  border: 2px solid #d99bb4;
+  border-radius: 38px 38px 48px 48px;
+  background: linear-gradient(135deg, #f5dce633, #8d496633 60%, #f8dbe622);
+  box-shadow: inset 0 0 28px #f7c8dc22, 0 18px 55px #0006;
+  backdrop-filter: blur(5px);
+  transition: transform .3s ease, box-shadow .3s ease;
+  animation: jarFloat 4s ease-in-out infinite;
+}
+
+.love-jar-button::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 13px;
+  width: 13px;
+  height: 135px;
+  border-radius: 20px;
+  background: #fff4;
+  filter: blur(2px);
+}
+
+.love-jar-button:hover {
+  transform: translateY(-7px) rotate(-2deg);
+  box-shadow: inset 0 0 28px #f7c8dc33, 0 25px 65px #0008;
+}
+
+.jar-lid {
+  position: absolute;
+  width: 112px;
+  height: 18px;
+  top: -13px;
+  left: 29px;
+  border: 2px solid #d99bb4;
+  border-radius: 7px;
+  background: #713047;
+}
+
+.jar-heart {
+  display: block;
+  margin-top: 35px;
+  color: #f3c3d5;
+  font-size: 42px;
+  text-shadow: 0 0 18px #f4a9c9aa;
+}
+
+.jar-label {
+  display: block;
+  width: 116px;
+  margin: 7px auto 0;
+  padding: 10px 4px;
+  color: #5a2a40;
+  background: #f2dce4;
+  border-radius: 3px;
+  font-family: 'Great Vibes', cursive;
+  font-size: 21px;
+  line-height: 1.05;
+  transform: rotate(-2deg);
+}
+
+.jar-hint {
+  position: absolute;
+  bottom: -32px;
+  left: 0;
+  width: 100%;
+  color: var(--pink);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+@keyframes jarFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+.love-note-message {
+  max-width: 560px;
+  min-height: 70px;
+  margin: 48px auto 0;
+  padding: 22px 25px;
+  color: var(--pink);
+  border: 1px solid #704052;
+  border-radius: 12px;
+  background: #21121d;
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  line-height: 1.7;
+  animation: appear .5s ease;
+}
+
+.wishes-section {
+  overflow: hidden;
+  background: #160d19;
+}
+
+.wish-sky {
+  position: relative;
+  width: min(100%, 760px);
+  height: 300px;
+  margin: 45px auto 10px;
+  overflow: hidden;
+  border: 1px solid #55344f;
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 50% 100%, #66305266, transparent 60%),
+    radial-gradient(circle at 20% 20%, #ffffff12 1px, transparent 2px),
+    radial-gradient(circle at 70% 35%, #ffffff18 1px, transparent 2px),
+    linear-gradient(160deg, #100d20, #241127 70%, #160d19);
+  background-size: auto, 90px 90px, 130px 130px, auto;
+  box-shadow: inset 0 0 55px #0008;
+}
+
+.wish-sky::after {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  top: 35px;
+  right: 12%;
+  border-radius: 50%;
+  background: #f3d8e8;
+  opacity: .06;
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.wish-star {
+  position: absolute;
+  z-index: 1;
+  padding: 12px;
+  border: 0;
+  background: transparent;
+  color: #f8dce9;
+  font-size: 27px;
+  text-shadow: 0 0 12px #f2b8d6, 0 0 28px #d98bb8;
+  animation: twinkle 2.4s ease-in-out infinite alternate;
+  transition: transform .2s ease, color .2s ease;
+}
+
+.wish-star:hover, .wish-star:focus-visible {
+  color: white;
+  transform: scale(1.5);
+  outline: none;
+}
+
+.star-one { top: 18%; left: 13%; }
+.star-two { top: 55%; left: 26%; animation-delay: .6s; }
+.star-three { top: 20%; left: 47%; animation-delay: 1s; }
+.star-four { top: 62%; left: 57%; animation-delay: .3s; }
+.star-five { top: 30%; right: 12%; animation-delay: 1.4s; }
+.star-six { bottom: 8%; right: 28%; animation-delay: .8s; }
+.star-seven { top: 8%; right: 35%; animation-delay: 1.7s; }
+
+@keyframes twinkle {
+  from { opacity: .55; filter: brightness(.8); }
+  to { opacity: 1; filter: brightness(1.5); }
+}
+
+.wish-message {
+  max-width: 600px;
+  min-height: 65px;
+  margin: 25px auto 0;
+  color: var(--pink);
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+.countdown-section {
+  padding: 110px 8%;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 55%, #71304744, transparent 70%);
+}
+
+.countdown-section h2 {
+  font-size: clamp(38px, 6vw, 58px);
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.countdown-section h2 i {
+  color: var(--pink);
+  font-weight: 400;
+}
+
+.countdown-card {
+  width: min(100%, 720px);
+  margin: 45px auto 0;
+  padding: 35px 25px;
+  border: 1px solid #704052;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #2a1725, #180e18);
+  box-shadow: 0 20px 55px #0005;
+}
+
+.countdown-heading {
+  margin-bottom: 28px;
+  color: var(--pink);
+  font-family: 'Playfair Display', serif;
+  font-size: 21px;
+}
+
+.countdown-timer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.countdown-timer div {
+  padding: 18px 8px;
+  border: 1px solid #563347;
+  border-radius: 10px;
+  background: #100a11aa;
+}
+
+.countdown-timer strong {
+  display: block;
+  color: var(--text);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(27px, 5vw, 43px);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-timer span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+
+.countdown-footnote {
+  margin-top: 25px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 750px) {
+  .interactive-section, .countdown-section {
+    padding: 80px 22px;
+  }
+
+  .wish-sky {
+    height: 260px;
+  }
+
+  .countdown-card {
+    padding: 25px 14px;
+  }
+
+  .countdown-timer {
+    gap: 7px;
+  }
+
+  .countdown-timer div {
+    padding: 14px 4px;
+  }
+
+  .countdown-timer span {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 360px) {
+  .countdown-timer {
+    gap: 4px;
+  }
+
+  .countdown-timer div {
+    padding: 12px 2px;
+  }
+}
