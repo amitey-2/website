@@ -12,6 +12,9 @@ const SUPABASE_KEY =
 const lockScreen = document.getElementById("lockScreen");
 const lovePage = document.getElementById("lovePage");
 
+// Angry Mode is an in-page choice only; never restore it on a fresh visit.
+document.body.classList.remove("angry-mode");
+
 // A small greeting that follows the visitor's local time.
 function updateDailyGreeting() {
   const hour = new Date().getHours();
