@@ -67,6 +67,7 @@
       <span>FOREVER & ALWAYS</span>
     </nav>
 
+    <div class="app-tab-panel active" id="tab-story" data-panel="story">
     <!-- HERO -->
     <section class="hero">
 
@@ -182,6 +183,9 @@
     </section>
 
 
+    </div>
+
+    <div class="app-tab-panel" id="tab-for-you" data-panel="for-you">
     <!-- LITTLE LOVE NOTES -->
     <section id="loveNotes" class="interactive-section">
       <p class="eyebrow">A LITTLE SOMETHING FOR YOU</p>
@@ -274,6 +278,9 @@
     </section>
 
 
+    </div>
+
+    <div class="app-tab-panel" id="tab-dates" data-panel="dates">
     <!-- A TABLE FOR HER -->
     <section id="herMenu" class="interactive-section her-menu-section">
       <p class="eyebrow">A LITTLE RESTAURANT, JUST FOR YOU</p>
@@ -341,6 +348,9 @@
       </div>
     </section>
 
+    </div>
+
+    <div class="app-tab-panel" id="tab-letter" data-panel="letter">
     <!-- LETTER -->
     <section class="letter-section">
       <p class="eyebrow">A LETTER FROM MY HEART</p>
@@ -393,12 +403,14 @@
       <p id="surpriseMessage" class="surprise-message hidden" aria-live="polite"></p>
     </section>
 
+    </div>
+
     <!-- QUICK NAVIGATION FOR PHONE USERS -->
-    <nav class="phone-dock" aria-label="Quick navigation">
-      <a href="#story" aria-label="Our story"><span>♡</span><small>Story</small></a>
-      <a href="#loveNotes" aria-label="Love notes"><span>✉</span><small>Notes</small></a>
-      <a href="#littlePlayground" aria-label="Little playground"><span>✧</span><small>Play</small></a>
-      <a href="#dateRequest" aria-label="Plan a date"><span>♥</span><small>Date</small></a>
+    <nav class="phone-dock" aria-label="Main sections">
+      <a href="#tab-story" data-tab="story" class="active" aria-label="Our story" aria-current="page"><span>♡</span><small>Our Story</small></a>
+      <a href="#tab-for-you" data-tab="for-you" aria-label="For you"><span>✉</span><small>For You</small></a>
+      <a href="#tab-dates" data-tab="dates" aria-label="Our dates"><span>♥</span><small>Our Dates</small></a>
+      <a href="#tab-letter" data-tab="letter" aria-label="My letter"><span>✧</span><small>My Letter</small></a>
     </nav>
 
     <!-- FOOTER -->
