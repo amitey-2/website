@@ -862,7 +862,7 @@ function makeMessagePicker(items) {
         const j=Math.floor(Math.random()*(i+1));
         [bag[i],bag[j]]=[bag[j],bag[i]];
       }
-      if (bag.length>1 && bag[bag.length-1]===last) [bag[0],bag[bag.length-1]]=[bag[bag.length-1],bag[bag.length-1]];
+      if (bag.length>1 && bag[bag.length-1]===last) [bag[0],bag[bag.length-1]]=[bag[bag.length-1],bag[0]];
     }
     last=bag.pop();
     return last;
