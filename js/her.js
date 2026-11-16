@@ -967,6 +967,14 @@ const gardenMoodCopy = {
     puppy: "Did someone say PLAY?! Throw the ball! Throw the ball! 🎾",
     puppyFace: "🐕", puppyClass: "puppy-happy"
   },
+  angry: {
+    emoji: "🌧️",
+    title: "It's okay to be angry, sweetheart.",
+    message: "You don't have to hide it or pretend everything is fine. Take a breath, let it out if you need to, and give yourself a little space. I'm still right here, on your team. ♡",
+    actions: [["A puppy hug, please 🐶","puppy-hug"],["A little love note 💌","jar"],["A gentle reset 🫶","hug"]],
+    puppy: "I'm making my grumpiest little face too… 😤 But I saved my biggest cuddle just for you. No rush, okay?",
+    puppyFace: "😤", puppyClass: "puppy-hugging"
+  },
   unsure: {
     emoji: "☁️",
     title: "You don't have to figure it out.",
