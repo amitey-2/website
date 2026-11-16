@@ -316,3 +316,38 @@ function updateMonthlyCountdown() {
 
 updateMonthlyCountdown();
 setInterval(updateMonthlyCountdown, 1000);
+
+
+// Her birthday is July 9 every year.
+function updateBirthdayCountdown() {
+  const now = new Date();
+  let target = new Date(now.getFullYear(), 6, 9, 0, 0, 0);
+
+  if (now.getTime() >= target.getTime()) {
+    target = new Date(now.getFullYear() + 1, 6, 9, 0, 0, 0);
+  }
+
+  const remaining = Math.max(0, target.getTime() - now.getTime());
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor((remaining % 86400000) / 3600000);
+  const minutes = Math.floor((remaining % 3600000) / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+
+  const setValue = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = String(value).padStart(2, "0");
+  };
+
+  setValue("birthdayDays", days);
+  setValue("birthdayHours", hours);
+  setValue("birthdayMinutes", minutes);
+  setValue("birthdaySeconds", seconds);
+
+  const footnote = document.getElementById("birthdayFootnote");
+  if (footnote) {
+    footnote.textContent = "Counting down to July 9 — the day the world became more beautiful. ♡";
+  }
+}
+
+updateBirthdayCountdown();
+setInterval(updateBirthdayCountdown, 1000);
