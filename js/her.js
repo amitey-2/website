@@ -191,26 +191,49 @@ function displayLovePage(content) {
   });
 
 
-  // FINAL SURPRISE
-  const surpriseButton =
-    document.getElementById("surpriseButton");
-
-  const surpriseMessage =
-    document.getElementById("surpriseMessage");
+  // FINAL SURPRISE — one choice, one reveal.
+  const surpriseButton = document.getElementById("surpriseButton");
+  const surpriseGame = document.getElementById("surpriseGame");
+  const surpriseMessage = document.getElementById("surpriseMessage");
+  const surpriseChoices = document.querySelectorAll(".surprise-choice");
 
   surpriseButton.onclick = () => {
-
-    surpriseMessage.textContent =
-      content.surprise || "You are loved. Always. ♡";
-
-    surpriseMessage.classList.remove("hidden");
-
-    surpriseButton.textContent =
-      "A little reminder for you ♡";
-
-    surpriseButton.disabled = true;
-
+    surpriseButton.classList.add("hidden");
+    surpriseGame.classList.remove("hidden");
+    surpriseGame.scrollIntoView({ behavior: "smooth", block: "center" });
   };
+
+  surpriseChoices.forEach((choice) => {
+    choice.addEventListener("click", () => {
+      if (choice.disabled) return;
+
+      const selected = choice.dataset.choice;
+      const reveals = {
+        "1": "Caught you! 😘 Your mission is to smile right now. Yes, right now. I bet you look adorable. ♡",
+        "2": "Your tiny challenge: send me your cutest selfie, or give me the biggest hug the next time you see me. No excuses! 🤭♡",
+        "3": content.surprise || "You are loved. Always. More than words could ever explain. ♡"
+      };
+
+      surpriseChoices.forEach((item) => {
+        item.disabled = true;
+        item.classList.toggle("chosen", item === choice);
+        item.classList.toggle("not-chosen", item !== choice);
+      });
+
+      surpriseMessage.textContent = reveals[selected];
+      surpriseMessage.classList.remove("hidden");
+      surpriseGame.classList.add("choice-made");
+      surpriseMessage.classList.add("surprise-reveal");
+
+      const celebration = document.createElement("div");
+      celebration.className = "surprise-celebration";
+      celebration.setAttribute("aria-hidden", "true");
+      celebration.textContent = "♡  ✦  ♡  ✧  ♡";
+      document.querySelector(".final-section").appendChild(celebration);
+
+      surpriseButton.remove();
+    }, { once: true });
+  });
 
 }
 
