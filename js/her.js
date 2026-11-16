@@ -913,3 +913,222 @@ document.querySelectorAll(".envelope-option").forEach(button=>button.addEventLis
  const box=document.getElementById("envelopeMessage"),picker=envelopePickersExtra[Number(button.dataset.envelope)];
  if(box&&picker){box.textContent=picker();box.classList.remove("note-pop");void box.offsetWidth;box.classList.add("note-pop");}
 }));
+
+
+// ========================================
+// A LITTLE MOOD GARDEN + HER VIRTUAL PUPPY
+// ========================================
+const gardenMoodCopy = {
+  happy: {
+    emoji: "🌷",
+    title: "Look at that lovely smile!",
+    message: "I hope this happiness stays with you for a long, long time. Let's celebrate the little things that made today beautiful. ♡",
+    actions: [["Play a tiny game 🎮","game"],["Make a wish ✨","wishes"],["Pick a love note 💌","jar"]],
+    puppy: "Your happy little energy has made my tail wag! Let's celebrate! 🐾",
+    puppyFace: "🐶", puppyClass: "puppy-happy"
+  },
+  missing: {
+    emoji: "💌",
+    title: "Sending you the warmest hug.",
+    message: "I wish I could close the distance with one big cuddle. Until then, here's a little piece of my heart and a memory to keep close. ♡",
+    actions: [["Open a little letter 💌","miss-letter"],["Visit our memories 📸","memories"],["Get a puppy hug 🫶","puppy-hug"]],
+    puppy: "I brought you a heart because someone misses you very much. 💗",
+    puppyFace: "🐶", puppyClass: "puppy-hugging"
+  },
+  sad: {
+    emoji: "🫶",
+    title: "It's okay not to feel okay.",
+    message: "You don't have to pretend here, sweetheart. Take your time, breathe, and remember that you are loved on the difficult days too.",
+    actions: [["A comforting letter 💗","sad-letter"],["A big virtual hug 🧸","hug"],["A gentle love note 🌷","jar"]],
+    puppy: "No need to talk, sweetheart. I'll sit right here beside you. *soft puppy cuddle*",
+    puppyFace: "🥺", puppyClass: "puppy-hugging"
+  },
+  tired: {
+    emoji: "🌙",
+    title: "Rest, my favourite human.",
+    message: "You've done enough for today. You deserve a quiet moment, a soft blanket and absolutely no pressure to do anything else.",
+    actions: [["A sleepy little letter 🌙","sleep-letter"],["Puppy cuddle 🧸","puppy-hug"],["A soft reminder ♡","reason"]],
+    puppy: "Shhh… I'll curl up beside you. We can both have a little nap. 😴",
+    puppyFace: "😴", puppyClass: "puppy-hugging"
+  },
+  loved: {
+    emoji: "💗",
+    title: "As you should, sweetheart.",
+    message: "You deserve to feel adored in the big moments and the tiny ones. Here's a little reminder of just how special you are to me.",
+    actions: [["Today's reason I love you ♡","reason"],["Pick from the love jar 💌","jar"],["Read a little letter","miss-letter"]],
+    puppy: "I agree! You deserve all the cuddles, treats and love in the world! 🐾",
+    puppyFace: "🐕", puppyClass: "puppy-happy"
+  },
+  bored: {
+    emoji: "🎾",
+    title: "Boredom has officially been challenged!",
+    message: "Your mission: have a little fun. I've prepared some tiny distractions and one very enthusiastic puppy.",
+    actions: [["Catch five hearts 💘","game"],["Open a mystery envelope 💌","envelope"],["Make a wish ✨","wishes"]],
+    puppy: "Did someone say PLAY?! Throw the ball! Throw the ball! 🎾",
+    puppyFace: "🐕", puppyClass: "puppy-happy"
+  },
+  unsure: {
+    emoji: "☁️",
+    title: "You don't have to figure it out.",
+    message: "Some days are a mixture of everything. That's okay too. Let's just start with one small, kind thing for you.",
+    actions: [["A gentle hug 🫶","hug"],["A little love note 💌","jar"],["Sit with your puppy 🐾","puppy-hug"]],
+    puppy: "It's okay if you don't know. I'm just happy to keep you company. ♡",
+    puppyFace: "🥰", puppyClass: "puppy-hugging"
+  }
+};
+
+const gardenButtons = document.querySelectorAll(".garden-mood-button");
+const gardenResult = document.getElementById("gardenMoodResult");
+const gardenSuggestions = document.getElementById("gardenSuggestions");
+const gardenResultIcon = gardenResult && gardenResult.querySelector(".garden-result-flower");
+const gardenResultTitle = gardenResult && gardenResult.querySelector("h3");
+const gardenResultText = gardenResult && gardenResult.querySelector(":scope > p");
+const puppyScene = document.getElementById("puppyScene");
+const puppyEmoji = document.getElementById("puppyEmoji");
+const puppyMessage = document.getElementById("puppyMessage");
+const puppyNameDisplay = document.getElementById("puppyNameDisplay");
+const puppyNameForm = document.getElementById("puppyNameForm");
+const puppyNameInput = document.getElementById("puppyNameInput");
+const puppyFetchGame = document.getElementById("puppyFetchGame");
+const puppyBall = document.getElementById("puppyBall");
+let puppyName = "your little puppy";
+let puppyFetchReady = false;
+
+try {
+  const savedPuppyName = localStorage.getItem("ourLittleWorldPuppyName");
+  if (savedPuppyName) puppyName = savedPuppyName;
+} catch (_) {}
+if (puppyNameDisplay) puppyNameDisplay.textContent = puppyName === "your little puppy" ? "Your little puppy" : puppyName + " ♡";
+if (puppyNameInput && puppyName !== "your little puppy") puppyNameInput.value = puppyName;
+
+function animatePuppy(animationClass) {
+  if (!puppyScene) return;
+  puppyScene.classList.remove("puppy-petting", "puppy-hugging", "puppy-happy");
+  void puppyScene.offsetWidth;
+  if (animationClass) puppyScene.classList.add(animationClass);
+}
+
+function setPuppyMessage(message, face, animationClass) {
+  if (puppyMessage) puppyMessage.textContent = message;
+  if (puppyEmoji && face) puppyEmoji.textContent = face;
+  animatePuppy(animationClass);
+}
+
+function openGardenDestination(action) {
+  const letterButtons = document.querySelectorAll(".open-when-option");
+  if (action === "puppy-hug") {
+    setPuppyMessage("A double cuddle, just for you. 🫶♡", "🥰", "puppy-hugging");
+    return;
+  }
+  if (action === "hug") {
+    const button = document.getElementById("hugButton");
+    if (button) button.click();
+    return;
+  }
+  if (action === "jar") {
+    const button = document.getElementById("loveJar");
+    if (button) button.click();
+    return;
+  }
+  if (action === "game") {
+    const button = document.getElementById("heartGameStart");
+    if (button) button.click();
+    return;
+  }
+  if (action === "wishes") {
+    const star = document.querySelector(".wish-star");
+    if (star) star.click();
+    return;
+  }
+  if (action === "envelope") {
+    const button = document.querySelector(".envelope-option");
+    if (button) button.click();
+    return;
+  }
+  if (action === "reason") {
+    const button = document.getElementById("dailyReasonButton");
+    if (button) button.click();
+    return;
+  }
+  if (action === "memories") {
+    activateAppTab("story");
+    window.setTimeout(() => {
+      const memories = document.querySelector(".memories-section");
+      if (memories) memories.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return;
+  }
+  const letterType = action === "miss-letter" ? "miss" : action === "sad-letter" ? "sad" : action === "sleep-letter" ? "sleep" : null;
+  if (letterType) {
+    const letterButton = Array.from(letterButtons).find((button) => button.dataset.letter === letterType);
+    if (letterButton) letterButton.click();
+  }
+}
+
+gardenButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const mood = gardenMoodCopy[button.dataset.gardenMood];
+    if (!mood) return;
+    gardenButtons.forEach((item) => {
+      const selected = item === button;
+      item.classList.toggle("selected", selected);
+      item.setAttribute("aria-pressed", selected ? "true" : "false");
+    });
+    if (gardenResultIcon) gardenResultIcon.textContent = mood.emoji;
+    if (gardenResultTitle) gardenResultTitle.textContent = mood.title;
+    if (gardenResultText) gardenResultText.textContent = mood.message;
+    if (gardenSuggestions) {
+      gardenSuggestions.replaceChildren();
+      mood.actions.forEach(([label, action]) => {
+        const suggestion = document.createElement("button");
+        suggestion.type = "button";
+        suggestion.className = "garden-suggestion";
+        suggestion.textContent = label;
+        suggestion.addEventListener("click", () => openGardenDestination(action));
+        gardenSuggestions.appendChild(suggestion);
+      });
+    }
+    setPuppyMessage(mood.puppy, mood.puppyFace, mood.puppyClass);
+  });
+});
+
+if (puppyNameForm && puppyNameInput) {
+  puppyNameForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const nextName = puppyNameInput.value.trim().replace(/[<>]/g, "").slice(0, 18);
+    if (!nextName) {
+      if (puppyMessage) puppyMessage.textContent = "Choose a little name for me first. I can't wait! 🐾";
+      puppyNameInput.focus();
+      return;
+    }
+    puppyName = nextName;
+    if (puppyNameDisplay) puppyNameDisplay.textContent = puppyName + " ♡";
+    if (puppyMessage) puppyMessage.textContent = "I love my name! Thank you for choosing " + puppyName + ". Can I have a treat now? 🦴";
+    try { localStorage.setItem("ourLittleWorldPuppyName", puppyName); } catch (_) {}
+    animatePuppy("puppy-happy");
+  });
+}
+
+document.querySelectorAll("[data-puppy-action]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const action = button.dataset.puppyAction;
+    if (action === "pet") setPuppyMessage("That feels so nice! More scratches behind my ears, please. 🐾", "🐶", "puppy-petting");
+    if (action === "hug") setPuppyMessage("Best cuddle ever. I'm sending tiny puppy kisses right back! 💗", "🥰", "puppy-hugging");
+    if (action === "feed") setPuppyMessage("CRONCH CRONCH! That was delicious. You're my favourite human. 🦴", "😋", "puppy-happy");
+    if (action === "fetch") {
+      puppyFetchReady = true;
+      if (puppyFetchGame) puppyFetchGame.classList.remove("hidden");
+      setPuppyMessage("WOOF! I brought the ball back. Throw it again! 🎾", "🐕", "puppy-happy");
+    }
+  });
+});
+
+if (puppyBall) {
+  puppyBall.addEventListener("click", () => {
+    if (!puppyFetchReady) return;
+    puppyFetchReady = false;
+    if (puppyFetchGame) puppyFetchGame.classList.add("hidden");
+    setPuppyMessage("You caught it! That was the best game ever. Again? 🐾", "🐶", "puppy-happy");
+  });
+}
+
