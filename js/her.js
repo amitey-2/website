@@ -1077,6 +1077,7 @@ gardenButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const mood = gardenMoodCopy[button.dataset.gardenMood];
     if (!mood) return;
+    document.body.classList.toggle("angry-mode", button.dataset.gardenMood === "angry");
     gardenButtons.forEach((item) => {
       const selected = item === button;
       item.classList.toggle("selected", selected);
