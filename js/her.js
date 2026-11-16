@@ -558,3 +558,38 @@ document.querySelectorAll(".meal-tab").forEach((tab) => {
 });
 renderMealMenu("breakfast");
 
+
+
+// DATE INVITATION — SEND A PREFILLED WHATSAPP MESSAGE
+const dateRequestForm = document.getElementById("dateRequestForm");
+const dateRequestDate = document.getElementById("dateRequestDate");
+const dateRequestType = document.getElementById("dateRequestType");
+const dateRequestNote = document.getElementById("dateRequestNote");
+const dateRequestFeedback = document.getElementById("dateRequestFeedback");
+// International WhatsApp destination, without the leading +.
+const dateRequestWhatsApp = "971541819066";
+if (dateRequestDate) {
+  const localToday = new Date();
+  const localDate = new Date(localToday.getTime() - localToday.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  dateRequestDate.min = localDate;
+}
+if (dateRequestForm) {
+  dateRequestForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!dateRequestDate || !dateRequestDate.value) {
+      if (dateRequestFeedback) dateRequestFeedback.textContent = "Choose a date first, sweetheart. ♡";
+      return;
+    }
+    const chosenDate = new Date(dateRequestDate.value + "T12:00:00");
+    const prettyDate = chosenDate.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const dateType = dateRequestType ? dateRequestType.value : "A date";
+    const note = dateRequestNote ? dateRequestNote.value.trim() : "";
+    const messageLines = ["Hii love! 💗", "I'd really like to go on a date with you!", "", "My preferred day: " + prettyDate, "My date idea: " + dateType];
+    if (selectedDish) messageLines.push("Something from your lovely menu I'd like: " + selectedDish);
+    if (note) messageLines.push("A little note: " + note);
+    messageLines.push("", "Will you take me? 🥺💕");
+    const whatsappUrl = "https://wa.me/" + dateRequestWhatsApp + "?text=" + encodeURIComponent(messageLines.join("\n"));
+    if (dateRequestFeedback) dateRequestFeedback.textContent = "Opening your WhatsApp invitation… 💌";
+    window.location.href = whatsappUrl;
+  });
+}
