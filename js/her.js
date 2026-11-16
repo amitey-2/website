@@ -484,3 +484,77 @@ document.querySelectorAll(".envelope-option").forEach((button) => {
     }
   });
 });
+
+
+// ========================================
+// A TABLE FOR HER — LITTLE MEAL MENU
+// ========================================
+const mealOptions = {
+  breakfast: [
+    { icon: "🥞", name: "Fluffy Pancake Stack", description: "Warm pancakes with strawberries, maple syrup and a little extra sweetness." },
+    { icon: "🧇", name: "Berry Belgian Waffles", description: "Golden waffles topped with fresh berries and a cloud of cream." },
+    { icon: "🥐", name: "Parisian Morning", description: "Buttery croissants, fresh fruit and a cosy cup of coffee or tea." },
+    { icon: "🍳", name: "The Sunny Plate", description: "Creamy scrambled eggs, toast, avocado and a bright little morning." },
+    { icon: "🍓", name: "Pretty Berry Bowl", description: "Greek yoghurt, granola, honey and all your favourite fruits." },
+    { icon: "🥑", name: "Avocado Toast", description: "Sourdough toast with smashed avocado, cherry tomatoes and herbs." }
+  ],
+  lunch: [
+    { icon: "🍝", name: "Creamy Alfredo Pasta", description: "Silky parmesan sauce, fresh herbs and a little comfort in every bite." },
+    { icon: "🥪", name: "The Lovebird Sandwich", description: "Toasted bread, cheese, crisp greens and a delicious filling." },
+    { icon: "🍔", name: "Classic Cheeseburger", description: "A juicy burger with melted cheese, lettuce and golden fries." },
+    { icon: "🥗", name: "Garden Fresh Salad", description: "Crunchy greens, colourful vegetables and a lovely light dressing." },
+    { icon: "🍕", name: "Margherita Pizza", description: "Tomato, mozzarella and basil — simple, warm and always lovely." },
+    { icon: "🌯", name: "Crispy Chicken Wrap", description: "Tender chicken, fresh vegetables and a creamy house sauce." }
+  ],
+  dinner: [
+    { icon: "🍝", name: "Romantic Truffle Pasta", description: "Rich, creamy pasta with parmesan and a little restaurant magic." },
+    { icon: "🍕", name: "Heart-Shaped Pizza", description: "Your favourite toppings on a pizza made with extra love." },
+    { icon: "🍗", name: "Herb-Grilled Chicken", description: "Juicy grilled chicken with roasted potatoes and seasonal vegetables." },
+    { icon: "🥩", name: "Steakhouse Special", description: "A tender steak with buttery mash and a side of greens." },
+    { icon: "🍣", name: "Sushi Date Night", description: "A colourful selection of sushi rolls for a cosy evening together." },
+    { icon: "🍰", name: "Something Sweet", description: "A little dessert finale — chocolate cake, cheesecake or both." }
+  ]
+};
+const mealMenu = document.getElementById("mealMenu");
+const mealSelection = document.getElementById("mealSelection");
+let activeMeal = "breakfast";
+let selectedDish = null;
+
+function renderMealMenu(meal) {
+  activeMeal = meal;
+  if (!mealMenu) return;
+  document.querySelectorAll(".meal-tab").forEach((tab) => {
+    const active = tab.dataset.meal === meal;
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+  mealMenu.replaceChildren();
+  mealOptions[meal].forEach((dish) => {
+    const card = document.createElement("article");
+    card.className = "meal-item";
+    const icon = document.createElement("span");
+    icon.className = "meal-item-icon";
+    icon.textContent = dish.icon;
+    const title = document.createElement("h3");
+    title.textContent = dish.name;
+    const description = document.createElement("p");
+    description.textContent = dish.description;
+    const choose = document.createElement("button");
+    choose.type = "button";
+    choose.textContent = selectedDish === dish.name ? "Chosen with love ✓" : "I'd love this ♡";
+    choose.classList.toggle("selected", selectedDish === dish.name);
+    choose.setAttribute("aria-pressed", selectedDish === dish.name ? "true" : "false");
+    choose.addEventListener("click", () => {
+      selectedDish = dish.name;
+      mealSelection.textContent = dish.name + " it is! I'll remember this little choice for our date. 💗";
+      renderMealMenu(activeMeal);
+    });
+    card.append(icon, title, description, choose);
+    mealMenu.appendChild(card);
+  });
+}
+document.querySelectorAll(".meal-tab").forEach((tab) => {
+  tab.addEventListener("click", () => renderMealMenu(tab.dataset.meal));
+});
+renderMealMenu("breakfast");
+
