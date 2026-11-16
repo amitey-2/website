@@ -3,7 +3,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10080e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Our Little World">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="Images/love-app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="Images/love-app-icon.svg">
 
   <title>A Little World For You ❤️</title>
 
@@ -385,6 +392,14 @@
 
       <p id="surpriseMessage" class="surprise-message hidden" aria-live="polite"></p>
     </section>
+
+    <!-- QUICK NAVIGATION FOR PHONE USERS -->
+    <nav class="phone-dock" aria-label="Quick navigation">
+      <a href="#story" aria-label="Our story"><span>♡</span><small>Story</small></a>
+      <a href="#loveNotes" aria-label="Love notes"><span>✉</span><small>Notes</small></a>
+      <a href="#littlePlayground" aria-label="Little playground"><span>✧</span><small>Play</small></a>
+      <a href="#dateRequest" aria-label="Plan a date"><span>♥</span><small>Date</small></a>
+    </nav>
 
     <!-- FOOTER -->
     <footer>
