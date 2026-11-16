@@ -1305,3 +1305,28 @@ footer span {
 .date-request-footnote, .date-request-feedback { color: var(--muted); text-align: center; font-size: 11px; line-height: 1.6; }
 .date-request-feedback { min-height: 18px; margin-top: 12px; color: var(--pink); }
 @media (max-width: 600px) { .date-request-card { padding: 23px 18px; } }
+
+
+/* IPHONE / TOUCH-FIRST APP EXPERIENCE */
+html { scroll-padding-top: 24px; -webkit-text-size-adjust: 100%; }
+body { -webkit-tap-highlight-color: transparent; }
+button, a, input, select, textarea { touch-action: manipulation; }
+button, .meal-tab, .mood-option, .envelope-option, .wish-star, .surprise-choice { -webkit-appearance: none; }
+button, .meal-tab, .mood-option, .envelope-option, .wish-star, .surprise-choice, a { -webkit-user-select: none; user-select: none; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--pink); outline-offset: 4px; }
+.phone-dock { display: none; }
+@media (max-width: 750px) {
+  body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .phone-dock { position: fixed; z-index: 50; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 9px 8px; border: 1px solid #ffffff20; border-radius: 20px; background: rgba(31, 17, 29, .88); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: 0 10px 35px #0008; }
+  .phone-dock a { display: grid; justify-items: center; gap: 3px; min-height: 46px; padding: 3px 2px; color: var(--muted); text-decoration: none; border-radius: 13px; }
+  .phone-dock a:active { background: #e8b4c622; transform: scale(.96); }
+  .phone-dock a span { color: var(--pink); font-size: 19px; line-height: 1.2; }
+  .phone-dock a small { font: 10px 'DM Sans', sans-serif; }
+  button, .meal-tab, .mood-option, .envelope-option, .wish-star, .surprise-choice { min-height: 44px; }
+  .date-request-card input, .date-request-card select, .date-request-card textarea { font-size: 16px; }
+  .phone-dock a { -webkit-tap-highlight-color: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
