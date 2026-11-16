@@ -1330,3 +1330,57 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--pink); outline-
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+
+/* FOUR-SCREEN MINI APP NAVIGATION */
+body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+.app-tab-panel { display: none; min-height: 55vh; animation: appPanelIn .28s ease both; }
+.app-tab-panel.active { display: block; }
+@keyframes appPanelIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.phone-dock {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(520px, calc(100% - 24px));
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  padding: 9px 8px;
+  border: 1px solid #ffffff20;
+  border-radius: 20px;
+  background: rgba(31, 17, 29, .9);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 35px #0008;
+}
+.phone-dock a {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  min-height: 48px;
+  padding: 4px 2px;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 13px;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.phone-dock a span { color: var(--pink); font-size: 19px; line-height: 1.2; }
+.phone-dock a small { font: 10px 'DM Sans', sans-serif; white-space: nowrap; }
+.phone-dock a.active { color: var(--text); background: #e8b4c622; }
+.phone-dock a.active span { color: #fff0f5; }
+.phone-dock a:active { transform: scale(.96); }
+@media (max-width: 750px) {
+  body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .app-tab-panel { min-height: 65vh; }
+  .phone-dock { left: 12px; right: 12px; width: auto; transform: none; }
+  .phone-dock a small { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-tab-panel { animation: none; }
+}
