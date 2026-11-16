@@ -34,13 +34,21 @@ function updateDailyGreeting() {
       "You make ordinary moments feel special just by being you.",
       "A little reminder: someone is thinking of you and smiling."
     ];
-  } else {
+  } else if (hour >= 17 && hour < 21) {
     greeting = "Good evening, my love ♡";
     quotes = [
       "I hope today was kind to you. You deserve the gentlest evenings.",
       "No matter how the day went, you will always be my favourite part.",
       "May your evening be as peaceful and lovely as your smile.",
       "The day is ending, but there is no end to how much you mean to me."
+    ];
+  } else {
+    greeting = "Good night, my love ♡";
+    quotes = [
+      "Close your eyes, my love. I hope your dreams are as beautiful as you are.",
+      "If I could, I would send you a thousand hugs to keep you warm tonight.",
+      "Rest well, sweetheart. You are the last thought in my heart tonight.",
+      "May the stars watch over you and bring you the sweetest dreams. ♡"
     ];
   }
 
