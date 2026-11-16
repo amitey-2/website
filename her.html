@@ -186,6 +186,64 @@
     </div>
 
     <div class="app-tab-panel" id="tab-for-you" data-panel="for-you">
+
+    <!-- A LITTLE MOOD GARDEN -->
+    <section id="moodGarden" class="interactive-section mood-garden-section">
+      <p class="eyebrow">A LITTLE CORNER THAT LISTENS</p>
+      <h2>Your little mood garden. <i>🌷</i></h2>
+      <p class="section-description">How is your heart feeling today, sweetheart? Pick whatever feels right. There's no wrong answer. ♡</p>
+
+      <div class="garden-mood-options" role="group" aria-label="Choose your mood">
+        <button class="garden-mood-button" type="button" data-garden-mood="happy" aria-pressed="false"><span>🥰</span><small>Happy</small></button>
+        <button class="garden-mood-button" type="button" data-garden-mood="missing" aria-pressed="false"><span>🥺</span><small>Missing you</small></button>
+        <button class="garden-mood-button" type="button" data-garden-mood="sad" aria-pressed="false"><span>😔</span><small>Sad</small></button>
+        <button class="garden-mood-button" type="button" data-garden-mood="tired" aria-pressed="false"><span>😴</span><small>Tired</small></button>
+        <button class="garden-mood-button" type="button" data-garden-mood="loved" aria-pressed="false"><span>💗</span><small>Feeling loved</small></button>
+        <button class="garden-mood-button" type="button" data-garden-mood="bored" aria-pressed="false"><span>🤪</span><small>Bored</small></button>
+        <button class="garden-mood-button garden-mood-unsure" type="button" data-garden-mood="unsure" aria-pressed="false"><span>☁️</span><small>Not sure</small></button>
+      </div>
+
+      <article id="gardenMoodResult" class="garden-mood-result" aria-live="polite">
+        <span class="garden-result-flower">🌷</span>
+        <h3>Whatever your heart is feeling, you belong here.</h3>
+        <p>Choose a mood and I'll find a few little things to make your day softer.</p>
+        <div id="gardenSuggestions" class="garden-suggestions"></div>
+      </article>
+
+      <article class="puppy-card" aria-label="Your virtual puppy">
+        <div class="puppy-sparkles" aria-hidden="true">✦　♡　✧</div>
+        <p class="play-card-kicker">YOUR LITTLE COMPANION</p>
+        <h3>Someone's very happy you're here. 🐾</h3>
+        <div id="puppyScene" class="puppy-scene">
+          <span id="puppyEmoji" class="puppy-emoji" role="img" aria-label="A cute puppy">🐶</span>
+          <span id="puppyAccessory" class="puppy-accessory" aria-hidden="true">🎀</span>
+          <span class="puppy-ground-heart" aria-hidden="true">♡</span>
+        </div>
+        <p id="puppyNameDisplay" class="puppy-name-display">Your little puppy</p>
+        <p id="puppyMessage" class="puppy-message" aria-live="polite">Woof! I've been waiting for you. Can I have a cuddle? ♡</p>
+
+        <form id="puppyNameForm" class="puppy-name-form">
+          <label for="puppyNameInput">Give your puppy a name</label>
+          <div class="puppy-name-fields">
+            <input id="puppyNameInput" type="text" maxlength="18" placeholder="e.g. Mochi, Teddy..." autocomplete="off">
+            <button type="submit">Name my puppy ♡</button>
+          </div>
+        </form>
+
+        <div class="puppy-actions" role="group" aria-label="Play with your puppy">
+          <button type="button" data-puppy-action="pet">🐾 Pet me</button>
+          <button type="button" data-puppy-action="hug">🫶 Hug</button>
+          <button type="button" data-puppy-action="feed">🦴 Treat</button>
+          <button type="button" data-puppy-action="fetch">🎾 Play fetch</button>
+        </div>
+        <div id="puppyFetchGame" class="puppy-fetch-game hidden">
+          <p>I've got the ball! Tap it before I run away! 🐶</p>
+          <button id="puppyBall" type="button" aria-label="Catch the puppy's ball">🎾</button>
+        </div>
+      </article>
+      <p class="mood-garden-footnote">You can change your mood whenever you like. Your little corner will always be here. ♡</p>
+    </section>
+
     <!-- LITTLE LOVE NOTES -->
     <section id="loveNotes" class="interactive-section">
       <p class="eyebrow">A LITTLE SOMETHING FOR YOU</p>
