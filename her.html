@@ -259,11 +259,33 @@
         Because some feelings deserve more than ordinary words.
       </p>
 
-      <button id="surpriseButton" class="surprise-button">
+      <button id="surpriseButton" class="surprise-button" type="button">
         Open your surprise ♡
       </button>
 
-      <p id="surpriseMessage" class="surprise-message hidden"></p>
+      <div id="surpriseGame" class="surprise-game hidden">
+        <p class="surprise-game-prompt">Choose one little heart. But choose wisely… you only get one! ♡</p>
+        <div class="surprise-choices">
+          <button class="surprise-choice" type="button" data-choice="1" aria-label="Choose mystery heart one">
+            <span class="choice-heart">♡</span>
+            <span class="choice-label">A little mischief</span>
+            <span class="choice-number">01</span>
+          </button>
+          <button class="surprise-choice" type="button" data-choice="2" aria-label="Choose mystery heart two">
+            <span class="choice-heart">♡</span>
+            <span class="choice-label">A tiny challenge</span>
+            <span class="choice-number">02</span>
+          </button>
+          <button class="surprise-choice" type="button" data-choice="3" aria-label="Choose mystery heart three">
+            <span class="choice-heart">♡</span>
+            <span class="choice-label">The secret one</span>
+            <span class="choice-number">03</span>
+          </button>
+        </div>
+        <p class="surprise-game-hint">No changing your mind once you choose. 😏</p>
+      </div>
+
+      <p id="surpriseMessage" class="surprise-message hidden" aria-live="polite"></p>
     </section>
 
     <!-- FOOTER -->
