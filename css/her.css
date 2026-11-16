@@ -199,6 +199,29 @@ button:disabled {
   text-align: left;
 }
 
+.daily-love-note {
+  margin-bottom: 28px;
+  padding: 17px 20px;
+  max-width: 430px;
+  border-left: 2px solid var(--pink);
+  background: linear-gradient(110deg, #71304733, #21121d66);
+  border-radius: 0 12px 12px 0;
+}
+
+.time-greeting {
+  color: var(--pink);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(21px, 3vw, 27px);
+  margin-bottom: 7px;
+}
+
+.daily-love-quote {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  font-style: italic;
+}
+
 .hero h1 {
   font-size: clamp(65px, 9vw, 110px);
   line-height: 1.05;
@@ -535,6 +558,11 @@ footer span {
   }
 
   .hero-content {
+    text-align: center;
+  }
+
+  .daily-love-note {
+    margin: 0 auto 28px;
     text-align: center;
   }
 
