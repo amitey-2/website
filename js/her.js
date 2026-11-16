@@ -593,3 +593,14 @@ if (dateRequestForm) {
     window.location.href = whatsappUrl;
   });
 }
+
+
+// Register a small static-asset cache for the Home Screen version.
+// Private Supabase content and API responses are deliberately never cached.
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((error) => {
+      console.info("Offline shell registration was unavailable:", error);
+    });
+  });
+}
