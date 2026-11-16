@@ -1073,11 +1073,29 @@ function openGardenDestination(action) {
   }
 }
 
+
+const angryResetButton = document.getElementById("angryResetButton");
+if (angryResetButton) {
+  angryResetButton.addEventListener("click", () => {
+    document.body.classList.remove("angry-mode");
+    gardenButtons.forEach((item) => {
+      item.classList.remove("selected");
+      item.setAttribute("aria-pressed", "false");
+    });
+    activateAppTab("for-you");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
 gardenButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const mood = gardenMoodCopy[button.dataset.gardenMood];
     if (!mood) return;
-    document.body.classList.toggle("angry-mode", button.dataset.gardenMood === "angry");
+    if (button.dataset.gardenMood === "angry") {
+      document.body.classList.add("angry-mode");
+      return;
+    }
+    document.body.classList.remove("angry-mode");
     gardenButtons.forEach((item) => {
       const selected = item === button;
       item.classList.toggle("selected", selected);
