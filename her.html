@@ -1,33 +1,425 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta name="theme-color" content="#ffffff">
-  <title>Page unavailable</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background: #fff;
-      color: #333;
-      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      text-align: center;
-    }
-    main { max-width: 420px; }
-    h1 { margin: 0 0 10px; font-size: 1.35rem; font-weight: 600; }
-    p { margin: 0; color: #666; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10080e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Our Little World">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="Images/love-app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="Images/love-app-icon.svg">
+
+  <title>A Little World For You ❤️</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/her.css">
+  <script src="js/her.js" defer></script>
 </head>
+
 <body>
-  <main>
-    <h1>Page unavailable</h1>
-    <p>This page is temporarily unavailable. Please check back later.</p>
+
+  <div class="stars"></div>
+
+  <!-- PASSWORD SCREEN -->
+  <main id="lockScreen" class="lock-screen">
+    <div class="lock-card">
+      <div class="heart-icon">♡</div>
+      <p class="eyebrow">A LITTLE SECRET</p>
+      <h1>Just for you.</h1>
+
+      <p class="lock-description">
+        Some doors are meant for only one person.
+        Enter the little secret to open yours.
+      </p>
+
+      <form id="passwordForm">
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Your secret password..."
+          required
+          autocomplete="off"
+        >
+
+        <button type="submit" id="unlockButton">
+          Open my little world ♡
+        </button>
+
+        <p id="errorMessage" class="error-message"></p>
+      </form>
+
+      <p class="lock-footer">Made with love, just for you.</p>
+    </div>
   </main>
+
+  <!-- LOVE PAGE -->
+  <main id="lovePage" class="love-page hidden">
+
+    <nav class="top-nav">
+      <span>♡ OUR LITTLE WORLD</span>
+      <span>FOREVER & ALWAYS</span>
+    </nav>
+
+    <div class="app-tab-panel active" id="tab-story" data-panel="story">
+    <!-- HERO -->
+    <section class="hero">
+
+      <div class="hero-content">
+        <div class="daily-love-note" aria-live="polite">
+          <p id="timeGreeting" class="time-greeting">Good day, my love ♡</p>
+          <p id="dailyLoveQuote" class="daily-love-quote">You make even the simplest moments feel beautiful.</p>
+        </div>
+        <p class="eyebrow">TO MY FAVOURITE PERSON</p>
+
+        <h1>Just You<br><i>& Me.</i></h1>
+
+        <p id="introText" class="hero-description"></p>
+
+        <a href="#story" class="discover-button">
+          Discover our little world ↓
+        </a>
+      </div>
+
+      <div class="hero-photo">
+        <img
+          src="Images/Our-first-photo.jpeg"
+          alt="Our favourite picture together"
+        >
+
+        <span class="photo-caption">
+          my favourite place is beside you ♡
+        </span>
+      </div>
+
+      <div class="floating-heart">♡</div>
+    </section>
+
+    <!-- STORY -->
+    <section id="story" class="content-section">
+      <p class="eyebrow">CHAPTER ONE</p>
+      <h2>Our little story.</h2>
+
+      <p class="section-description">
+        Every beautiful story has its own beginning.
+      </p>
+
+      <div id="storyList" class="story-list"></div>
+    </section>
+
+    <!-- REASONS -->
+    <section class="content-section reasons-section">
+      <p class="eyebrow">CHAPTER TWO</p>
+      <h2>Little things I love.</h2>
+
+      <p class="section-description">
+        A thousand little reasons, and still not enough.
+      </p>
+
+      <div id="reasonsList" class="reasons-grid"></div>
+    </section>
+
+    <!-- MEMORIES -->
+    <section class="content-section memories-section">
+      <p class="eyebrow">CHAPTER THREE</p>
+      <h2>Moments worth keeping.</h2>
+
+      <p class="section-description">
+        A few moments I'd choose to live again.
+      </p>
+
+      <div class="memory-grid">
+
+        <!-- PHOTO 1 -->
+        <article class="memory-card">
+          <img
+            src="Images/Memory-one.jpeg"
+            alt="Our first special memory"
+          >
+
+          <div class="memory-caption">
+            <span>01 — A LITTLE MEMORY</span>
+            <p>One of my favourite days.</p>
+          </div>
+        </article>
+
+        <!-- PHOTO 2 -->
+        <article class="memory-card">
+          <img
+            src="Images/Memory-two.jpeg"
+            alt="Another special memory"
+          >
+
+          <div class="memory-caption">
+            <span>02 — A LITTLE MOMENT</span>
+            <p>A moment I'll never forget.</p>
+          </div>
+        </article>
+
+        <!-- PHOTO 3 -->
+        <article class="memory-card">
+          <img
+            src="Images/Memory-three.jpeg"
+            alt="A memory to treasure forever"
+          >
+
+          <div class="memory-caption">
+            <span>03 — FOREVER</span>
+            <p>Just another reason to smile.</p>
+          </div>
+        </article>
+
+      </div>
+
+      <p class="memory-note">
+        Every picture holds a little piece of us. ♡
+      </p>
+    </section>
+
+
+    </div>
+
+    <div class="app-tab-panel" id="tab-for-you" data-panel="for-you">
+    <!-- LITTLE LOVE NOTES -->
+    <section id="loveNotes" class="interactive-section">
+      <p class="eyebrow">A LITTLE SOMETHING FOR YOU</p>
+      <h2>A jar full of love.</h2>
+      <p class="section-description">Whenever you need a smile, pick a little note from me.</p>
+
+      <button id="loveJar" class="love-jar-button" type="button" aria-label="Pick a love note from the jar">
+        <span class="jar-lid"></span>
+        <span class="jar-heart">♡</span>
+        <span class="jar-label">little notes<br>for my love</span>
+        <span class="jar-hint">TAP TO PICK A NOTE</span>
+      </button>
+      <p id="loveNoteMessage" class="love-note-message" aria-live="polite">There is always a little love waiting for you here. ♡</p>
+    </section>
+
+    <!-- SKY FULL OF WISHES -->
+    <section id="wishes" class="interactive-section wishes-section">
+      <p class="eyebrow">SOMEWHERE IN OUR UNIVERSE</p>
+      <h2>A sky full of wishes.</h2>
+      <p class="section-description">Tap a little star. Each one is holding a wish from my heart to yours.</p>
+      <div class="wish-sky" aria-label="Tap a star to reveal a wish">
+        <button class="wish-star star-one" type="button" data-wish="I wish I could be beside you for every little and ordinary moment. ♡" aria-label="Reveal wish one">✦</button>
+        <button class="wish-star star-two" type="button" data-wish="I wish every dream you carry finds its way to you. You deserve it all." aria-label="Reveal wish two">✧</button>
+        <button class="wish-star star-three" type="button" data-wish="I wish I could make you see yourself through my eyes, just for a moment." aria-label="Reveal wish three">✦</button>
+        <button class="wish-star star-four" type="button" data-wish="I wish we keep choosing each other, through every season of life." aria-label="Reveal wish four">✧</button>
+        <button class="wish-star star-five" type="button" data-wish="I wish your heart always feels safe, loved, and understood." aria-label="Reveal wish five">✦</button>
+        <button class="wish-star star-six" type="button" data-wish="I wish for a thousand more memories, laughs, and little adventures with you." aria-label="Reveal wish six">✧</button>
+        <button class="wish-star star-seven" type="button" data-wish="I wish that even on hard days, you never forget how much you mean to me." aria-label="Reveal wish seven">✦</button>
+      </div>
+      <p id="wishMessage" class="wish-message" aria-live="polite">Choose a star, my love. ✨</p>
+    </section>
+
+    <!-- OUR LITTLE PLAYGROUND -->
+    <section id="littlePlayground" class="interactive-section playground-section">
+      <p class="eyebrow">A LITTLE PLAYTIME</p>
+      <h2>Our tiny corner of fun.</h2>
+      <p class="section-description">A few little things to make you smile. Pick whatever your heart feels like today. ♡</p>
+
+      <div class="playground-grid">
+        <article class="play-card mood-card">
+          <span class="play-card-icon">☁️</span>
+          <p class="play-card-kicker">FIRST, TELL ME</p>
+          <h3>How's your heart today?</h3>
+          <p class="play-card-copy">Choose the little face that feels most like you.</p>
+          <div class="mood-options" role="group" aria-label="Choose how you feel">
+            <button class="mood-option" type="button" data-mood="happy" aria-label="Happy">🥰</button>
+            <button class="mood-option" type="button" data-mood="loved" aria-label="Loved">💗</button>
+            <button class="mood-option" type="button" data-mood="tired" aria-label="Tired">🥺</button>
+            <button class="mood-option" type="button" data-mood="sad" aria-label="A little sad">🌧️</button>
+            <button class="mood-option" type="button" data-mood="missing" aria-label="Missing you">😘</button>
+          </div>
+          <p id="moodReply" class="play-reply" aria-live="polite">Whatever you're feeling, you can always bring it here. ♡</p>
+        </article>
+
+        <article class="play-card hug-card">
+          <span class="play-card-icon">🧸</span>
+          <p class="play-card-kicker">A HUG, DELIVERED</p>
+          <h3>Need a little squeeze?</h3>
+          <p class="play-card-copy">Press this whenever you need me close.</p>
+          <button id="hugButton" class="cute-action-button" type="button">Send me a hug ♡</button>
+          <p id="hugReply" class="play-reply" aria-live="polite">Wrapping you in the biggest virtual hug.</p>
+        </article>
+
+        <article class="play-card heart-game-card">
+          <span class="play-card-icon">💘</span>
+          <p class="play-card-kicker">A TINY MINI-GAME</p>
+          <h3>Catch five hearts!</h3>
+          <p class="play-card-copy">Catch all five before they float away. Ready, sweetheart?</p>
+          <div class="heart-game-score" aria-live="polite"><span id="heartScore">0</span> <span>/ 5 hearts</span></div>
+          <div id="heartGameArena" class="heart-game-arena" aria-label="Heart catching game area">
+            <span class="arena-hint">Your hearts will appear here ♡</span>
+          </div>
+          <button id="heartGameStart" class="cute-action-button" type="button">Let's play! ♡</button>
+          <p id="heartGameMessage" class="play-reply" aria-live="polite">A little game, with lots of love.</p>
+        </article>
+
+        <article class="play-card envelope-card">
+          <span class="play-card-icon">💌</span>
+          <p class="play-card-kicker">SEALED WITH A KISS</p>
+          <h3>Pick a secret envelope.</h3>
+          <p class="play-card-copy">Three tiny secrets. Choose whichever one calls your name.</p>
+          <div class="envelope-options">
+            <button class="envelope-option" type="button" data-envelope="0" aria-label="Open pink envelope one">💌<span>01</span></button>
+            <button class="envelope-option" type="button" data-envelope="1" aria-label="Open pink envelope two">💌<span>02</span></button>
+            <button class="envelope-option" type="button" data-envelope="2" aria-label="Open pink envelope three">💌<span>03</span></button>
+          </div>
+          <p id="envelopeMessage" class="play-reply" aria-live="polite">Psst… each one is hiding something sweet.</p>
+        </article>
+      </div>
+    </section>
+
+
+    </div>
+
+    <div class="app-tab-panel" id="tab-dates" data-panel="dates">
+    <!-- A TABLE FOR HER -->
+    <section id="herMenu" class="interactive-section her-menu-section">
+      <p class="eyebrow">A LITTLE RESTAURANT, JUST FOR YOU</p>
+      <h2>A table for my favourite girl.</h2>
+      <p class="section-description">Breakfast, lunch or dinner — pick whatever your heart is craving today. I'll always save you the best seat. ♡</p>
+      <div class="meal-tabs" role="group" aria-label="Choose a meal">
+        <button class="meal-tab active" type="button" data-meal="breakfast" aria-pressed="true">☀️ Breakfast</button>
+        <button class="meal-tab" type="button" data-meal="lunch" aria-pressed="false">🌷 Lunch</button>
+        <button class="meal-tab" type="button" data-meal="dinner" aria-pressed="false">🌙 Dinner</button>
+      </div>
+      <div id="mealMenu" class="meal-menu" aria-live="polite"></div>
+      <p id="mealSelection" class="meal-selection" aria-live="polite">Choose something delicious, sweetheart. ♡</p>
+      <p class="menu-footnote">The menu is just a little idea for our next meal together. You can change your mind anytime. 💗</p>
+    </section>
+
+    <!-- ASK ME ON A DATE -->
+    <section id="dateRequest" class="interactive-section date-request-section">
+      <p class="eyebrow">A LITTLE INVITATION</p>
+      <h2>Tell me when you want a date.</h2>
+      <p class="section-description">Pick your day, choose the kind of date you are dreaming of, and send me your little invitation. I will be waiting. ♡</p>
+      <form id="dateRequestForm" class="date-request-card">
+        <label for="dateRequestDate">When should I take you out?</label>
+        <input id="dateRequestDate" name="date" type="date" required>
+        <label for="dateRequestType">What kind of date are you in the mood for?</label>
+        <select id="dateRequestType" name="dateType" required>
+          <option value="Breakfast date ☀️">Breakfast date ☀️</option>
+          <option value="Lunch date 🌷">Lunch date 🌷</option>
+          <option value="Dinner date 🌙" selected>Dinner date 🌙</option>
+          <option value="A surprise date 🎀">A surprise date 🎀</option>
+        </select>
+        <label for="dateRequestNote">A little note for me (optional)</label>
+        <textarea id="dateRequestNote" name="note" rows="3" placeholder="Anywhere you would love to go, or anything you are craving…"></textarea>
+        <button class="date-request-button" type="submit">Ask me on a date 💌</button>
+        <p class="date-request-footnote">This opens WhatsApp with your message ready. Just press Send to invite me. ♡</p>
+      </form>
+      <p id="dateRequestFeedback" class="date-request-feedback" aria-live="polite"></p>
+    </section>
+
+    <!-- MONTHLY ANNIVERSARY COUNTDOWN -->
+    <section id="ourCountdown" class="countdown-section">
+      <p class="eyebrow">THE 17TH IS OURS</p>
+      <h2>Another little month<br><i>of us.</i></h2>
+      <p class="section-description">Since May 17, every 17th has been a little celebration of us.</p>
+      <div class="countdown-card">
+        <p id="countdownHeading" class="countdown-heading">Counting down to our little day ♡</p>
+        <div class="countdown-timer" aria-live="off">
+          <div><strong id="countDays">00</strong><span>DAYS</span></div>
+          <div><strong id="countHours">00</strong><span>HOURS</span></div>
+          <div><strong id="countMinutes">00</strong><span>MINUTES</span></div>
+          <div><strong id="countSeconds">00</strong><span>SECONDS</span></div>
+        </div>
+        <p id="countdownFootnote" class="countdown-footnote">May 17 — the day our story became ours. ♡</p>
+      </div>
+
+      <div class="countdown-card birthday-countdown-card">
+        <p class="countdown-heading">And one more very special day ♡</p>
+        <p class="birthday-title">Her birthday — July 9</p>
+        <div class="countdown-timer" aria-live="off">
+          <div><strong id="birthdayDays">00</strong><span>DAYS</span></div>
+          <div><strong id="birthdayHours">00</strong><span>HOURS</span></div>
+          <div><strong id="birthdayMinutes">00</strong><span>MINUTES</span></div>
+          <div><strong id="birthdaySeconds">00</strong><span>SECONDS</span></div>
+        </div>
+        <p id="birthdayFootnote" class="countdown-footnote">Counting down to the day the world became more beautiful. ♡</p>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="app-tab-panel" id="tab-letter" data-panel="letter">
+    <!-- LETTER -->
+    <section class="letter-section">
+      <p class="eyebrow">A LETTER FROM MY HEART</p>
+      <h2>A few words for you.</h2>
+
+      <div class="letter-card">
+        <div class="letter-decoration">♡</div>
+        <p id="loveLetter"></p>
+        <p class="signature">Yours, always. ♡</p>
+      </div>
+    </section>
+
+    <!-- FINAL SURPRISE -->
+    <section class="final-section">
+      <div class="final-heart">♡</div>
+
+      <p class="eyebrow">ONE LAST THING</p>
+      <h2>There's something<br><i>I want you to know.</i></h2>
+
+      <p class="final-description">
+        Because some feelings deserve more than ordinary words.
+      </p>
+
+      <button id="surpriseButton" class="surprise-button" type="button">
+        Open your surprise ♡
+      </button>
+
+      <div id="surpriseGame" class="surprise-game hidden">
+        <p class="surprise-game-prompt">Choose one little heart. But choose wisely… you only get one! ♡</p>
+        <div class="surprise-choices">
+          <button class="surprise-choice" type="button" data-choice="1" aria-label="Choose mystery heart one">
+            <span class="choice-heart">♡</span>
+            <span class="choice-label">A little mischief</span>
+            <span class="choice-number">01</span>
+          </button>
+          <button class="surprise-choice" type="button" data-choice="2" aria-label="Choose mystery heart two">
+            <span class="choice-heart">♡</span>
+            <span class="choice-label">A tiny challenge</span>
+            <span class="choice-number">02</span>
+          </button>
+          <button class="surprise-choice" type="button" data-choice="3" aria-label="Choose mystery heart three">
+            <span class="choice-heart">♡</span>
+            <span class="choice-label">The secret one</span>
+            <span class="choice-number">03</span>
+          </button>
+        </div>
+        <p class="surprise-game-hint">No changing your mind once you choose. 😏</p>
+      </div>
+
+      <p id="surpriseMessage" class="surprise-message hidden" aria-live="polite"></p>
+    </section>
+
+    </div>
+
+    <!-- QUICK NAVIGATION FOR PHONE USERS -->
+    <nav class="phone-dock" aria-label="Main sections">
+      <a href="#tab-story" data-tab="story" class="active" aria-label="Our story" aria-current="page"><span>♡</span><small>Our Story</small></a>
+      <a href="#tab-for-you" data-tab="for-you" aria-label="For you"><span>✉</span><small>For You</small></a>
+      <a href="#tab-dates" data-tab="dates" aria-label="Our dates"><span>♥</span><small>Our Dates</small></a>
+      <a href="#tab-letter" data-tab="letter" aria-label="My letter"><span>✧</span><small>My Letter</small></a>
+    </nav>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>Made with all my heart ♡</p>
+      <span>OUR LITTLE UNIVERSE</span>
+    </footer>
+
+  </main>
+
 </body>
 </html>
