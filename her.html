@@ -234,7 +234,24 @@
         <button class="garden-mood-button" type="button" data-garden-mood="bored" aria-pressed="false"><span>🤪</span><small>Bored</small></button>
         <button class="garden-mood-button garden-mood-angry" type="button" data-garden-mood="angry" aria-pressed="false"><span>😤</span><small>Angry</small></button>
         <button class="garden-mood-button garden-mood-unsure" type="button" data-garden-mood="unsure" aria-pressed="false"><span>☁️</span><small>Not sure</small></button>
+        <button class="garden-mood-button garden-mood-cry" type="button" data-garden-mood="cry" aria-pressed="false"><span>🥹</span><small>I want to cry</small></button>
       </div>
+
+      <article id="cryComfortPanel" class="cry-comfort-panel hidden" aria-live="polite">
+        <span class="cry-comfort-icon" aria-hidden="true">🫂</span>
+        <p class="play-card-kicker">YOU DON'T HAVE TO HOLD IT IN</p>
+        <h3>Oh sweetheart, come here. ♡</h3>
+        <p class="cry-comfort-intro">It's okay to cry. You don't have to explain everything or pretend you're okay. Tell me what would help right now.</p>
+        <div class="cry-comfort-options" role="group" aria-label="Choose what you need right now">
+          <button type="button" data-cry-choice="wrong">Did I do something wrong?</button>
+          <button type="button" data-cry-choice="hug">Would you like some hugs?</button>
+          <button type="button" data-cry-choice="visit">I can come see you.</button>
+          <button type="button" data-cry-choice="talk">Do you want to tell me what happened?</button>
+          <button type="button" data-cry-choice="listen">Would you like me to just listen?</button>
+        </div>
+        <p id="cryComfortReply" class="cry-comfort-reply" aria-live="polite">Choose whatever feels right. There's no wrong answer. 💗</p>
+        <button id="cryComfortBack" class="cry-comfort-back" type="button">Back to my moods ♡</button>
+      </article>
 
       <article id="gardenMoodResult" class="garden-mood-result" aria-live="polite">
         <span class="garden-result-flower">🌷</span>
