@@ -1713,3 +1713,16 @@ body.angry-mode .angry-takeover {
 @keyframes cryComfortIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 600px) { .cry-comfort-panel { padding: 25px 17px; } .cry-comfort-options { grid-template-columns: 1fr; } .garden-mood-cry { grid-column: 1 / -1; } }
 @media (prefers-reduced-motion: reduce) { .cry-comfort-panel { animation: none; } }
+
+
+/* CRY COMFORT MESSAGE COMPOSER + WHATSAPP */
+.cry-message-composer { max-width: 590px; margin: 22px auto 10px; padding: 20px; border: 1px solid #98627f; border-radius: 18px; background: #1b111f; text-align: left; }
+.cry-message-composer label { display: block; margin-bottom: 9px; color: #f0c8d9; font-size: 13px; }
+.cry-message-composer textarea { display: block; width: 100%; min-height: 112px; padding: 13px 14px; border: 1px solid #79536a; border-radius: 12px; outline: none; resize: vertical; background: #120c16; color: #f9e8ef; font: 14px/1.65 'DM Sans', sans-serif; }
+.cry-message-composer textarea:focus { border-color: #e8a8c2; box-shadow: 0 0 0 3px #e8a8c222; }
+.cry-send-whatsapp { display: block; margin-top: 13px; padding: 14px 16px; border-radius: 999px; background: linear-gradient(110deg, #713047, #9b526d); color: #fff; text-align: center; text-decoration: none; font: 600 13px 'DM Sans', sans-serif; transition: transform .2s ease, opacity .2s ease; }
+.cry-send-whatsapp:hover { transform: translateY(-2px); }
+.cry-send-whatsapp.disabled { opacity: .45; pointer-events: none; }
+.cry-message-note { margin: 10px 0 0; color: #bda8b7; text-align: center; font-size: 11px; line-height: 1.6; }
+.cry-comfort-options button.selected { border-color: #e8a8c2; background: #70445f; box-shadow: 0 0 0 2px #e8a8c222; }
+@media (max-width: 600px) { .cry-message-composer { padding: 16px 13px; } .cry-message-composer textarea { font-size: 16px; } }
