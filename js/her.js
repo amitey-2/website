@@ -1093,23 +1093,65 @@ if (angryResetButton) {
 const cryComfortPanel = document.getElementById("cryComfortPanel");
 const cryComfortReply = document.getElementById("cryComfortReply");
 const cryComfortBack = document.getElementById("cryComfortBack");
+const cryMessageComposer = document.getElementById("cryMessageComposer");
+const cryMessageInput = document.getElementById("cryMessageInput");
+const crySendWhatsApp = document.getElementById("crySendWhatsApp");
+const cryWhatsAppNumber = "971541819066";
 const cryComfortReplies = {
-  wrong: "If I did something that hurt you, I'm sorry. I want to understand and make it right. You can tell me honestly; I will listen. ♡",
-  hug: "Always. Imagine me wrapping you in the safest, warmest hug and holding you for as long as you need. No words required. 🫂",
-  visit: "If you want me there, tell me. I'll do my best to come see you. You don't have to go through a hard moment alone. ❤️",
-  talk: "I'm listening, sweetheart. Take your time and tell me as much or as little as you want. We don't have to solve everything right now. 💗",
-  listen: "Of course. I'll listen without interrupting, judging or trying to fix everything. You can just let it all out. ♡"
+  wrong: {
+    reply: "If I did something that hurt you, I'm sorry. I want to understand and make it right. You can tell me honestly; I will listen. ♡",
+    draft: "Hey love, I'm feeling upset and I want to talk about something. I'm not sure if something happened between us, but I'd like you to hear me out. ♡"
+  },
+  hug: {
+    reply: "Always. Imagine me wrapping you in the safest, warmest hug and holding you for as long as you need. No words required. 🫂",
+    draft: "I could really use some hugs right now. Can I have the biggest, warmest hug from you when you can? 🫂"
+  },
+  visit: {
+    reply: "If you want me there, tell me. I'll do my best to come see you. You don't have to go through a hard moment alone. ❤️",
+    draft: "I'm having a hard moment and I think I'd feel better if I could see you. Would you be able to come see me? ❤️"
+  },
+  talk: {
+    reply: "I'm listening, sweetheart. Take your time and tell me as much or as little as you want. We don't have to solve everything right now. 💗",
+    draft: "I want to tell you what happened. Can you give me a little time and listen? I have something on my mind. 💗"
+  },
+  listen: {
+    reply: "Of course. I'll listen without interrupting, judging or trying to fix everything. You can just let it all out. ♡",
+    draft: "I don't need advice or solutions right now. I just want you to listen to me for a little while. ♡"
+  }
 };
+function updateCryWhatsAppLink() {
+  if (!cryMessageInput || !crySendWhatsApp) return;
+  const message = cryMessageInput.value.trim();
+  const enabled = message.length > 0;
+  crySendWhatsApp.href = enabled
+    ? "https://wa.me/" + cryWhatsAppNumber + "?text=" + encodeURIComponent(message)
+    : "#";
+  crySendWhatsApp.setAttribute("aria-disabled", enabled ? "false" : "true");
+  crySendWhatsApp.classList.toggle("disabled", !enabled);
+}
 document.querySelectorAll("[data-cry-choice]").forEach((choice) => {
   choice.addEventListener("click", () => {
-    const reply = cryComfortReplies[choice.dataset.cryChoice];
-    if (cryComfortReply && reply) cryComfortReply.textContent = reply;
+    const selected = cryComfortReplies[choice.dataset.cryChoice];
+    if (!selected) return;
+    if (cryComfortReply) cryComfortReply.textContent = selected.reply;
+    if (cryMessageComposer) cryMessageComposer.classList.remove("hidden");
+    if (cryMessageInput) {
+      cryMessageInput.value = selected.draft;
+      updateCryWhatsAppLink();
+    }
     document.querySelectorAll("[data-cry-choice]").forEach((item) => item.classList.toggle("selected", item === choice));
   });
 });
+if (cryMessageInput) cryMessageInput.addEventListener("input", updateCryWhatsAppLink);
 if (cryComfortBack) {
   cryComfortBack.addEventListener("click", () => {
     if (cryComfortPanel) cryComfortPanel.classList.add("hidden");
+    if (cryMessageComposer) cryMessageComposer.classList.add("hidden");
+    if (cryMessageInput) cryMessageInput.value = "";
+    if (crySendWhatsApp) {
+      crySendWhatsApp.href = "#";
+      crySendWhatsApp.setAttribute("aria-disabled", "true");
+    }
     gardenButtons.forEach((item) => {
       item.classList.remove("selected");
       item.setAttribute("aria-pressed", "false");
