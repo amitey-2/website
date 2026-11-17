@@ -1090,8 +1090,50 @@ if (angryResetButton) {
   });
 }
 
+const cryComfortPanel = document.getElementById("cryComfortPanel");
+const cryComfortReply = document.getElementById("cryComfortReply");
+const cryComfortBack = document.getElementById("cryComfortBack");
+const cryComfortReplies = {
+  wrong: "If I did something that hurt you, I'm sorry. I want to understand and make it right. You can tell me honestly; I will listen. ♡",
+  hug: "Always. Imagine me wrapping you in the safest, warmest hug and holding you for as long as you need. No words required. 🫂",
+  visit: "If you want me there, tell me. I'll do my best to come see you. You don't have to go through a hard moment alone. ❤️",
+  talk: "I'm listening, sweetheart. Take your time and tell me as much or as little as you want. We don't have to solve everything right now. 💗",
+  listen: "Of course. I'll listen without interrupting, judging or trying to fix everything. You can just let it all out. ♡"
+};
+document.querySelectorAll("[data-cry-choice]").forEach((choice) => {
+  choice.addEventListener("click", () => {
+    const reply = cryComfortReplies[choice.dataset.cryChoice];
+    if (cryComfortReply && reply) cryComfortReply.textContent = reply;
+    document.querySelectorAll("[data-cry-choice]").forEach((item) => item.classList.toggle("selected", item === choice));
+  });
+});
+if (cryComfortBack) {
+  cryComfortBack.addEventListener("click", () => {
+    if (cryComfortPanel) cryComfortPanel.classList.add("hidden");
+    gardenButtons.forEach((item) => {
+      item.classList.remove("selected");
+      item.setAttribute("aria-pressed", "false");
+    });
+  });
+}
+
 gardenButtons.forEach((button) => {
   button.addEventListener("click", () => {
+    if (button.dataset.gardenMood === "cry") {
+      document.body.classList.remove("angry-mode");
+      gardenButtons.forEach((item) => {
+        const selected = item === button;
+        item.classList.toggle("selected", selected);
+        item.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+      if (cryComfortPanel) {
+        cryComfortPanel.classList.remove("hidden");
+        cryComfortPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (cryComfortReply) cryComfortReply.textContent = "Choose whatever feels right. There's no wrong answer. 💗";
+      return;
+    }
+    if (cryComfortPanel) cryComfortPanel.classList.add("hidden");
     const mood = gardenMoodCopy[button.dataset.gardenMood];
     if (!mood) return;
     if (button.dataset.gardenMood === "angry") {
