@@ -1,4 +1,4 @@
-const CACHE_NAME = "our-little-world-static-v8";
+const CACHE_NAME = "our-little-world-static-v9";
 const STATIC_ASSETS = [
   "./css/her.css",
   "./js/her.js",
