@@ -94,6 +94,30 @@ h1, h2 {
   margin-top: 30px;
 }
 
+.password-hint {
+  margin: 22px 0 0;
+  padding: 16px 18px;
+  border: 1px solid rgba(220, 139, 166, 0.3);
+  border-radius: 14px;
+  background: rgba(220, 139, 166, 0.08);
+  color: #f2dce5;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.75;
+}
+
+.password-hint-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--pink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+}
+
 #passwordInput {
   width: 100%;
   padding: 16px;
