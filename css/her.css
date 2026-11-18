@@ -1814,3 +1814,70 @@ body.angry-mode .angry-takeover {
 @media (prefers-reduced-motion: reduce) {
   .princess-day-card, .princess-crown, .princess-bouquet, .princess-flower-field span, .princess-petal-rain i { animation: none !important; }
 }
+
+
+/* TWO LITTLE PRINCESS DAY PHOTOS */
+.princess-photo-pair {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 420px);
+  min-height: 248px;
+  margin: 10px auto 15px;
+}
+.princess-photo-main,
+.princess-photo-polaroid {
+  position: relative;
+  margin: 0;
+  padding: 8px 8px 25px;
+  background: #fffdfb;
+  box-shadow: 0 12px 28px rgba(100, 51, 72, .2);
+}
+.princess-photo-main {
+  z-index: 1;
+  width: 190px;
+  transform: rotate(-2.5deg);
+}
+.princess-photo-main img {
+  display: block;
+  width: 100%;
+  height: 215px;
+  object-fit: cover;
+  object-position: center 43%;
+}
+.princess-photo-polaroid {
+  position: absolute;
+  z-index: 2;
+  right: 8%;
+  bottom: 0;
+  width: 132px;
+  padding: 7px 7px 22px;
+  transform: rotate(8deg);
+  box-shadow: 0 10px 24px rgba(100, 51, 72, .24);
+}
+.princess-photo-polaroid img {
+  display: block;
+  width: 100%;
+  height: 154px;
+  object-fit: cover;
+  object-position: center 34%;
+}
+.princess-photo-main figcaption,
+.princess-photo-polaroid figcaption {
+  position: absolute;
+  right: 3px;
+  bottom: 5px;
+  left: 3px;
+  color: #9b647a;
+  font: italic 11px 'Great Vibes', cursive;
+  text-align: center;
+}
+.princess-photo-polaroid figcaption { font-size: 10px; }
+@media (max-width: 600px) {
+  .princess-photo-pair { min-height: 220px; margin: 7px auto 12px; }
+  .princess-photo-main { width: 164px; padding: 7px 7px 23px; }
+  .princess-photo-main img { height: 185px; }
+  .princess-photo-polaroid { right: 5%; width: 116px; padding: 6px 6px 20px; }
+  .princess-photo-polaroid img { height: 137px; }
+}
