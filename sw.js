@@ -1,10 +1,8 @@
-const CACHE_NAME = "our-little-world-static-v14";
+const CACHE_NAME = "our-little-world-static-v15";
 const STATIC_ASSETS = [
   "./css/her.css",
   "./js/her.js",
   "./Images/love-app-icon.svg",
-  "./Images/princess-main.webp",
-  "./Images/princess-polaroid.webp"
 ];
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)).then(() => self.skipWaiting()));

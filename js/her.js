@@ -12,24 +12,6 @@ const SUPABASE_KEY =
 const lockScreen = document.getElementById("lockScreen");
 const lovePage = document.getElementById("lovePage");
 
-// Princess Day welcome: this is deliberately before the password screen.
-// It appears on every fresh visit; closing it reveals the normal lock screen.
-const princessDayPopup = document.getElementById("princessDayPopup");
-const princessDayEnter = document.getElementById("princessDayEnter");
-if (princessDayPopup && princessDayEnter) {
-  document.body.classList.add("princess-day-is-open");
-  princessDayEnter.addEventListener("click", () => {
-    princessDayPopup.classList.add("is-closing");
-    window.setTimeout(() => {
-      princessDayPopup.remove();
-      document.body.classList.remove("princess-day-is-open");
-      const passwordInput = document.getElementById("passwordInput");
-      if (passwordInput) passwordInput.focus({ preventScroll: true });
-    }, 560);
-  });
-}
-
-
 // Angry Mode is an in-page choice only; never restore it on a fresh visit.
 document.body.classList.remove("angry-mode");
 
