@@ -1881,3 +1881,30 @@ body.angry-mode .angry-takeover {
   .princess-photo-polaroid { right: 5%; width: 116px; padding: 6px 6px 20px; }
   .princess-photo-polaroid img { height: 137px; }
 }
+
+
+/* KEEP THE PRINCESS DAY WELCOME COMFORTABLE ON SMALL SCREENS */
+@media (max-width: 600px) {
+  .princess-day-popup { padding: 10px; }
+  .princess-day-card {
+    max-height: calc(100dvh - 20px);
+    padding: 17px 15px;
+    border-radius: 22px;
+  }
+  .princess-day-kicker { margin: 0; font-size: 8px; letter-spacing: 1.6px; }
+  .princess-crown { margin: 5px 0 1px; font-size: 31px; }
+  .princess-day-script { margin: 3px 0 5px; font-size: 16px; }
+  .princess-day-card h1 { margin: 6px 0; font-size: 27px; }
+  .princess-bouquet { margin: 7px 0; font-size: 22px; letter-spacing: 1px; }
+  .princess-photo-pair { min-height: 174px; margin: 4px auto 8px; }
+  .princess-photo-main { width: 132px; padding: 6px 6px 19px; }
+  .princess-photo-main img { height: 145px; }
+  .princess-photo-polaroid { right: 7%; width: 94px; padding: 5px 5px 17px; }
+  .princess-photo-polaroid img { height: 108px; }
+  .princess-photo-main figcaption,
+  .princess-photo-polaroid figcaption { bottom: 3px; font-size: 9px; }
+  .princess-day-message { font-size: 12px; line-height: 1.55; }
+  .princess-day-signoff { margin: 8px 0 11px; font-size: 17px; }
+  .princess-day-enter { min-height: 44px; padding: 11px 20px; font-size: 12px; }
+  .princess-day-footnote { margin-top: 8px; font-size: 10px; }
+}
