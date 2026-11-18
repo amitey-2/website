@@ -19,13 +19,41 @@
 
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/her.css?v=cry-message-2">
-  <script src="js/her.js?v=cry-message-2" defer></script>
+  <link rel="stylesheet" href="css/her.css?v=princess-day-1">
+  <script src="js/her.js?v=princess-day-1" defer></script>
 </head>
 
 <body>
 
   <div class="stars"></div>
+
+  <!-- PRINCESS DAY WELCOME — appears before the password screen -->
+  <section id="princessDayPopup" class="princess-day-popup" role="dialog" aria-modal="true" aria-labelledby="princessDayTitle" aria-describedby="princessDayMessage">
+    <div class="princess-flower-field" aria-hidden="true">
+      <span>🌸</span><span>🌷</span><span>🌼</span><span>🌺</span><span>🌷</span><span>💐</span>
+      <span>🌸</span><span>🌼</span><span>🌷</span><span>🌺</span><span>🌸</span><span>💮</span>
+      <span>🌷</span><span>🌼</span><span>🌸</span><span>💐</span><span>🌺</span><span>🌷</span>
+    </div>
+    <div class="princess-petal-rain" aria-hidden="true">
+      <i>🌸</i><i>🌷</i><i>✿</i><i>🌼</i><i>❀</i><i>🌺</i><i>🌸</i><i>✿</i><i>🌷</i><i>❀</i><i>🌼</i><i>🌸</i>
+    </div>
+    <div class="princess-day-card">
+      <p class="princess-day-kicker">A LITTLE DAY FOR SOMEONE VERY SPECIAL</p>
+      <div class="princess-crown" aria-hidden="true">👑</div>
+      <p class="princess-day-script">To the girl who makes my world bloom...</p>
+      <h1 id="princessDayTitle">Happy Princess Day, my love. ♡</h1>
+      <div class="princess-bouquet" aria-hidden="true">🌷 🌸 💐 🌹 🌼 🌺</div>
+      <p id="princessDayMessage" class="princess-day-message">
+        I hope you never forget how precious you are. You deserve soft days, beautiful surprises, endless laughter and a love that makes you feel safe to be exactly who you are.
+        I may not have a palace or a crown to give you, but I'll keep finding little ways to remind you that you are cherished, adored and so very special to me.
+        Today, this little garden is all yours. ♡
+      </p>
+      <p class="princess-day-signoff">With all my love, always. 💗</p>
+      <button id="princessDayEnter" class="princess-day-enter" type="button">Enter my little world ♡</button>
+      <p class="princess-day-footnote">P.S. Every flower here is for you. 🌸</p>
+    </div>
+  </section>
+
 
   <!-- PASSWORD SCREEN -->
   <main id="lockScreen" class="lock-screen">
