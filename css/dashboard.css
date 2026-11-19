@@ -537,3 +537,40 @@ textarea:focus-visible {
   }
 
 }
+
+/* ========================================
+   HER MESSAGES — INLINE PRIVATE INBOX
+======================================== */
+.her-messages {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 30px;
+  margin: 0 0 65px;
+}
+.her-messages-heading {
+  display:flex; justify-content:space-between; align-items:flex-start; gap:18px; flex-wrap:wrap;
+}
+.her-messages-heading h2 { font-size:29px; font-weight:400; margin:4px 0 8px; }
+.her-messages-sub { color:var(--muted); font-size:13px; max-width:520px; }
+#refreshHerMessages {
+  background:transparent; border:1px solid var(--border); color:var(--text);
+  padding:10px 15px; font-family:inherit; font-size:11px; letter-spacing:1px; cursor:pointer;
+}
+#refreshHerMessages:hover { border-color:var(--accent); color:var(--accent); }
+#herMessagesStatus { color:var(--accent); font-size:13px; margin:18px 0; }
+#herMessagesList { display:grid; gap:14px; }
+.her-messages-empty { color:var(--muted); padding:18px 0; }
+.her-message-card { border:1px solid var(--border); background:var(--bg); padding:20px; }
+.her-message-meta { color:var(--muted); font-size:11px; letter-spacing:.5px; margin-bottom:10px; }
+.her-message-body { white-space:pre-wrap; overflow-wrap:anywhere; font-size:14px; }
+.her-message-existing-reply { border-left:2px solid var(--accent); margin:18px 0 0 10px; padding:12px 0 0 16px; }
+.her-message-reply-form { margin-top:18px; display:grid; gap:10px; }
+.her-message-reply-form textarea { width:100%; min-height:100px; resize:vertical; padding:14px; background:var(--surface); border:1px solid var(--border); color:var(--text); font:inherit; }
+.her-message-reply-form button { justify-self:start; padding:11px 17px; border:0; background:var(--accent); color:#151515; font:inherit; font-size:11px; letter-spacing:1px; cursor:pointer; }
+.her-message-reply-form button:disabled { opacity:.6; cursor:wait; }
+@media(max-width:600px) {
+  .her-messages { padding:20px; margin-bottom:45px; }
+  .her-messages-heading h2 { font-size:25px; }
+  .her-message-card { padding:16px; }
+  .her-message-reply-form button { width:100%; }
+}
