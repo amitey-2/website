@@ -167,8 +167,8 @@ passwordForm.addEventListener("submit", async (event) => {
 // DISPLAY PRIVATE CONTENT
 function displayLovePage(content) {
 
-  document.getElementById("introText").textContent =
-    content.intro || "";
+  const introElement = document.getElementById("introText");
+  if (introElement) introElement.textContent = content.intro || "";
 
   document.getElementById("loveLetter").textContent =
     content.letter || "";
