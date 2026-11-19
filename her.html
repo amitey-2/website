@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="css/her.css?v=no-password-hint">
   <link rel="stylesheet" href="css/her-inbox.css?v=1">
   <script src="js/her.js?v=unlock-fix-2" defer></script>
-  <script src="js/her-inbox.js?v=1" defer></script>
+  <script src="js/her-inbox.js?v=2?v=1" defer></script>
   <link rel="stylesheet" href="css/her-levels.css?v=1">
   <script src="js/her-levels.js?v=1" defer></script>
 </head>
@@ -364,7 +364,7 @@
         <input id="privateSenderName" type="text" maxlength="60" placeholder="Your name">
         <label for="privateMessageText">Your message</label>
         <textarea id="privateMessageText" rows="4" maxlength="2000" required placeholder="Write whatever is on your heart…"></textarea>
-        <div class="private-message-bottom"><span id="privateMessageCount">0 / 2000</span><button type="submit" id="privateMessageSend">Send me a little letter ♡</button></div>
+        <div class="private-message-notify"><button id="enablePrivateNotifications" type="button">ENABLE NOTIFICATIONS</button></div><div class="private-message-bottom"><span id="privateMessageCount">0 / 2000</span><button type="submit" id="privateMessageSend">Send me a little letter ♡</button></div>
         <p id="privateMessageStatus" class="private-message-status" role="status"></p>
       </form>
       <div class="private-replies-card">
