@@ -8,8 +8,8 @@
   const nav=document.getElementById("levelsNav"), chips=[...nav.querySelectorAll("[data-level]")];
   const progressText=document.getElementById("levelsProgressText"), fill=document.getElementById("levelsProgressFill"), intro=document.getElementById("levelIntro");
   const copy=["A little warmth to begin. Take your time, sweetheart. 🌷","Whenever your heart needs a softer place, come here. 🫂","A few words, waiting for the moments you need them. 💌","Little dreams and wishes, saved for us. ✨","One last little surprise, just for you. 🎀"];
-  const groups={1:["dailyReason","loveNotes"],2:["moodGarden","littlePlayground"],3:["openWhenLetters","privateLoveInbox"],4:["wishes"],5:["final-section"]};
-  Object.entries(groups).forEach(([level,ids])=>ids.forEach(id=>{const el=document.getElementById(id);if(el)levels[Number(level)-1].insertBefore(el,levels[Number(level)-1].querySelector("[data-level-continue]"));}));
+  const groups={1:["dailyReason","loveNotes"],2:["moodGarden","littlePlayground"],3:["openWhenLetters","privateLoveInbox"],4:["wishes"],5:[".final-section"]};
+  Object.entries(groups).forEach(([level,ids])=>ids.forEach(id=>{const el=id.startsWith(".")?document.querySelector(id):document.getElementById(id);if(el)levels[Number(level)-1].insertBefore(el,levels[Number(level)-1].querySelector("[data-level-continue]"));}));
   const puppy=document.querySelector(".puppy-card");
   // Keep the puppy with the comfort level; it is part of the mood garden experience.
   function show(n){
