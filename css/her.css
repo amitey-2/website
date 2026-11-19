@@ -1814,3 +1814,18 @@ body.angry-mode .angry-takeover {
   .scrapbook-photo { padding: 7px 7px 11px; }
   .scrapbook-photo figcaption { font-size: 19px; }
 }
+
+
+/* MOBILE NAV VISIBILITY FIX — keep the tab dock above all page content */
+@media screen and (max-width: 900px) {
+  #lovePage nav.phone-dock {
+    display: grid !important; position: fixed !important;
+    left: 12px !important; right: 12px !important;
+    bottom: calc(10px + env(safe-area-inset-bottom)) !important;
+    top: auto !important; width: auto !important; transform: none !important;
+    z-index: 9999 !important; visibility: visible !important; opacity: 1 !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    pointer-events: auto !important;
+  }
+  #lovePage nav.phone-dock a { min-height: 46px; }
+}
