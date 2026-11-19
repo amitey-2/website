@@ -1772,3 +1772,45 @@ body.angry-mode .angry-takeover {
 @media (prefers-reduced-motion: reduce) {
   .little-universe::after, .memory-star { animation: none; }
 }
+
+/* OUR LITTLE UNIVERSE — PHOTO SCRAPBOOK */
+.scrapbook-memories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 8px 0;
+}
+.scrapbook-photo {
+  margin: 0;
+  padding: 10px 10px 14px;
+  border-radius: 5px;
+  border: 1px solid #8a6579;
+  background: linear-gradient(145deg, #f7e8ec, #e8d5df);
+  color: #4a293b;
+  box-shadow: 0 12px 30px #0005;
+  transform: rotate(-1.2deg);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.scrapbook-photo-tilt { transform: rotate(1.4deg); }
+.scrapbook-photo:hover { transform: translateY(-4px) rotate(0); box-shadow: 0 18px 38px #0007; }
+.scrapbook-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 3px;
+  background: #d9c4d0;
+}
+.scrapbook-photo figcaption {
+  padding: 12px 3px 0;
+  text-align: center;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(19px, 3vw, 24px);
+  line-height: 1.35;
+}
+.scrapbook-photo-note { margin-top: 18px; }
+@media (max-width: 480px) {
+  .scrapbook-memories { gap: 11px; }
+  .scrapbook-photo { padding: 7px 7px 11px; }
+  .scrapbook-photo figcaption { font-size: 19px; }
+}
