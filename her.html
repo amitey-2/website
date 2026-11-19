@@ -23,6 +23,8 @@
   <link rel="stylesheet" href="css/her-inbox.css?v=1">
   <script src="js/her.js?v=unlock-fix-2" defer></script>
   <script src="js/her-inbox.js?v=1" defer></script>
+  <link rel="stylesheet" href="css/her-levels.css?v=1">
+  <script src="js/her-levels.js?v=1" defer></script>
 </head>
 
 <body>
@@ -133,6 +135,20 @@
     </div>
 
     <div class="app-tab-panel" id="tab-for-you" data-panel="for-you">
+<div class="for-you-levels" id="forYouLevels">
+  <p class="levels-kicker">A LITTLE JOURNEY, MADE WITH LOVE</p>
+  <h2 class="levels-title">A little world for you. ♡</h2>
+  <div class="levels-progress"><span id="levelsProgressText">Level 1 of 5</span><div class="levels-progress-track"><span id="levelsProgressFill"></span></div></div>
+  <nav class="levels-nav" aria-label="Your unlocked levels" id="levelsNav">
+    <button type="button" data-level="1" class="level-chip active">♡ <span>Warmth</span></button>
+    <button type="button" data-level="2" class="level-chip" disabled>♡ <span>Comfort</span></button>
+    <button type="button" data-level="3" class="level-chip" disabled>♡ <span>Letters</span></button>
+    <button type="button" data-level="4" class="level-chip" disabled>♡ <span>Dreams</span></button>
+    <button type="button" data-level="5" class="level-chip" disabled>♡ <span>Surprise</span></button>
+  </nav>
+  <p id="levelIntro" class="levels-intro">A little warmth to begin. Take your time, sweetheart. 🌷</p>
+</div>
+<div class="for-you-level level-1" data-level-panel="1">
 
     <!-- A LITTLE MOOD GARDEN -->
     <section id="moodGarden" class="interactive-section mood-garden-section">
@@ -358,6 +374,19 @@
       </div>
     </section>
 
+    <div class="level-transition" data-level-continue="1"><button type="button" class="level-continue">Continue to Level 2 ♡</button></div>
+    </div>
+    <div class="for-you-level level-2" data-level-panel="2">
+      <div class="level-transition" data-level-continue="2"><button type="button" class="level-continue">Continue to Level 3 ♡</button></div>
+    </div>
+    <div class="for-you-level level-3" data-level-panel="3">
+      <div class="level-transition" data-level-continue="3"><button type="button" class="level-continue">Continue to Level 4 ♡</button></div>
+    </div>
+    <div class="for-you-level level-4" data-level-panel="4">
+      <div class="level-transition" data-level-continue="4"><button type="button" class="level-continue">Continue to Level 5 ♡</button></div>
+    </div>
+    <div class="for-you-level level-5" data-level-panel="5">
+      <div class="level-transition level-finish"><p>You found every little corner. I hope it made your heart smile. ♡</p><button type="button" class="level-revisit">Back to Level 1</button></div>
     </div>
 
     <div class="app-tab-panel" id="tab-dates" data-panel="dates">
