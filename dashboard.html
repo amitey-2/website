@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/dashboard.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="js/dashboard.js" defer></script>
+  <script src="js/dashboard.js?v=2" defer></script>
 </head>
 
 <body>
@@ -150,6 +150,16 @@
 
     </section>
 
+
+    <!-- HER MESSAGES: PRIVATE REPLY ROOM -->
+    <section class="her-messages" id="herMessages">
+      <div class="her-messages-heading">
+        <div><p class="eyebrow">A LITTLE ROOM FOR HER</p><h2>Her messages. ♡</h2><p class="her-messages-sub">Read her letters and reply here, without leaving your dashboard.</p></div>
+        <button id="refreshHerMessages" type="button">REFRESH</button>
+      </div>
+      <p id="herMessagesStatus" aria-live="polite">Loading messages…</p>
+      <div id="herMessagesList"></div>
+    </section>
 
     <!-- QUICK NOTES -->
 
