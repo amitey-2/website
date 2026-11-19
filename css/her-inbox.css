@@ -1,0 +1,35 @@
+/* Private letter box */
+.private-love-inbox { width: min(100%, 780px); }
+.private-message-card, .private-replies-card {
+  max-width: 650px; margin: 22px auto; padding: 22px;
+  border: 1px solid #77536a; border-radius: 20px;
+  background: linear-gradient(145deg, #2d1d30, #1b121f);
+  box-shadow: 0 16px 40px #0003; text-align: left;
+}
+.private-message-card label { display:block; margin: 0 0 8px; color:#e9c4d6; font-size:12px; letter-spacing:.5px; }
+.private-message-card input, .private-message-card textarea {
+  display:block; width:100%; margin-bottom:17px; box-sizing:border-box;
+  padding:13px 14px; border:1px solid #74536b; border-radius:12px;
+  background:#130d18; color:#faeaf1; font:14px/1.65 'DM Sans',sans-serif;
+}
+.private-message-card input { min-height:45px; }
+.private-message-card textarea { min-height:115px; resize:vertical; }
+.private-message-card input:focus, .private-message-card textarea:focus { outline:none; border-color:#e2a6c1; box-shadow:0 0 0 3px #e2a6c122; }
+.private-message-bottom { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.private-message-bottom span { color:#a994a6; font-size:11px; }
+.private-message-bottom button { min-height:46px; padding:12px 18px; border:1px solid #b17b98; border-radius:999px; background:linear-gradient(110deg,#75405f,#a45c7d); color:#fff6fa; font:600 12px 'DM Sans',sans-serif; cursor:pointer; }
+.private-message-bottom button:disabled { opacity:.6; }
+.private-message-status { min-height:18px; margin:12px 0 0; color:#e9b9d0; font-size:12px; text-align:center; }
+.private-replies-card h3 { margin:0; color:#f4d5e4; font:400 24px 'Playfair Display',serif; }
+.private-replies-subtitle { color:#bdaab9; font-size:12px; line-height:1.65; }
+.private-replies-list { display:grid; gap:13px; margin-top:17px; }
+.private-letter { padding:16px; border:1px solid #604658; border-radius:15px; background:#17101b; }
+.private-letter-time { margin:0 0 9px; color:#c394ae; font-size:10px; letter-spacing:.5px; }
+.private-letter-text { margin:0; color:#f4e7ee; font-size:13px; line-height:1.75; white-space:pre-wrap; overflow-wrap:anywhere; }
+.private-letter-reply { margin-top:13px; padding:13px; border-left:2px solid #d39ab6; border-radius:0 12px 12px 0; background:#342033; }
+.private-awaiting, .private-empty { margin:0; color:#a991a4; font:italic 13px 'Playfair Display',serif; }
+@media(max-width:600px) {
+  .private-message-card, .private-replies-card { padding:16px 14px; }
+  .private-message-bottom { align-items:stretch; flex-direction:column; }
+  .private-message-bottom button { width:100%; }
+}
