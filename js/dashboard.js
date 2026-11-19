@@ -36,126 +36,19 @@ async function startDashboard() {
   console.log("Dashboard authenticated.");
 
   // ======================================
-  // HER MESSAGES — INLINE DASHBOARD INBOX
-  // Uses the existing authenticated session (no separate login).
-  // ======================================
-  const herMessagesList = document.getElementById("herMessagesList");
-  const herMessagesStatus = document.getElementById("herMessagesStatus");
-  const refreshHerMessages = document.getElementById("refreshHerMessages");
-  const HER_INBOX_API = SUPABASE_URL + "/functions/v1/her-inbox";
-
-  async function herInboxCall(action, payload = {}) {
-    const { data: { session: currentSession } } = await supabaseClient.auth.getSession();
-    if (!currentSession) throw new Error("Your dashboard session expired. Please log in again.");
-    const response = await fetch(HER_INBOX_API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + currentSession.access_token
-      },
-      body: JSON.stringify({ action, ...payload })
-    });
-    const data = await response.json();
-    if (!response.ok || data.error) throw new Error(data.error || "Could not load her messages.");
-    return data;
-  }
-
-  function renderHerMessages(items) {
-    if (!herMessagesList) return;
-    herMessagesList.replaceChildren();
-    if (!items.length) {
-      const empty = document.createElement("p");
-      empty.className = "her-messages-empty";
-      empty.textContent = "No letters yet. When she writes, they'll show up here. ♡";
-      herMessagesList.append(empty);
-      return;
-    }
-    const grouped = new Map();
-    items.forEach(message => {
-      if (!grouped.has(message.thread_id)) grouped.set(message.thread_id, []);
-      grouped.get(message.thread_id).push(message);
-    });
-    [...grouped.values()].forEach(group => {
-      group.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
-      group.forEach(message => {
-        const card = document.createElement("article");
-        card.className = "her-message-card";
-        const meta = document.createElement("p");
-        meta.className = "her-message-meta";
-        meta.textContent = (message.sender_name || "Her") + " · " + new Date(message.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});
-        const body = document.createElement("p");
-        body.className = "her-message-body";
-        body.textContent = message.message;
-        card.append(meta,body);
-        if (message.reply) {
-          const reply = document.createElement("div");
-          reply.className = "her-message-existing-reply";
-          const replyMeta = document.createElement("p");
-          replyMeta.className = "her-message-meta";
-          replyMeta.textContent = "Your reply · " + new Date(message.replied_at || message.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});
-          const replyBody = document.createElement("p");
-          replyBody.className = "her-message-body";
-          replyBody.textContent = message.reply;
-          reply.append(replyMeta,replyBody);
-          card.append(reply);
-        } else {
-          const form = document.createElement("form");
-          form.className = "her-message-reply-form";
-          const area = document.createElement("textarea");
-          area.maxLength = 2000;
-          area.required = true;
-          area.placeholder = "Write your reply to her…";
-          const button = document.createElement("button");
-          button.type = "submit";
-          button.textContent = "SEND REPLY ♡";
-          form.append(area,button);
-          form.addEventListener("submit",async event=>{
-            event.preventDefault();
-            const replyText = area.value.trim();
-            if(!replyText) return;
-            button.disabled = true;
-            button.textContent = "SENDING…";
-            herMessagesStatus.textContent = "";
-            try {
-              await herInboxCall("admin_reply",{id:message.id,reply:replyText});
-              herMessagesStatus.textContent = "Your reply was sent. ♡";
-              await loadHerMessages();
-            } catch(error) {
-              herMessagesStatus.textContent = error.message || "Couldn't send your reply.";
-              button.disabled = false;
-              button.textContent = "SEND REPLY ♡";
-            }
-          });
-          card.append(form);
-        }
-        herMessagesList.append(card);
-      });
-    });
-  }
-
-  async function loadHerMessages() {
-    if (!herMessagesList || !herMessagesStatus) return;
-    herMessagesStatus.textContent = "Loading her letters…";
-    if (refreshHerMessages) refreshHerMessages.disabled = true;
-    try {
-      const result = await herInboxCall("admin_list");
-      renderHerMessages(result.messages || []);
-      herMessagesStatus.textContent = "Her messages are up to date. ♡";
-    } catch(error) {
-      herMessagesStatus.textContent = error.message || "Couldn't load her messages.";
-      if (/unauthorized/i.test(error.message || "")) await supabaseClient.auth.signOut();
-    } finally {
-      if (refreshHerMessages) refreshHerMessages.disabled = false;
-    }
-  }
-  if (refreshHerMessages) refreshHerMessages.addEventListener("click",loadHerMessages);
-  loadHerMessages();
-
-
-
-  
-  // ======================================
+  // PRIVATE CHAT — session-authenticated dashboard room
+  const list=document.getElementById("herMessagesList"),status=document.getElementById("herMessagesStatus"),refresh=document.getElementById("refreshHerMessages"),notifyButton=document.getElementById("enableHerNotifications"),endpoint=SUPABASE_URL+"/functions/v1/her-inbox";
+  let initial=true;const seen=new Set();
+  async function callInbox(action,payload={}){const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw Error("Dashboard session expired. Please log in again.");const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json",apikey:SUPABASE_KEY,Authorization:"Bearer "+session.access_token},body:JSON.stringify({action,...payload})});const d=await r.json();if(!r.ok||d.error)throw Error(d.error||"Inbox error");return d;}
+  function updateNotify(){if(notifyButton)notifyButton.textContent=("Notification"in window&&Notification.permission==="granted"?"NOTIFICATIONS ON ♡":"ENABLE NOTIFICATIONS");}
+  if(notifyButton)notifyButton.onclick=()=>{if(!("Notification"in window)){status.textContent="Notifications aren't supported here.";return;}Notification.requestPermission().then(p=>{status.textContent=p==="granted"?"Notifications enabled ♡":"Live chat still refreshes while open.";updateNotify();});};updateNotify();
+  function notifyHer(m){if("Notification"in window&&Notification.permission==="granted"){const n=new Notification("A message from her ♡",{body:(m.message||"").slice(0,140),tag:"her-"+m.id});n.onclick=()=>{window.focus();n.close();};}}
+  function renderChat(messages){list.replaceChildren();const groups=new Map();messages.forEach(m=>{if(!groups.has(m.thread_id))groups.set(m.thread_id,[]);groups.get(m.thread_id).push(m);});if(!groups.size){const p=document.createElement("p");p.className="her-messages-empty";p.textContent="No messages yet. When she writes, her chat will appear here. ♡";list.append(p);return;}
+  groups.forEach((group,threadId)=>{group.sort((x,y)=>new Date(x.created_at)-new Date(y.created_at));const sec=document.createElement("section");sec.className="her-chat-thread";const h=document.createElement("p");h.className="her-chat-thread-label";h.textContent="Chat with "+(group.find(m=>m.sender_name!=="Amit")?.sender_name||"her");const stream=document.createElement("div");stream.className="her-chat-stream";
+  group.forEach(m=>{const bubble=document.createElement("article");bubble.className="her-chat-bubble "+(m.sender_name==="Amit"?"from-amit":"from-her");const meta=document.createElement("p");meta.className="her-message-meta";meta.textContent=(m.sender_name||"Her")+" · "+new Date(m.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});const body=document.createElement("p");body.className="her-message-body";body.textContent=m.message||"";bubble.append(meta,body);stream.append(bubble);if(m.reply){const old=document.createElement("article");old.className="her-chat-bubble from-amit";const om=document.createElement("p");om.className="her-message-meta";om.textContent="Amit · "+new Date(m.replied_at||m.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});const ob=document.createElement("p");ob.className="her-message-body";ob.textContent=m.reply;old.append(om,ob);stream.append(old);}});
+  const form=document.createElement("form");form.className="her-message-reply-form";const area=document.createElement("textarea");area.maxLength=2000;area.required=true;area.placeholder="Write her a message…";const btn=document.createElement("button");btn.type="submit";btn.textContent="SEND MESSAGE ♡";form.append(area,btn);form.onsubmit=async e=>{e.preventDefault();const value=area.value.trim();if(!value)return;btn.disabled=true;btn.textContent="SENDING…";try{await callInbox("admin_send",{thread_id:threadId,message:value});area.value="";status.textContent="Message sent ♡";await loadChat(false);}catch(err){status.textContent=err.message||"Couldn't send";}finally{btn.disabled=false;btn.textContent="SEND MESSAGE ♡";}};sec.append(h,stream,form);list.append(sec);});}
+  async function loadChat(alertNew=true){if(refresh)refresh.disabled=true;try{const result=await callInbox("admin_list"),msgs=result.messages||[];if(alertNew&&!initial)msgs.forEach(m=>{if(m.sender_name!=="Amit"&&!seen.has(m.id))notifyHer(m);});msgs.forEach(m=>seen.add(m.id));renderChat(msgs);status.textContent="Live conversation · checks every 12 seconds ♡";initial=false;}catch(err){status.textContent=err.message||"Couldn't load messages";}finally{if(refresh)refresh.disabled=false;}}
+  if(refresh)refresh.onclick=()=>loadChat(false);loadChat(false);setInterval(()=>{if(!document.hidden)loadChat(true);},12000);
   // 1. DATE
   // ======================================
 
