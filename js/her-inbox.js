@@ -11,7 +11,6 @@
   const status = document.getElementById("privateMessageStatus");
   const sendButton = document.getElementById("privateMessageSend");
   const list = document.getElementById("privateRepliesList");
-  const readButton = document.getElementElementById?.("privateRefresh") || null;
 
   function getThread() {
     try { return JSON.parse(localStorage.getItem(STORAGE) || "null"); } catch { return null; }
