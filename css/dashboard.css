@@ -574,3 +574,6 @@ textarea:focus-visible {
   .her-message-card { padding:16px; }
   .her-message-reply-form button { width:100%; }
 }
+
+/* LIVE PRIVATE CHAT */
+.her-message-actions{display:flex;gap:8px;flex-wrap:wrap}.her-message-actions button,#enablePrivateNotifications{background:transparent;border:1px solid var(--border);color:var(--text);padding:9px 12px;font:inherit;font-size:10px;letter-spacing:.7px;cursor:pointer}.her-chat-thread{border:1px solid var(--border);padding:18px;background:var(--bg);border-radius:14px}.her-chat-thread-label{font-size:12px;color:var(--accent);letter-spacing:1px;margin:0 0 14px}.her-chat-stream{display:grid;gap:12px}.her-chat-bubble{max-width:88%;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}.her-chat-bubble.from-amit{margin-left:auto;border-color:var(--accent);background:var(--surface)}.her-chat-bubble .her-message-meta{margin:0 0 6px}.her-chat-bubble .her-message-body{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.her-message-reply-form{margin-top:16px}.her-message-reply-form textarea{min-height:76px}.her-message-actions button:disabled{opacity:.5}@media(max-width:600px){.her-chat-thread{padding:12px}.her-chat-bubble{max-width:95%;padding:12px}}
