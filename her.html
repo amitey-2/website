@@ -20,9 +20,9 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/her.css?v=no-password-hint">
-  <link rel="stylesheet" href="css/her-inbox.css?v=4">
+  <link rel="stylesheet" href="css/her-inbox.css?v=5">
   <script src="js/her.js?v=unlock-fix-2" defer></script>
-  <script src="js/her-inbox.js?v=5" defer></script>
+  <script src="js/her-inbox.js?v=6" defer></script>
   <link rel="stylesheet" href="css/her-levels.css?v=1">
   <script src="js/her-levels.js?v=1" defer></script>
 </head>
@@ -364,14 +364,19 @@
         <input id="privateSenderName" type="text" maxlength="60" placeholder="Your name">
         <label for="privateMessageText">Your message</label>
         <textarea id="privateMessageText" rows="4" maxlength="2000" required placeholder="Write whatever is on your heart…"></textarea>
-        <div class="private-message-notify"><button id="enablePrivateNotifications" type="button">ENABLE NOTIFICATIONS</button></div><div class="private-message-bottom"><span id="privateMessageCount">0 / 2000</span><button type="submit" id="privateMessageSend">Send me a little letter ♡</button></div>
+        <div class="private-message-notify"><button id="enablePrivateNotifications" type="button">ENABLE NOTIFICATIONS</button></div>
+        <div class="private-replies-card private-chat-room">
+          <h3>Letters between us ♡</h3>
+          <p class="private-replies-subtitle">Our little conversation, all together.</p>
+          <div id="privateRepliesList" class="private-replies-list"><p class="private-empty">Your little letters will appear here.</p></div>
+        </div>
+        <label for="privateSenderName">Your name (optional)</label>
+        <input id="privateSenderName" type="text" maxlength="60" placeholder="Your name">
+        <label for="privateMessageText">Your message</label>
+        <textarea id="privateMessageText" rows="4" maxlength="2000" required placeholder="Write whatever is on your heart…"></textarea>
+        <div class="private-message-bottom"><span id="privateMessageCount">0 / 2000</span><button type="submit" id="privateMessageSend">Send message ♡</button></div>
         <p id="privateMessageStatus" class="private-message-status" role="status"></p>
       </form>
-      <div class="private-replies-card">
-        <h3>Letters between us</h3>
-        <p class="private-replies-subtitle">This little space keeps your messages and my replies together on this device. ♡</p>
-        <div id="privateRepliesList" class="private-replies-list"><p class="private-empty">Your little letters will appear here.</p></div>
-      </div>
     </section>
 
     <div class="level-transition" data-level-continue="1"><button type="button" class="level-continue">Continue to Level 2 ♡</button></div>
