@@ -23,21 +23,14 @@
       group.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
       const card=document.createElement("article");card.className="thread-card";
       const title=document.createElement("p");title.className="thread-title";title.textContent="LETTER THREAD · "+time(group[0].created_at);card.append(title);
-      group.forEach(m=>{
-        const incoming=document.createElement("div");incoming.className="thread-message";
-        const meta=document.createElement("p");meta.className="message-meta";meta.textContent=(m.sender_name||"Her")+" · "+time(m.created_at);
-        const body=document.createElement("p");body.className="message-body";body.textContent=m.message;incoming.append(meta,body);
-        if(m.reply){const rep=document.createElement("div");rep.className="admin-reply";const rm=document.createElement("p");rm.className="message-meta";rm.textContent="Your reply · "+time(m.replied_at||m.created_at);const rb=document.createElement("p");rb.className="message-body";rb.textContent=m.reply;rep.append(rm,rb);incoming.append(rep);}
-        else{
-          const form=document.createElement("form");form.className="reply-form";
-          const area=document.createElement("textarea");area.maxLength=2000;area.required=true;area.placeholder="Write your reply…";
-          const btn=document.createElement("button");btn.type="submit";btn.textContent="Send reply ♡";
-          form.append(area,btn);
-          form.addEventListener("submit",async ev=>{ev.preventDefault();const text=area.value.trim();if(!text)return;btn.disabled=true;btn.textContent="Sending…";try{await call("admin_reply",{id:m.id,reply:text});status.textContent="Reply sent. ♡";await load();}catch(err){status.textContent=err.message;btn.disabled=false;btn.textContent="Send reply ♡";}});
-          incoming.append(form);
-        }
-        card.append(incoming);
-      });
+      const latest = group[group.length-1];
+      const summary=document.createElement("p");summary.className="message-body";
+      summary.textContent=latest.message.length>220?latest.message.slice(0,220)+"…":latest.message;
+      card.append(summary);
+      const link=document.createElement("a");link.className="open-thread-link";
+      link.href="inbox-replies.html?thread="+encodeURIComponent(latest.thread_id);
+      link.textContent="Open conversation · "+group.length+" letter"+(group.length===1?"":"s")+" →";
+      card.append(link);
       threads.append(card);
     });
   }
