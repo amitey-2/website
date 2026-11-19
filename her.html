@@ -94,121 +94,40 @@
     </nav>
 
     <div class="app-tab-panel active" id="tab-story" data-panel="story">
-    <!-- HERO -->
-    <section class="hero">
-
-      <div class="hero-content">
-        <div class="daily-love-note" aria-live="polite">
-          <p id="timeGreeting" class="time-greeting">Good day, my love ♡</p>
-          <p id="dailyLoveQuote" class="daily-love-quote">You make even the simplest moments feel beautiful.</p>
+      <section class="little-universe" id="universePanel" aria-label="Our little universe">
+        <div class="universe-nebula nebula-one" aria-hidden="true"></div>
+        <div class="universe-nebula nebula-two" aria-hidden="true"></div>
+        <div class="universe-intro">
+          <p class="universe-kicker">A STORY THAT BELONGS TO US</p>
+          <h1>Our Little<br><em>Universe</em></h1>
+          <p>Some memories deserve their own place in the stars.</p>
+          <div class="universe-constellation" aria-label="Choose a star to explore a memory">
+            <span class="constellation-line line-one" aria-hidden="true"></span>
+            <span class="constellation-line line-two" aria-hidden="true"></span>
+            <button class="memory-star star-beginning" type="button" data-universe-card="beginning"><span>✦</span><small>The beginning</small></button>
+            <button class="memory-star star-little-things" type="button" data-universe-card="little-things"><span>✧</span><small>Little things</small></button>
+            <button class="memory-star star-moments" type="button" data-universe-card="moments"><span>✦</span><small>Moments</small></button>
+            <button class="memory-star star-dreams" type="button" data-universe-card="dreams"><span>✧</span><small>Our dreams</small></button>
+          </div>
+          <p class="universe-hint">Tap a little star to open a memory ♡</p>
         </div>
-        <p class="eyebrow">TO MY FAVOURITE PERSON</p>
+      </section>
 
-        <h1>Just You<br><i>& Me.</i></h1>
-
-        <p id="introText" class="hero-description"></p>
-
-        <a href="#story" class="discover-button">
-          Discover our little world ↓
-        </a>
-      </div>
-
-      <div class="hero-photo">
-        <img
-          src="Images/Our-first-photo.jpeg"
-          alt="Our favourite picture together"
-        >
-
-        <span class="photo-caption">
-          my favourite place is beside you ♡
-        </span>
-      </div>
-
-      <div class="floating-heart">♡</div>
-    </section>
-
-    <!-- STORY -->
-    <section id="story" class="content-section">
-      <p class="eyebrow">CHAPTER ONE</p>
-      <h2>Our little story.</h2>
-
-      <p class="section-description">
-        Every beautiful story has its own beginning.
-      </p>
-
-      <div id="storyList" class="story-list"></div>
-    </section>
-
-    <!-- REASONS -->
-    <section class="content-section reasons-section">
-      <p class="eyebrow">CHAPTER TWO</p>
-      <h2>Little things I love.</h2>
-
-      <p class="section-description">
-        A thousand little reasons, and still not enough.
-      </p>
-
-      <div id="reasonsList" class="reasons-grid"></div>
-    </section>
-
-    <!-- MEMORIES -->
-    <section class="content-section memories-section">
-      <p class="eyebrow">CHAPTER THREE</p>
-      <h2>Moments worth keeping.</h2>
-
-      <p class="section-description">
-        A few moments I'd choose to live again.
-      </p>
-
-      <div class="memory-grid">
-
-        <!-- PHOTO 1 -->
-        <article class="memory-card">
-          <img
-            src="Images/Memory-one.jpeg"
-            alt="Our first special memory"
-          >
-
-          <div class="memory-caption">
-            <span>01 — A LITTLE MEMORY</span>
-            <p>One of my favourite days.</p>
-          </div>
+      <section class="scrapbook-overlay hidden" id="scrapbookPanel" aria-modal="true" role="dialog" aria-labelledby="scrapbookTitle">
+        <div class="scrapbook-backdrop" data-scrapbook-close></div>
+        <article class="scrapbook-page">
+          <button class="scrapbook-close" id="scrapbookClose" type="button" aria-label="Back to the stars">←</button>
+          <p class="scrapbook-eyebrow">A PAGE FROM OUR LITTLE BOOK</p>
+          <h2 id="scrapbookTitle">A little memory</h2>
+          <div id="scrapbookContent" class="scrapbook-content"></div>
+          <button class="scrapbook-return" type="button" data-scrapbook-close>Back to our universe ✦</button>
         </article>
+      </section>
 
-        <!-- PHOTO 2 -->
-        <article class="memory-card">
-          <img
-            src="Images/Memory-two.jpeg"
-            alt="Another special memory"
-          >
-
-          <div class="memory-caption">
-            <span>02 — A LITTLE MOMENT</span>
-            <p>A moment I'll never forget.</p>
-          </div>
-        </article>
-
-        <!-- PHOTO 3 -->
-        <article class="memory-card">
-          <img
-            src="Images/Memory-three.jpeg"
-            alt="A memory to treasure forever"
-          >
-
-          <div class="memory-caption">
-            <span>03 — FOREVER</span>
-            <p>Just another reason to smile.</p>
-          </div>
-        </article>
-
+      <div class="universe-data hidden" aria-hidden="true">
+        <div id="storyList" class="story-list"></div>
+        <div id="reasonsList" class="reasons-grid"></div>
       </div>
-
-      <p class="memory-note">
-        Every picture holds a little piece of us. ♡
-      </p>
-    </section>
-
-
     </div>
 
     <div class="app-tab-panel" id="tab-for-you" data-panel="for-you">
