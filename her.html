@@ -20,7 +20,9 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/her.css?v=no-password-hint">
+  <link rel="stylesheet" href="css/her-inbox.css?v=1">
   <script src="js/her.js?v=unlock-fix-2" defer></script>
+  <script src="js/her-inbox.js?v=1" defer></script>
 </head>
 
 <body>
@@ -335,6 +337,26 @@
       </div>
     </section>
 
+
+    <!-- PRIVATE MESSAGE INBOX -->
+    <section id="privateLoveInbox" class="interactive-section private-love-inbox">
+      <p class="eyebrow">A LITTLE MESSAGE, JUST FOR ME</p>
+      <h2>Leave me a little letter. 💌</h2>
+      <p class="section-description">Whenever you want to tell me something, you can write it here. I'll read it, and you can come back to see my reply. ♡</p>
+      <form id="privateMessageForm" class="private-message-card">
+        <label for="privateSenderName">Your name (optional)</label>
+        <input id="privateSenderName" type="text" maxlength="60" placeholder="Your name">
+        <label for="privateMessageText">Your message</label>
+        <textarea id="privateMessageText" rows="4" maxlength="2000" required placeholder="Write whatever is on your heart…"></textarea>
+        <div class="private-message-bottom"><span id="privateMessageCount">0 / 2000</span><button type="submit" id="privateMessageSend">Send me a little letter ♡</button></div>
+        <p id="privateMessageStatus" class="private-message-status" role="status"></p>
+      </form>
+      <div class="private-replies-card">
+        <h3>Letters between us</h3>
+        <p class="private-replies-subtitle">This little space keeps your messages and my replies together on this device. ♡</p>
+        <div id="privateRepliesList" class="private-replies-list"><p class="private-empty">Your little letters will appear here.</p></div>
+      </div>
+    </section>
 
     </div>
 
