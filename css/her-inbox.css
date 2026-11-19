@@ -33,3 +33,5 @@
   .private-message-bottom { align-items:stretch; flex-direction:column; }
   .private-message-bottom button { width:100%; }
 }
+/* LIVE PRIVATE CHAT BUBBLES */
+.private-message-notify{display:flex;justify-content:flex-end;margin-bottom:10px}.private-chat-stream{display:grid;gap:12px}.private-chat-bubble{max-width:88%;padding:14px;border:1px solid #604658;border-radius:16px;background:#17101b}.private-chat-bubble.from-amit{margin-left:auto;background:#342033;border-color:#d39ab6}.private-chat-bubble .private-letter-time{margin:0 0 7px}.private-chat-bubble .private-letter-text{white-space:pre-wrap;overflow-wrap:anywhere}.private-message-notify button{padding:8px 11px;background:transparent;border:1px solid #74536b;color:#e9c4d6;font:11px 'DM Sans',sans-serif;letter-spacing:.6px;cursor:pointer}
