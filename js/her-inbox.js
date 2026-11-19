@@ -1,6 +1,6 @@
 (() => {
   const URL = "https://fqbcfuduinjdumozfbja.supabase.co";
-  const KEY = "sb_publishable_CI3BreLTxzIgIB_IcdTg5O0yBVx1vw";
+  const KEY = "sb_publishable_CI3BreLTxzIgIB_IcdTg5Q_OyBVx1vw";
   const ENDPOINT = URL + "/functions/v1/her-inbox";
   const STORAGE = "ourLittleWorldPrivateThread";
   const form = document.getElementById("privateMessageForm");
