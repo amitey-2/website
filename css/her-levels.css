@@ -1,0 +1,8 @@
+
+/* Five-step For You experience */
+.for-you-levels {max-width:850px;margin:22px auto 30px;padding:22px 18px;border:1px solid #76516b;border-radius:22px;background:linear-gradient(145deg,#28182a,#17101b);text-align:center}
+.levels-kicker{color:var(--pink);font-size:10px;letter-spacing:2px}.levels-title{font:400 clamp(25px,5vw,34px) 'Playfair Display',serif;margin:8px 0 18px}
+.levels-progress{max-width:440px;margin:0 auto 17px;color:var(--muted);font-size:12px}.levels-progress-track{height:5px;border-radius:9px;background:#493244;overflow:hidden;margin-top:9px}.levels-progress-track span{display:block;height:100%;width:20%;background:linear-gradient(90deg,#b87999,#e8b4c6);border-radius:9px;transition:width .35s ease}
+.levels-nav{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}.level-chip{border:1px solid #76516b;border-radius:999px;background:#211421;color:#e8b4c6;padding:9px 12px;font:12px 'DM Sans',sans-serif}.level-chip.active{background:#75405f;color:#fff;border-color:#d39ab6}.level-chip:disabled{opacity:.35}.levels-intro{color:#c9afbf;font-size:12px;line-height:1.6;margin-top:15px}
+.for-you-level{animation:levelFade .28s ease}.for-you-level.level-hidden{display:none!important}.level-transition{text-align:center;padding:26px 10px}.level-continue,.level-revisit{border:1px solid #b17b98;border-radius:999px;background:linear-gradient(110deg,#75405f,#a45c7d);color:#fff6fa;padding:13px 22px;font:600 13px 'DM Sans',sans-serif;cursor:pointer}.level-finish p{color:#e8b4c6;margin-bottom:14px;line-height:1.6}@keyframes levelFade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.for-you-levels{padding:18px 12px}.level-chip{padding:8px 10px;font-size:11px}}
