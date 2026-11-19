@@ -35,6 +35,125 @@ async function startDashboard() {
 
   console.log("Dashboard authenticated.");
 
+  // ======================================
+  // HER MESSAGES — INLINE DASHBOARD INBOX
+  // Uses the existing authenticated session (no separate login).
+  // ======================================
+  const herMessagesList = document.getElementById("herMessagesList");
+  const herMessagesStatus = document.getElementById("herMessagesStatus");
+  const refreshHerMessages = document.getElementById("refreshHerMessages");
+  const HER_INBOX_API = SUPABASE_URL + "/functions/v1/her-inbox";
+
+  async function herInboxCall(action, payload = {}) {
+    const { data: { session: currentSession } } = await supabaseClient.auth.getSession();
+    if (!currentSession) throw new Error("Your dashboard session expired. Please log in again.");
+    const response = await fetch(HER_INBOX_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + currentSession.access_token
+      },
+      body: JSON.stringify({ action, ...payload })
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) throw new Error(data.error || "Could not load her messages.");
+    return data;
+  }
+
+  function renderHerMessages(items) {
+    if (!herMessagesList) return;
+    herMessagesList.replaceChildren();
+    if (!items.length) {
+      const empty = document.createElement("p");
+      empty.className = "her-messages-empty";
+      empty.textContent = "No letters yet. When she writes, they'll show up here. ♡";
+      herMessagesList.append(empty);
+      return;
+    }
+    const grouped = new Map();
+    items.forEach(message => {
+      if (!grouped.has(message.thread_id)) grouped.set(message.thread_id, []);
+      grouped.get(message.thread_id).push(message);
+    });
+    [...grouped.values()].forEach(group => {
+      group.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+      group.forEach(message => {
+        const card = document.createElement("article");
+        card.className = "her-message-card";
+        const meta = document.createElement("p");
+        meta.className = "her-message-meta";
+        meta.textContent = (message.sender_name || "Her") + " · " + new Date(message.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});
+        const body = document.createElement("p");
+        body.className = "her-message-body";
+        body.textContent = message.message;
+        card.append(meta,body);
+        if (message.reply) {
+          const reply = document.createElement("div");
+          reply.className = "her-message-existing-reply";
+          const replyMeta = document.createElement("p");
+          replyMeta.className = "her-message-meta";
+          replyMeta.textContent = "Your reply · " + new Date(message.replied_at || message.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});
+          const replyBody = document.createElement("p");
+          replyBody.className = "her-message-body";
+          replyBody.textContent = message.reply;
+          reply.append(replyMeta,replyBody);
+          card.append(reply);
+        } else {
+          const form = document.createElement("form");
+          form.className = "her-message-reply-form";
+          const area = document.createElement("textarea");
+          area.maxLength = 2000;
+          area.required = true;
+          area.placeholder = "Write your reply to her…";
+          const button = document.createElement("button");
+          button.type = "submit";
+          button.textContent = "SEND REPLY ♡";
+          form.append(area,button);
+          form.addEventListener("submit",async event=>{
+            event.preventDefault();
+            const replyText = area.value.trim();
+            if(!replyText) return;
+            button.disabled = true;
+            button.textContent = "SENDING…";
+            herMessagesStatus.textContent = "";
+            try {
+              await herInboxCall("admin_reply",{id:message.id,reply:replyText});
+              herMessagesStatus.textContent = "Your reply was sent. ♡";
+              await loadHerMessages();
+            } catch(error) {
+              herMessagesStatus.textContent = error.message || "Couldn't send your reply.";
+              button.disabled = false;
+              button.textContent = "SEND REPLY ♡";
+            }
+          });
+          card.append(form);
+        }
+        herMessagesList.append(card);
+      });
+    });
+  }
+
+  async function loadHerMessages() {
+    if (!herMessagesList || !herMessagesStatus) return;
+    herMessagesStatus.textContent = "Loading her letters…";
+    if (refreshHerMessages) refreshHerMessages.disabled = true;
+    try {
+      const result = await herInboxCall("admin_list");
+      renderHerMessages(result.messages || []);
+      herMessagesStatus.textContent = "Her messages are up to date. ♡";
+    } catch(error) {
+      herMessagesStatus.textContent = error.message || "Couldn't load her messages.";
+      if (/unauthorized/i.test(error.message || "")) await supabaseClient.auth.signOut();
+    } finally {
+      if (refreshHerMessages) refreshHerMessages.disabled = false;
+    }
+  }
+  if (refreshHerMessages) refreshHerMessages.addEventListener("click",loadHerMessages);
+  loadHerMessages();
+
+
+
   
   // ======================================
   // 1. DATE
