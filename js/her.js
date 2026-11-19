@@ -1246,3 +1246,66 @@ if (puppyBall) {
   });
 }
 
+
+
+// OUR LITTLE UNIVERSE — star-to-scrapbook interactions
+(() => {
+  const overlay = document.getElementById("scrapbookPanel");
+  const title = document.getElementById("scrapbookTitle");
+  const content = document.getElementById("scrapbookContent");
+  if (!overlay || !title || !content) return;
+
+  const storySource = document.getElementById("storyList");
+  const reasonsSource = document.getElementById("reasonsList");
+
+  function openChapter(chapter) {
+    content.replaceChildren();
+    const titles = {
+      beginning: "Where our story began",
+      "little-things": "The little things",
+      moments: "Moments worth keeping",
+      dreams: "Things I dream of with you"
+    };
+    title.textContent = titles[chapter] || "A little memory";
+
+    if (chapter === "beginning") {
+      const items = storySource ? [...storySource.children] : [];
+      if (items.length) {
+        items.forEach(item => content.appendChild(item.cloneNode(true)));
+      } else {
+        content.innerHTML = '<p class="dream-note">Our story is still unfolding. This page will hold the beginning, whenever we are ready to write it down. ♡</p>';
+      }
+    } else if (chapter === "little-things") {
+      const items = reasonsSource ? [...reasonsSource.children] : [];
+      if (items.length) {
+        const grid = document.createElement("div");
+        grid.className = "reasons-grid";
+        items.forEach(item => grid.appendChild(item.cloneNode(true)));
+        content.appendChild(grid);
+      } else {
+        content.innerHTML = '<p class="dream-note">All the little things that make you you — and make me love you more. ♡</p>';
+      }
+    } else if (chapter === "moments") {
+      content.innerHTML = '<div class="scrapbook-memories"><div class="memory-placeholder"><div><span class="placeholder-star">✧</span>One day, a favourite picture will live here.</div></div><div class="memory-placeholder"><div><span class="placeholder-star">♡</span>A little moment we want to keep.</div></div><div class="memory-placeholder"><div><span class="placeholder-star">✦</span>Another page from our memories.</div></div></div><p class="dream-note" style="margin-top:18px">Our private photos can be added once the secure photo storage is connected. ♡</p>';
+    } else if (chapter === "dreams") {
+      content.innerHTML = '<div class="scrapbook-dreams"><div class="dream-note">More little adventures, new places, and a thousand ordinary days together.</div><div class="dream-note">To keep choosing each other, even on the imperfect days.</div><div class="dream-note">To laugh about things that only make sense to us.</div><div class="dream-note">And to keep making a universe that feels like home. ♡</div></div>';
+    }
+    overlay.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    const close = overlay.querySelector("#scrapbookClose");
+    if (close) close.focus();
+  }
+
+  function closeChapter() {
+    overlay.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  document.querySelectorAll("[data-universe-card]").forEach(button => {
+    button.addEventListener("click", () => openChapter(button.dataset.universeCard));
+  });
+  overlay.querySelectorAll("[data-scrapbook-close]").forEach(button => button.addEventListener("click", closeChapter));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !overlay.classList.contains("hidden")) closeChapter();
+  });
+})();
