@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#140d17">
+  <title>Private Inbox · Our Little World</title>
+  <link rel="stylesheet" href="css/inbox.css?v=1">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/inbox-admin.js?v=1" defer></script>
+</head>
+<body>
+  <main class="inbox-shell">
+    <header class="inbox-brand"><span class="brand-heart">♡</span><p>OUR LITTLE WORLD · PRIVATE</p><h1>Your inbox.</h1><p class="inbox-sub">A quiet place for the little letters she sends you.</p></header>
+    <section id="loginPanel" class="login-card">
+      <h2>Only you can open this. 🔐</h2>
+      <p>Sign in to your authorized Supabase account to read and reply.</p>
+      <form id="adminLogin">
+        <label for="adminEmail">Email</label><input id="adminEmail" type="email" autocomplete="username" required>
+        <label for="adminPassword">Password</label><input id="adminPassword" type="password" autocomplete="current-password" required>
+        <button id="loginButton" type="submit">Open my inbox</button>
+        <p id="loginStatus" role="status"></p>
+      </form>
+    </section>
+    <section id="inboxPanel" class="inbox-panel hidden">
+      <div class="inbox-toolbar"><div><h2>Letters received ♡</h2><p id="inboxCount">Your private letters</p></div><div class="toolbar-buttons"><button id="refreshInbox" type="button">Refresh</button><button id="logoutInbox" type="button">Sign out</button></div></div>
+      <p id="inboxStatus" role="status"></p>
+      <div id="messageThreads" class="message-threads"></div>
+    </section>
+    <footer>Private letters, kept with care. ♡</footer>
+  </main>
+</body>
+</html>
