@@ -580,3 +580,5 @@ textarea:focus-visible {
 
 /* PUSH NOTIFICATIONS */
 .her-message-actions button{background:transparent;border:1px solid var(--border);color:var(--text);padding:9px 12px;font:inherit;font-size:10px;letter-spacing:.7px;cursor:pointer}.her-message-actions button:disabled{opacity:.5}
+
+.her-message-actions .clear-chat-button{border-color:#b85c64;color:#b85c64}.her-message-actions .clear-chat-button:hover{background:rgba(184,92,100,.08)}
