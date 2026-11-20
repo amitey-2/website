@@ -1,7 +1,7 @@
-const CACHE_NAME = "our-little-world-static-v20";
+const CACHE_NAME = "our-little-world-static-v21";
 const STATIC_ASSETS = [
-  "./css/her.css",
-  "./js/her.js",
+  "./css/her.css?v=menu-nepali-1",
+  "./js/her.js?v=menu-nepali-1",
   "./css/her-inbox.css?v=5",
   "./js/her-inbox.js?v=6",
   "./css/dashboard.css?v=5",
