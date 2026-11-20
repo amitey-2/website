@@ -710,23 +710,27 @@ const mealOptions = {
     { icon: "🥑", name: "Avocado Toast", description: "Sourdough toast with smashed avocado, cherry tomatoes and herbs." }
   ],
   lunch: [
-    { icon: "🍝", name: "Creamy Alfredo Pasta", description: "Silky parmesan sauce, fresh herbs and a little comfort in every bite." },
-    { icon: "🥪", name: "The Lovebird Sandwich", description: "Toasted bread, cheese, crisp greens and a delicious filling." },
-    { icon: "🍔", name: "Classic Cheeseburger", description: "A juicy burger with melted cheese, lettuce and golden fries." },
-    { icon: "🥗", name: "Garden Fresh Salad", description: "Crunchy greens, colourful vegetables and a lovely light dressing." },
-    { icon: "🍕", name: "Margherita Pizza", description: "Tomato, mozzarella and basil — simple, warm and always lovely." },
-    { icon: "🌯", name: "Crispy Chicken Wrap", description: "Tender chicken, fresh vegetables and a creamy house sauce." }
+    { icon: "🍛", name: "Dal Bhat Tarkari", description: "A comforting Nepali plate of dal, rice, seasonal tarkari and achar." },
+    { icon: "🥟", name: "Momo", description: "Juicy steamed chicken or vegetable dumplings with a homemade tomato achar." },
+    { icon: "🍜", name: "Chowmin", description: "Nepali-style stir-fried noodles with vegetables and chicken, if you like." },
+    { icon: "🌶️", name: "Chatpate", description: "A tangy, spicy, crunchy street-food mix with a squeeze of lemon." },
+    { icon: "🍗", name: "Chicken Khana", description: "Rice, chicken curry, dal, greens and achar — a little taste of home." },
+    { icon: "🥣", name: "Dhindo & Gundruk", description: "Warm dhindo with gundruk ko jhol and a side of fresh achar." }
   ],
   dinner: [
-    { icon: "🍝", name: "Romantic Truffle Pasta", description: "Rich, creamy pasta with parmesan and a little restaurant magic." },
-    { icon: "🍕", name: "Heart-Shaped Pizza", description: "Your favourite toppings on a pizza made with extra love." },
-    { icon: "🍗", name: "Herb-Grilled Chicken", description: "Juicy grilled chicken with roasted potatoes and seasonal vegetables." },
-    { icon: "🥩", name: "Steakhouse Special", description: "A tender steak with buttery mash and a side of greens." },
-    { icon: "🍣", name: "Sushi Date Night", description: "A colourful selection of sushi rolls for a cosy evening together." },
-    { icon: "🍰", name: "Something Sweet", description: "A little dessert finale — chocolate cake, cheesecake or both." }
+    { icon: "🍚", name: "Fried Rice", description: "A cosy wok-fried rice with egg, vegetables and chicken or your choice." },
+    { icon: "🍗", name: "Fried Chicken", description: "Crispy golden chicken with a crunchy coating and favourite dipping sauce." },
+    { icon: "🌶️", name: "Spicy Noodles", description: "Hot, garlicky noodles with chilli, vegetables and a little kick." },
+    { icon: "🍝", name: "Pasta", description: "Choose creamy, tomato, garlic or chicken pasta — made just the way you crave." }
+  ],
+  sweets: [
+    { icon: "🍯", name: "Honey Cake", description: "Soft, delicate layers with a gentle honey sweetness." },
+    { icon: "🍫", name: "Brownie", description: "A warm fudgy brownie with a crackly top and chocolatey middle." },
+    { icon: "☕", name: "Hot Chocolate", description: "A creamy mug of cocoa for slow, cosy evenings." },
+    { icon: "🍰", name: "Tiramisu", description: "Coffee-soaked layers, soft cream and a dusting of cocoa." },
+    { icon: "🥛", name: "Meetha Lassi", description: "A chilled, sweet and creamy yoghurt drink, just like a little treat." }
   ]
-};
-const mealMenu = document.getElementById("mealMenu");
+};const mealMenu = document.getElementById("mealMenu");
 const mealSelection = document.getElementById("mealSelection");
 let activeMeal = "breakfast";
 let selectedDish = null;
