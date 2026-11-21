@@ -702,35 +702,39 @@ document.querySelectorAll(".envelope-option").forEach((button) => {
 // ========================================
 const mealOptions = {
   breakfast: [
-    { icon: "🥞", name: "Fluffy Pancake Stack", description: "Warm pancakes with strawberries, maple syrup and a little extra sweetness." },
-    { icon: "🧇", name: "Berry Belgian Waffles", description: "Golden waffles topped with fresh berries and a cloud of cream." },
-    { icon: "🥐", name: "Parisian Morning", description: "Buttery croissants, fresh fruit and a cosy cup of coffee or tea." },
-    { icon: "🍳", name: "The Sunny Plate", description: "Creamy scrambled eggs, toast, avocado and a bright little morning." },
-    { icon: "🍓", name: "Pretty Berry Bowl", description: "Greek yoghurt, granola, honey and all your favourite fruits." },
-    { icon: "🥑", name: "Avocado Toast", description: "Sourdough toast with smashed avocado, cherry tomatoes and herbs." }
+    { icon: "🥞", name: "Pancakes", description: "Fluffy pancakes served warm with a little sweetness." },
+    { icon: "🍵", name: "Chiya Pauroti", description: "Nepali tea with fresh pauroti for a cosy morning." },
+    { icon: "🥚", name: "Boiled Egg", description: "Simple boiled eggs for a gentle start to the day." },
+    { icon: "🍞", name: "French Toast", description: "Golden French toast, soft inside and sweet on top." }
   ],
-  lunch: [
-    { icon: "🍛", name: "Dal Bhat Tarkari", description: "A comforting Nepali plate of dal, rice, seasonal tarkari and achar." },
-    { icon: "🥟", name: "Momo", description: "Juicy steamed chicken or vegetable dumplings with a homemade tomato achar." },
-    { icon: "🍜", name: "Chowmin", description: "Nepali-style stir-fried noodles with vegetables and chicken, if you like." },
-    { icon: "🌶️", name: "Chatpate", description: "A tangy, spicy, crunchy street-food mix with a squeeze of lemon." },
-    { icon: "🍗", name: "Chicken Khana", description: "Rice, chicken curry, dal, greens and achar — a little taste of home." },
-    { icon: "🥣", name: "Dhindo & Gundruk", description: "Warm dhindo with gundruk ko jhol and a side of fresh achar." }
+  nepali: [
+    { icon: "🥟", name: "Chicken Momo", description: "Juicy chicken momos with homemade achar." },
+    { icon: "🍜", name: "Chicken Chowmin", description: "Nepali-style stir-fried noodles with chicken and vegetables." },
+    { icon: "🍲", name: "Thukpa", description: "A warm, comforting bowl of Nepali noodle soup." },
+    { icon: "🍛", name: "Chicken Curry", description: "Homemade chicken curry with rich, warming spices." },
+    { icon: "🍚", name: "Dal Bhat Tarkari Aachar", description: "Dal, rice, seasonal tarkari and a little achar." },
+    { icon: "🌶️", name: "Chatpate", description: "Tangy, spicy and crunchy Nepali street-food mix." },
+    { icon: "🍳", name: "Fried Rice", description: "Wok-fried rice with egg and vegetables." }
   ],
-  dinner: [
-    { icon: "🍚", name: "Fried Rice", description: "A cosy wok-fried rice with egg, vegetables and chicken or your choice." },
-    { icon: "🍗", name: "Fried Chicken", description: "Crispy golden chicken with a crunchy coating and favourite dipping sauce." },
-    { icon: "🌶️", name: "Spicy Noodles", description: "Hot, garlicky noodles with chilli, vegetables and a little kick." },
-    { icon: "🍝", name: "Pasta", description: "Choose creamy, tomato, garlic or chicken pasta — made just the way you crave." }
+  italian: [
+    { icon: "🍝", name: "Chicken Alfredo", description: "Creamy Alfredo pasta with chicken." },
+    { icon: "🧀", name: "Mac and Cheese", description: "Comforting macaroni with a creamy cheese sauce." },
+    { icon: "🍅", name: "Arrabbiata", description: "Pasta in a spicy tomato and garlic sauce." },
+    { icon: "🥖", name: "Garlic Bread", description: "Warm, buttery bread with garlic." }
   ],
-  sweets: [
-    { icon: "🍯", name: "Honey Cake", description: "Soft, delicate layers with a gentle honey sweetness." },
-    { icon: "🍫", name: "Brownie", description: "A warm fudgy brownie with a crackly top and chocolatey middle." },
-    { icon: "☕", name: "Hot Chocolate", description: "A creamy mug of cocoa for slow, cosy evenings." },
-    { icon: "🍰", name: "Tiramisu", description: "Coffee-soaked layers, soft cream and a dusting of cocoa." },
-    { icon: "🥛", name: "Meetha Lassi", description: "A chilled, sweet and creamy yoghurt drink, just like a little treat." }
+  street: [
+    { icon: "🍔", name: "Chicken Burger", description: "A juicy chicken burger with all the favourite toppings." },
+    { icon: "🥔", name: "Pani Puri", description: "Crispy puris filled with potatoes and tangy pani." }
+  ],
+  desserts: [
+    { icon: "🍰", name: "Tiramisu", description: "Coffee-soaked layers, soft cream and cocoa." },
+    { icon: "🍫", name: "Brownies", description: "Fudgy chocolate brownies with a crackly top." },
+    { icon: "🥛", name: "Lassi", description: "A cool, creamy yoghurt drink." },
+    { icon: "🍌", name: "Banana Shake", description: "A smooth, sweet banana milkshake." },
+    { icon: "☕", name: "Hot Chocolate", description: "A cosy mug of creamy cocoa." }
   ]
-};const mealMenu = document.getElementById("mealMenu");
+};
+const mealMenu = document.getElementById("mealMenu");
 const mealSelection = document.getElementById("mealSelection");
 let activeMeal = "breakfast";
 let selectedDish = null;
