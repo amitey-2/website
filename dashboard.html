@@ -7,10 +7,10 @@
 
   <title>My Digital Space</title>
 
-  <link rel="stylesheet" href="css/dashboard.css?v=4">
+  <link rel="stylesheet" href="css/dashboard.css?v=6">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="js/dashboard.js?v=7" defer></script>
+  <script src="js/dashboard.js?v=8" defer></script>
 </head>
 
 <body>
@@ -159,6 +159,20 @@
       </div>
       <p id="herMessagesStatus" aria-live="polite">Loading messages…</p>
       <div id="herMessagesList"></div>
+    </section>
+
+    <!-- HER CRAVINGS: FOOD MENU PICKS -->
+    <section class="her-cravings" id="herCravings">
+      <div class="her-cravings-heading">
+        <p class="eyebrow">A LITTLE TASTE OF HER HEART</p>
+        <h2>Her Cravings ♡</h2>
+        <p>See what she picked from her little menu.</p>
+      </div>
+      <div class="her-cravings-toolbar">
+        <span id="herCravingsStatus" aria-live="polite">Loading her choices…</span>
+        <button id="refreshHerCravings" type="button">REFRESH</button>
+      </div>
+      <div id="herCravingsList" class="her-cravings-list"></div>
     </section>
 
     <!-- QUICK NOTES -->
