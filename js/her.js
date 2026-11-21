@@ -759,10 +759,25 @@ function renderMealMenu(meal) {
     choose.textContent = selectedDish === dish.name ? "Chosen with love ✓" : "I'd love this ♡";
     choose.classList.toggle("selected", selectedDish === dish.name);
     choose.setAttribute("aria-pressed", selectedDish === dish.name ? "true" : "false");
-    choose.addEventListener("click", () => {
+    choose.addEventListener("click", async () => {
       selectedDish = dish.name;
-      mealSelection.textContent = dish.name + " it is! That sounds perfect for our next meal together. 💗";
+      mealSelection.textContent = "Saving your choice with love… ♡";
       renderMealMenu(activeMeal);
+      try {
+        const saved = await fetch(`${SUPABASE_URL}/functions/v1/her-menu-choice`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: SUPABASE_KEY },
+          body: JSON.stringify({ action: "submit", meal: activeMeal, dish: dish.name })
+        });
+        const result = await saved.json();
+        if (!saved.ok || !result.ok) throw new Error(result.error || "Couldn't save");
+        mealSelection.textContent = dish.name + " it is! I've saved your little craving. 💗";
+      } catch (error) {
+        mealSelection.textContent = "I couldn't save it just now. Please tap once more, sweetheart. ♡";
+        console.error("Menu choice save error:", error);
+      } finally {
+        renderMealMenu(activeMeal);
+      }
     });
     card.append(icon, title, description, choose);
     mealMenu.appendChild(card);
