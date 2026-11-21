@@ -246,6 +246,19 @@ async function startDashboard() {
 
 
   // ======================================
+  // HER CRAVINGS — saved menu choices + live refresh
+  const cravingsList=document.getElementById("herCravingsList"),cravingsStatus=document.getElementById("herCravingsStatus"),cravingsRefresh=document.getElementById("refreshHerCravings"),cravingsApi=SUPABASE_URL+"/functions/v1/her-menu-choice";
+  let cravingsKnown=new Set(),cravingsInitial=true;
+  const mealLabels={breakfast:"Breakfast",lunch:"Nepali Favorites",dinner:"Dinner",sweets:"Sweet Cravings"};
+  const statusLabels={new:"NEW",planned:"PLANNED",surprised:"SURPRISED HER"};
+  async function cravingsCall(action,payload={}){const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw Error("Dashboard session expired.");const r=await fetch(cravingsApi,{method:"POST",headers:{"Content-Type":"application/json",apikey:SUPABASE_KEY,Authorization:"Bearer "+session.access_token},body:JSON.stringify({action,...payload})});const d=await r.json();if(!r.ok||d.error)throw Error(d.error||"Menu choices request failed");return d;}
+  function cravingsRender(choices){cravingsList.replaceChildren();if(!choices.length){const empty=document.createElement("p");empty.className="her-cravings-empty";empty.textContent="Nothing chosen yet. Her little cravings will show up here. ♡";cravingsList.append(empty);return;}
+    choices.forEach(choice=>{const card=document.createElement("article");card.className="her-cravings-card";const top=document.createElement("div");top.className="her-cravings-top";const title=document.createElement("h3");title.textContent=choice.dish;const date=document.createElement("p");date.textContent=new Date(choice.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});top.append(title,date);const meal=document.createElement("span");meal.className="her-cravings-meal";meal.textContent=mealLabels[choice.meal]||choice.meal;const state=document.createElement("span");state.className="her-cravings-state state-"+choice.status;state.textContent=statusLabels[choice.status]||choice.status;const actions=document.createElement("div");actions.className="her-cravings-actions";for(const [s,label] of [["planned","MAKE THIS FOR HER ♡"],["surprised","SURPRISE HER 🎀"],["new","RESET"]]){const btn=document.createElement("button");btn.type="button";btn.textContent=label;btn.disabled=choice.status===s;btn.addEventListener("click",async()=>{btn.disabled=true;cravingsStatus.textContent="Updating…";try{await cravingsCall("admin_update",{id:choice.id,status:s});await cravingsLoad(false);}catch(e){cravingsStatus.textContent=e.message;btn.disabled=false;}});actions.append(btn);}card.append(top,meal,state,actions);cravingsList.append(card);});
+  }
+  async function cravingsLoad(alertNew=true){if(cravingsRefresh)cravingsRefresh.disabled=true;try{const data=await cravingsCall("admin_list"),choices=data.choices||[];if(alertNew&&!cravingsInitial){const fresh=choices.filter(c=>!cravingsKnown.has(c.id));if(fresh.length)cravingsStatus.textContent=fresh.length===1?"She just chose "+fresh[0].dish+" ♡":fresh.length+" new cravings from her ♡";}choices.forEach(c=>cravingsKnown.add(c.id));cravingsInitial=false;cravingsRender(choices);if(!cravingsStatus.textContent||cravingsStatus.textContent==="Loading her choices…")cravingsStatus.textContent=choices.length?choices.length+" choice"+(choices.length===1?"":"s")+" saved":"Waiting for her first choice ♡";}catch(e){cravingsStatus.textContent=e.message||"Couldn't load her menu choices.";}finally{if(cravingsRefresh)cravingsRefresh.disabled=false;}}
+  if(cravingsRefresh)cravingsRefresh.addEventListener("click",()=>cravingsLoad(false));cravingsLoad(false);setInterval(()=>{if(!document.hidden)cravingsLoad(true);},30000);
+
+  // ======================================
   // 5. QUICK NOTES
   // ======================================
 
