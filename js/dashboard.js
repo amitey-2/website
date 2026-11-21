@@ -249,7 +249,7 @@ async function startDashboard() {
   // HER CRAVINGS — saved menu choices + live refresh
   const cravingsList=document.getElementById("herCravingsList"),cravingsStatus=document.getElementById("herCravingsStatus"),cravingsRefresh=document.getElementById("refreshHerCravings"),cravingsApi=SUPABASE_URL+"/functions/v1/her-menu-choice";
   let cravingsKnown=new Set(),cravingsInitial=true;
-  const mealLabels={breakfast:"Breakfast",lunch:"Nepali Favorites",dinner:"Dinner",sweets:"Sweet Cravings"};
+  const mealLabels={breakfast:"Breakfast",lunch:"Nepali Favorites",dinner:"Dinner",sweets:"Sweet Cravings",nepali:"Nepali Kitchen",italian:"Italian Corner",street:"Fast Food & Street Food",desserts:"Desserts & Drinks"};
   const statusLabels={new:"NEW",planned:"PLANNED",surprised:"SURPRISED HER"};
   async function cravingsCall(action,payload={}){const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw Error("Dashboard session expired.");const r=await fetch(cravingsApi,{method:"POST",headers:{"Content-Type":"application/json",apikey:SUPABASE_KEY,Authorization:"Bearer "+session.access_token},body:JSON.stringify({action,...payload})});const d=await r.json();if(!r.ok||d.error)throw Error(d.error||"Menu choices request failed");return d;}
   function cravingsRender(choices){cravingsList.replaceChildren();if(!choices.length){const empty=document.createElement("p");empty.className="her-cravings-empty";empty.textContent="Nothing chosen yet. Her little cravings will show up here. ♡";cravingsList.append(empty);return;}
