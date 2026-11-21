@@ -1,11 +1,11 @@
-const CACHE_NAME = "our-little-world-static-v21";
+const CACHE_NAME = "our-little-world-static-v22";
 const STATIC_ASSETS = [
   "./css/her.css?v=menu-nepali-1",
-  "./js/her.js?v=menu-nepali-1",
+  "./js/her.js?v=menu-choice-1",
   "./css/her-inbox.css?v=5",
   "./js/her-inbox.js?v=6",
-  "./css/dashboard.css?v=5",
-  "./js/dashboard.js?v=7",
+  "./css/dashboard.css?v=6",
+  "./js/dashboard.js?v=8",
   "./Images/love-app-icon.svg",
   "./manifest.webmanifest"
 ];
