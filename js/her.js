@@ -711,6 +711,7 @@ const mealOptions = {
     { icon: "🥟", name: "Chicken Momo", description: "Juicy chicken momos with homemade achar." },
     { icon: "🍜", name: "Chicken Chowmin", description: "Nepali-style stir-fried noodles with chicken and vegetables." },
     { icon: "🍲", name: "Thukpa", description: "A warm, comforting bowl of Nepali noodle soup." },
+    { icon: "🥣", name: "Dhindo", description: "Traditional Nepali dhindo, served warm with tarkari, achar or gundruk." },
     { icon: "🍛", name: "Chicken Curry", description: "Homemade chicken curry with rich, warming spices." },
     { icon: "🍚", name: "Dal Bhat Tarkari Aachar", description: "Dal, rice, seasonal tarkari and a little achar." },
     { icon: "🌶️", name: "Chatpate", description: "Tangy, spicy and crunchy Nepali street-food mix." },
